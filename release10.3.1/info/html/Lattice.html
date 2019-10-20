@@ -1,0 +1,125 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="http://www.petercorke.com/RVC/common/toolboxhelp.css">
+    <title>M-File Help: Lattice</title>
+  </head>
+  <body>
+  <table border="0" cellspacing="0" width="100%">
+    <tr class="subheader">
+      <td class="headertitle">M-File Help: Lattice</td>
+      <td class="subheader-left"><a href="matlab:open Lattice">View code for Lattice</a></td>
+    </tr>
+  </table>
+<h1>Lattice</h1><p><span class="helptopic">Lattice planner navigation class</span></p><p>
+A concrete subclass of the abstract Navigation class that implements the
+lattice planner navigation algorithm over an occupancy grid.  This
+performs goal independent planning of kinematically feasible paths.
+
+</p>
+<h2>Methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> Lattice</td> <td>Constructor</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> plan</td> <td>Compute the roadmap</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> query</td> <td>Find a path</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> plot</td> <td>Display the obstacle map</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> display</td> <td>Display the parameters in human readable form</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> char</td> <td>Convert to string</td></tr>
+</table>
+<h2>Properties (read only)</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> graph</td> <td>A PGraph object describign the tree</td></tr>
+</table>
+<h2>Example</h2>
+<pre style="width: 90%%;" class="examples">
+lp&nbsp;=&nbsp;Lattice();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;create&nbsp;navigation&nbsp;object
+lp.plan('iterations',&nbsp;8)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;create&nbsp;roadmaps
+lp.query(&nbsp;[1&nbsp;2&nbsp;pi/2],&nbsp;[2&nbsp;-2&nbsp;0]&nbsp;)&nbsp;&nbsp;&nbsp;%&nbsp;find&nbsp;path
+lp.plot();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;plot&nbsp;the&nbsp;path
+</pre>
+<h2>References</h2>
+<ul>
+  <li>Robotics, Vision & Control, Section 5.2.4,
+P. Corke, Springer 2016.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Navigation.html">Navigation</a>, <a href="DXform.html">DXform</a>, <a href="Dstar.html">Dstar</a>, <a href="PGraph.html">PGraph</a></p>
+<hr>
+<a name="Lattice"><h1>Lattice.Lattice</h1></a>
+<p><span class="helptopic">Create a Lattice navigation object</span></p><p>
+<strong>p</strong> = <span style="color:red">Lattice</span>(<strong>map</strong>, <strong>options</strong>) is a probabilistic roadmap navigation
+object, and <strong>map</strong> is an occupancy grid, a representation of a
+planar world as a matrix whose elements are 0 (free space) or 1
+(occupied).
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1">'grid', G</td> <td>Grid spacing in X and Y (default 1)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'root', R</td> <td>Root coordinate of the lattice (2x1) (default [0,0])</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'iterations', N</td> <td>Number of sample points (default Inf)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'cost', C</td> <td>Cost for straight, left, right (default [1,1,1])</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'inflate', K</td> <td>Inflate all obstacles by K cells.</td></tr>
+</table>
+<p>
+Other <strong>options</strong> are supported by the Navigation superclass.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Iterates until the area defined by the map is covered.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Navigation.Navigation.html">Navigation.Navigation</a></p>
+<hr>
+<a name="char"><h1>Lattice.char</h1></a>
+<p><span class="helptopic">Convert to string</span></p><p>
+P.<span style="color:red">char</span>() is a string representing the state of the <span style="color:red">Lattice</span>
+object in human-readable form.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Lattice.display.html">Lattice.display</a></p>
+<hr>
+<a name="plan"><h1>Lattice.plan</h1></a>
+<p><span class="helptopic">Create a lattice plan</span></p><p>
+P.<span style="color:red">plan</span>(<strong>options</strong>) creates the lattice by iteratively building a tree of
+possible paths.  The resulting graph is kept within the object.
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1">'iterations', N</td> <td>Number of sample points (default Inf)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'cost', C</td> <td>Cost for straight, left, right (default [1,1,1])</td></tr>
+</table>
+<p>
+Default parameter values come from the constructor
+
+</p>
+<hr>
+<a name="plot"><h1>Lattice.plot</h1></a>
+<p><span class="helptopic">Visualize navigation environment</span></p><p>
+P.<span style="color:red">plot</span>() displays the occupancy grid with an optional distance field.
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'goal'</td> <td>Superimpose the goal position if set</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'nooverlay'</td> <td>Don't overlay the Lattice graph</td></tr>
+</table>
+<hr>
+<a name="query"><h1>Lattice.query</h1></a>
+<p><span class="helptopic">Find a path between two poses</span></p><p>
+P.<span style="color:red">query</span>(<strong>start</strong>, <strong>goal</strong>) finds a path (Nx3) from pose <strong>start</strong> (1x3)
+to pose <strong>goal</strong> (1x3).  The pose is expressed as [X,Y,THETA].
+
+</p>
+<hr>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+  <tr class="subheader" valign="top"><td>&nbsp;</td></tr></table>
+<p class="copy">&copy; 1990-2014 Peter Corke.</p>
+</body></html>

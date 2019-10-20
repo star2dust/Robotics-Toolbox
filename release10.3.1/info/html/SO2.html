@@ -1,0 +1,302 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="http://www.petercorke.com/RVC/common/toolboxhelp.css">
+    <title>M-File Help: SO2</title>
+  </head>
+  <body>
+  <table border="0" cellspacing="0" width="100%">
+    <tr class="subheader">
+      <td class="headertitle">M-File Help: SO2</td>
+      <td class="subheader-left"><a href="matlab:open SO2">View code for SO2</a></td>
+    </tr>
+  </table>
+<h1>SO2</h1><p><span class="helptopic">Representation of 2D rotation</span></p><p>
+This subclasss of RTBPose is an object that represents an SO(2) rotation
+
+</p>
+<h2>Constructor methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> SO2</td> <td>general constructor</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SO2.exp</td> <td>exponentiate an so(2) matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SO2.rand</td> <td>random orientation</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> new</td> <td>new SO2 object</td></tr>
+</table>
+<h2>Information and test methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> dim*</td> <td>returns 2</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> isSE*</td> <td>returns false</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> issym*</td> <td>true if rotation matrix has symbolic elements</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> isa</td> <td>check if matrix is SO2</td></tr>
+</table>
+<h2>Display and print methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> plot*</td> <td>graphically display coordinate frame for pose</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> animate*</td> <td>graphically animate coordinate frame for pose</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> print*</td> <td>print the pose in single line format</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> display*</td> <td>print the pose in human readable matrix form</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> char*</td> <td>convert to human readable matrix as a string</td></tr>
+</table>
+<h2>Operation methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> det</td> <td>determinant of matrix component</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> eig</td> <td>eigenvalues of matrix component</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> log</td> <td>logarithm of rotation matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> inv</td> <td>inverse</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> simplify*</td> <td>apply symbolic simplication to all elements</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> interp</td> <td>interpolate between rotations</td></tr>
+</table>
+<h2>Conversion methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> check</td> <td>convert object or matrix to SO2 object</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> theta</td> <td>return rotation angle</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> double</td> <td>convert to rotation matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> R </td> <td>convert to rotation matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE2</td> <td>convert to SE2 object with zero translation</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> T </td> <td>convert to homogeneous transformation matrix with zero translation</td></tr>
+</table>
+<h2>Compatibility methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> isrot2*</td> <td>returns true</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> ishomog2*</td> <td>returns false</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> trprint2*</td> <td>print single line representation</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> trplot2*</td> <td>plot coordinate frame</td></tr>
+</table>
+<p>
+tranimate2*  animate coordinate frame
+
+</p>
+<p>
+* means inherited from RTBPose
+
+</p>
+<h2>Operators</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> + </td> <td>elementwise addition, result is a matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> - </td> <td>elementwise subtraction, result is a matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> * </td> <td>multiplication within group, also group x vector</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> / </td> <td>multiply by inverse</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> ==</td> <td>test equality</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> ~=</td> <td>test inequality</td></tr>
+</table>
+<h2>See also</h2>
+<p>
+<a href="SE2.html">SE2</a>, <a href="SO3.html">SO3</a>, <a href="SE3.html">SE3</a>, <a href="RTBPose.html">RTBPose</a></p>
+<hr>
+<a name="SO2"><h1>SO2.SO2</h1></a>
+<p><span class="helptopic">Construct an SO(2) object</span></p><p>
+<strong>p</strong> = <span style="color:red">SO2</span>() is an <span style="color:red">SO2</span> object representing null rotation.
+
+</p>
+<p>
+<strong>p</strong> = <span style="color:red">SO2</span>(<strong>theta</strong>) is an <span style="color:red">SO2</span> object representing rotation of <strong>theta</strong> radians.
+If <strong>theta</strong> is a vector (N) then <strong>p</strong> is a vector of objects, corresponding to
+the elements of <strong>theta</strong>.
+
+</p>
+<p>
+<strong>p</strong> = <span style="color:red">SO2</span>(<strong>theta</strong>, 'deg') as above but with <strong>theta</strong> degrees.
+
+</p>
+<p>
+<strong>p</strong> = <span style="color:red">SO2</span>(<strong>R</strong>) is an <span style="color:red">SO2</span> object formed from the rotation
+matrix <strong>R</strong> (2x2)
+
+</p>
+<p>
+<strong>p</strong> = <span style="color:red">SO2</span>(<strong>T</strong>) is an <span style="color:red">SO2</span> object formed from the rotational part
+of the homogeneous transformation matrix <strong>T</strong> (3x3)
+
+</p>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> P = SO2(Q) is an SO2 object that is a copy of the SO2 object Q.</td> <td>%</td></tr>
+</table>
+<h2>See also</h2>
+<p>
+<a href="rot2.html">rot2</a>, <a href="SE2.html">SE2</a>, <a href="SO3.html">SO3</a></p>
+<hr>
+<a name="angle"><h1>SO2.angle</h1></a>
+<p><span class="helptopic">Rotation angle</span></p><p>
+<strong>theta</strong> = P.<span style="color:red">angle</span>() is the rotation <span style="color:red">angle</span>, in radians, associated with the
+<span style="color:red">SO2</span> object P.
+
+</p>
+<hr>
+<a name="char"><h1>SO2.char</h1></a>
+<p><span class="helptopic">Convert to string</span></p><p>
+<strong>s</strong> = P.<span style="color:red">char</span>() is a string containing rotation matrix elements.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="RTB.display.html">RTB.display</a></p>
+<hr>
+<a name="check"><h1>SO2.check</h1></a>
+<p><span class="helptopic">Convert to SO2</span></p><p>
+<strong>q</strong> = <span style="color:red">SO2</span>.<span style="color:red">check</span>(<strong>x</strong>) is an <span style="color:red">SO2</span> object where <strong>x</strong> is <span style="color:red">SO2</span>, 2x2, SE2 or 3x3
+homogeneous transformation matrix.
+
+</p>
+<hr>
+<a name="det"><h1>SO2.det</h1></a>
+<p><span class="helptopic">Determinant of SO2 object</span></p><p>
+<span style="color:red">det</span>(<strong>p</strong>) is the determinant of the <span style="color:red">SO2</span> object <strong>p</strong> and should always be +1.
+
+</p>
+<hr>
+<a name="eig"><h1>SO2.eig</h1></a>
+<p><span class="helptopic">Eigenvalues and eigenvectors</span></p><p>
+<strong>E</strong> = <span style="color:red">eig</span>(<strong>p</strong>) is a column vector containing the eigenvalues of the the
+rotation matrix of the <span style="color:red">SO2</span> object <strong>p</strong>.
+
+</p>
+<p>
+[<strong>v</strong>,<strong>d</strong>] = <span style="color:red">eig</span>(<strong>p</strong>) produces a diagonal matrix <strong>d</strong> of eigenvalues and
+a full matrix <strong>v</strong> whose columns are the corresponding eigenvectors
+so that A*<strong>v</strong> = <strong>v</strong>*<strong>d</strong>.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="eig.html">eig</a></p>
+<hr>
+<a name="exp"><h1>SO2.exp</h1></a>
+<p><span class="helptopic">Construct SO2 object from Lie algebra</span></p><p>
+<strong>p</strong> = <span style="color:red">SO2</span>.<span style="color:red">exp</span>(<strong>so2</strong>) creates an <span style="color:red">SO2</span> object by exponentiating the se(2)
+argument (2x2).
+
+</p>
+<hr>
+<a name="interp"><h1>SO2.interp</h1></a>
+<p><span class="helptopic">Interpolate between SO2 objects</span></p><p>
+P1.<span style="color:red">interp</span>(<strong>p2</strong>, <strong>s</strong>) is an <span style="color:red">SO2</span> object representing interpolation
+between rotations represented by <span style="color:red">SO2</span> objects P1 and <strong>p2</strong>.  <strong>s</strong> varies from 0
+(P1) to 1 (<strong>p2</strong>). If <strong>s</strong> is a vector (1xN) then the result will be a vector
+of <span style="color:red">SO2</span> objects.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>It is an error if S is outside the interval 0 to 1.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SO2.angle.html">SO2.angle</a></p>
+<hr>
+<a name="inv"><h1>SO2.inv</h1></a>
+<p><span class="helptopic">Inverse of SO2 object</span></p><p>
+<strong>q</strong> = <span style="color:red">inv</span>(<strong>p</strong>) is the inverse of the <span style="color:red">SO2</span> object <strong>p</strong>.  <strong>p</strong>*<strong>q</strong> will be the identity
+matrix.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>This is simply the transpose of the matrix.</li>
+</ul>
+<hr>
+<a name="isa"><h1>SO2.isa</h1></a>
+<p><span class="helptopic">Test if matrix is SO(2)</span></p><p>
+<span style="color:red">SO2</span>.<span style="color:red">ISA</span>(<strong>T</strong>) is true (1) if the argument <strong>T</strong> is of dimension 2x2 or 2x2xN, else
+false (0).
+
+</p>
+<p>
+<span style="color:red">SO2</span>.<span style="color:red">ISA</span>(<strong>T</strong>, <strong>true</strong>) as above, but also checks the validity of the rotation
+matrix, ie. its determinant is +1.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>The first form is a fast, but incomplete, test for a transform in SE(3).</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SO3.ISA.html">SO3.ISA</a>, <a href="SE2.ISA.html">SE2.ISA</a>, <a href="SE2.ISA.html">SE2.ISA</a>, <a href="ishomog2.html">ishomog2</a></p>
+<hr>
+<a name="log"><h1>SO2.log</h1></a>
+<p><span class="helptopic">Lie algebra</span></p><p>
+<strong>so2</strong> = P.<span style="color:red">log</span>() is the Lie algebra skew-symmetric matrix (2x2)
+corresponding to the <span style="color:red">SO2</span> object P.
+
+</p>
+<hr>
+<a name="new"><h1>SO2.new</h1></a>
+<p><span class="helptopic">Construct a new object of the same type</span></p><p>
+<strong>p2</strong> = P.<span style="color:red">new</span>(<strong>x</strong>) creates a <span style="color:red">new</span> object of the same type as P, by invoking the <span style="color:red">SO2</span> constructor on the matrix
+<strong>x</strong> (2x2).
+
+</p>
+<p>
+<strong>p2</strong> = P.<span style="color:red">new</span>() as above but defines a null motion.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Serves as a dynamic constructor.</li>
+  <li>This method is polymorphic across all RTBPose derived classes, and
+allows easy creation of a new object of the same class as an existing
+one.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SE3.new.html">SE3.new</a>, <a href="SO3.new.html">SO3.new</a>, <a href="SE2.new.html">SE2.new</a></p>
+<hr>
+<a name="R"><h1>SO2.R</h1></a>
+<p><span class="helptopic">Get rotation matrix</span></p><p>
+<span style="color:red">R</span> = P.<span style="color:red">R</span>() is the rotation matrix (2x2) associated with the <span style="color:red">SO2</span> object P.  If P
+is a vector (1xN) then <span style="color:red">R</span> (2x2xN) is a stack of rotation matrices, with
+the third dimension corresponding to the index of P.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SO2.T.html">SO2.T</a></p>
+<hr>
+<a name="rand"><h1>SO2.rand</h1></a>
+<p><span class="helptopic">Construct a random SO(2) object</span></p><p>
+<span style="color:red">SO2</span>.<span style="color:red">rand</span>() is an <span style="color:red">SO2</span> object with a uniform random orientation.
+Random numbers are in the interval 0 to 1.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="rand.html">rand</a></p>
+<hr>
+<a name="SE2"><h1>SO2.SE2</h1></a>
+<p><span class="helptopic">Convert to SE2 object</span></p><p>
+<strong>q</strong> = P.<span style="color:red">SE2</span>() is an <span style="color:red">SE2</span> object formed from the rotational component of the
+<span style="color:red">SO2</span> object P and with a zero translational component.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE2.html">SE2</a></p>
+<hr>
+<a name="T"><h1>SO2.T</h1></a>
+<p><span class="helptopic">Get homogeneous transformation matrix</span></p><p>
+<span style="color:red">T</span> = P.<span style="color:red">T</span>() is the homogeneous transformation matrix (3x3) associated with the
+<span style="color:red">SO2</span> object P, and has zero translational component.  If P is a vector
+(1xN) then <span style="color:red">T</span> (3x3xN) is a stack of rotation matrices, with the third
+dimension corresponding to the index of P.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SO2.T.html">SO2.T</a></p>
+<hr>
+<a name="theta"><h1>SO2.theta</h1></a>
+<p><span class="helptopic">Rotation angle</span></p><p>
+<strong>theta</strong> = P.<span style="color:red">theta</span>() is the rotation angle, in radians, associated with the
+<span style="color:red">SO2</span> object P.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Deprecated, use angle() instead.</li>
+</ul>
+<hr>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+  <tr class="subheader" valign="top"><td>&nbsp;</td></tr></table>
+<p class="copy">&copy; 1990-2014 Peter Corke.</p>
+</body></html>

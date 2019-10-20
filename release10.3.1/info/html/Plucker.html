@@ -1,0 +1,403 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="http://www.petercorke.com/RVC/common/toolboxhelp.css">
+    <title>M-File Help: Plucker</title>
+  </head>
+  <body>
+  <table border="0" cellspacing="0" width="100%">
+    <tr class="subheader">
+      <td class="headertitle">M-File Help: Plucker</td>
+      <td class="subheader-left"><a href="matlab:open Plucker">View code for Plucker</a></td>
+    </tr>
+  </table>
+<h1>Plucker</h1><p><span class="helptopic">Plucker coordinate class</span></p><p>
+Concrete class to represent a line in Plucker coordinates.
+
+</p>
+<h2>Methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> Plucker</td> <td>Contructor</td></tr>
+</table>
+<ul>
+  <li></li>
+</ul>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> pp</td> <td>Principal point</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> ppd</td> <td>Principal point distance from origin</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> point</td> <td>Generate points on line</td></tr>
+</table>
+<ul>
+  <li></li>
+</ul>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> closest</td> <td>Closest point on line</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> contains</td> <td>Test if point is on line</td></tr>
+</table>
+<ul>
+  <li></li>
+</ul>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> distance</td> <td>Minimum distance between two lines</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> intersects</td> <td>Intersection point for two lines</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> commonperp</td> <td>Common perpendicular for two lines</td></tr>
+</table>
+<ul>
+  <li></li>
+</ul>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> intersect_plane</td> <td>Intersection points with a plane</td></tr>
+</table>
+<p>
+intersect_volume  Intersection points with a volume
+
+</p>
+<ul>
+  <li></li>
+</ul>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> double</td> <td>Convert to 6-vector</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> skew</td> <td>Convert to 4x4 skew symmetric matrix</td></tr>
+</table>
+<ul>
+  <li></li>
+</ul>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> plot</td> <td>Plot line</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> char</td> <td>Convert to human readable string</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> display</td> <td>Display a human readable string</td></tr>
+</table>
+<h2>Operators</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> * </td> <td>Multiply Plucker matrix by a general matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> | </td> <td>Test if lines are parallel</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> ^ </td> <td>Test if lines intersect</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> ==</td> <td>Test if two lines are equivalent</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> ~=</td> <td>Test if lines are not equivalent</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>This is reference (handle) class object</li>
+  <li>Link objects can be used in vectors and arrays</li>
+</ul>
+<h2>References</h2>
+<ul>
+  <li>Ken Shoemake, "Ray Tracing News", Volume 11, Number 1
+http://www.realtimerendering.com/resources/RTNews/html/rtnv11n1.html#art3</li>
+  <li>Matt Mason lecture notes http://www.cs.cmu.edu/afs/cs/academic/class/16741-s07/www/lectures/lecture9.pdf</li>
+</ul>
+<h2>Implementation notes</h2>
+<ul>
+  <li>There is a huge variety of notation used across the literature, as well as the ordering
+of the direction and moment components in the 6-vector</li>
+</ul>
+<hr>
+<a name="Plucker"><h1>Plucker.Plucker</h1></a>
+<p><span class="helptopic">Create Plucker line object</span></p><p>
+<strong>p</strong> = <span style="color:red">Plucker</span>(<strong>L</strong>) creates a copy of the <span style="color:red">Plucker</span> object <strong>L</strong>
+
+</p>
+<p>
+<strong>p</strong> = <span style="color:red">Plucker</span>(<strong>v</strong>) creates a <span style="color:red">Plucker</span> object from <strong>v</strong> (6x1)
+
+</p>
+<p>
+<strong>p</strong> = <span style="color:red">Plucker</span>(<strong>p1</strong>, <strong>p2</strong>) create a <span style="color:red">Plucker</span> object that represents
+the line joining the 3D points <strong>p1</strong> (3x1) and <strong>p2</strong> (3x1).
+
+</p>
+<p>
+<strong>p</strong> = <span style="color:red">Plucker</span>('points', <strong>p1</strong>, <strong>p2</strong>) as above.
+
+</p>
+<p>
+<strong>p</strong> = <span style="color:red">Plucker</span>('planes', PI1, PP2) create a <span style="color:red">Plucker</span> object that represents
+the line formed by the intersection of two planes PI1, PI2 (4x1).
+
+</p>
+<p>
+<strong>p</strong> = <span style="color:red">Plucker</span>('Pw', <strong>p</strong>, W) create a <span style="color:red">Plucker</span> object from a point <strong>p</strong> (3x1) and
+direction vector W (3x1).
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Planes are given by the 4-vector [a b c d] to represent ax+by+cz+d=0.</li>
+</ul>
+<hr>
+<a name="char"><h1>Plucker.char</h1></a>
+<p><span class="helptopic">Convert to string</span></p><p>
+<strong>s</strong> = P.<span style="color:red">char</span>() is a string showing <span style="color:red">Plucker</span> parameters in a compact single
+line format.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Plucker.display.html">Plucker.display</a></p>
+<hr>
+<a name="closest"><h1>Plucker.closest</h1></a>
+<p><span class="helptopic">Point on line closest to given point</span></p><p>
+<strong>p</strong> = PL.<span style="color:red">closest</span>(<strong>x</strong>) is the coordinate of a point on the line that is
+<span style="color:red">closest</span> to the point <strong>x</strong> (3x1).
+
+</p>
+<p>
+[<strong>p</strong>,<strong>d</strong>] = PL.<span style="color:red">closest</span>(<strong>x</strong>) as above but also returns the minimum distance
+between the point and the line.
+
+</p>
+<p>
+[<strong>p</strong>,<strong>dist</strong>,<strong>lambda</strong>] = PL.<span style="color:red">closest</span>(<strong>x</strong>) as above but also returns the line parameter
+<strong>lambda</strong> corresponding to the point on the line.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Plucker.point.html">Plucker.point</a></p>
+<hr>
+<a name="commonperp"><h1>Plucker.commonperp</h1></a>
+<p><span class="helptopic">Common perpendicular to two lines</span></p><p>
+<strong>p</strong> = P1.<span style="color:red">commonperp</span>(<strong>p2</strong>) is a <span style="color:red">Plucker</span> object representing the common
+perpendicular line between the lines represented by the <span style="color:red">Plucker</span> objects
+P1 and <strong>p2</strong>.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Plucker.intersect.html">Plucker.intersect</a></p>
+<hr>
+<a name="contains"><h1>Plucker.contains</h1></a>
+<p><span class="helptopic">Test if point is on the line</span></p><p>
+PL.<span style="color:red">contains</span>(<strong>x</strong>) is true if the point <strong>x</strong> (3x1) lies on the line defined by
+the <span style="color:red">Plucker</span> object PL.
+
+</p>
+<hr>
+<a name="display"><h1>Plucker.display</h1></a>
+<p><span class="helptopic">Display parameters</span></p><p>
+P.<span style="color:red">display</span>() displays the <span style="color:red">Plucker</span> parameters in compact single line format.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>This method is invoked implicitly at the command line when the result
+of an expression is a Plucker object and the command has no trailing
+semicolon.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Plucker.char.html">Plucker.char</a></p>
+<hr>
+<a name="distance"><h1>Plucker.distance</h1></a>
+<p><span class="helptopic">Distance between lines</span></p><p>
+<strong>d</strong> = P1.<span style="color:red">distance</span>(<strong>p2</strong>) is the minimum <span style="color:red">distance</span> between two lines represented
+by <span style="color:red">Plucker</span> objects P1 and <strong>p2</strong>.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Works for parallel, skew and intersecting lines.</li>
+</ul>
+<hr>
+<a name="double"><h1>Plucker.double</h1></a>
+<p><span class="helptopic">Convert Plucker coordinates to real vector</span></p><p>
+PL.<span style="color:red">double</span>() is a 6x1 vector comprising the moment and direction vectors.
+
+</p>
+<hr>
+<a name="eq"><h1>Plucker.eq</h1></a>
+<p><span class="helptopic">Test if two lines are equivalent</span></p><p>
+PL1 == PL2 is true if the <span style="color:red">Plucker</span> objects describe the same line in
+space.  Note that because of the over parameterization, lines can be
+equivalent even if they have different dfifferent parameters.
+
+</p>
+<hr>
+<a name="get.uw"><h1>Plucker.get.uw</h1></a>
+<p><span class="helptopic">Get the line's direction as a unit vector</span></p><p>
+PL.UW is a unit-vector parallel to the line
+
+</p>
+<hr>
+<a name="intersect_plane"><h1>Plucker.intersect_plane</h1></a>
+<p><span class="helptopic">Line intersection with plane</span></p><p>
+<strong>x</strong> = PL.<span style="color:red">intersect_plane</span>(<strong>p</strong>) is the point where the line intersects the
+plane <strong>p</strong>.  Planes are structures with a normal <strong>p</strong>.n (3x1) and an offset <strong>p</strong>.p
+(1x1) such that <strong>p</strong>.n <strong>x</strong> + <strong>p</strong>.p = 0.  <strong>x</strong>=[] if no intersection.
+
+</p>
+<p>
+[<strong>x</strong>,<strong>T</strong>] = PL.<span style="color:red">intersect_plane</span>(<strong>p</strong>) as above but also returns the
+line parameters (1xN) at the intersection points.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Plucker.point.html">Plucker.point</a></p>
+<hr>
+<a name="intersect_volume"><h1>Plucker.intersect_volume</h1></a>
+<p><span class="helptopic">Line intersects plot volume</span></p><p>
+<strong>p</strong> = PL.<span style="color:red">intersect_volume</span>(<strong>bounds</strong>, <strong>line</strong>) returns a matrix (3xN) with columns
+that indicate where the <strong>line</strong> intersects the faces of the plot volume
+specified in terms of [xmin xmax ymin ymax zmin zmax].  The number of
+columns N is either 0 (the <strong>line</strong> is outside the plot volume) or 2 (where
+the <strong>line</strong> pierces the bounding volume).  LINE is a structure with elements
+.p (3x1) a point on the <strong>line</strong> and .v a vector parallel to the <strong>line</strong>.
+
+</p>
+<p>
+[<strong>p</strong>,<strong>T</strong>] = PL.<span style="color:red">intersect_volume</span>(<strong>bounds</strong>, <strong>line</strong>) as above but also returns the
+<strong>line</strong> parameters (1xN) at the intersection points.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Plucker.point.html">Plucker.point</a></p>
+<hr>
+<a name="intersects"><h1>Plucker.intersects</h1></a>
+<p><span class="helptopic">Find intersection of two lines</span></p><p>
+<strong>p</strong> = P1.<span style="color:red">intersects</span>(<strong>p2</strong>) is the point of intersection (3x1) of the lines
+represented by <span style="color:red">Plucker</span> objects P1 and <strong>p2</strong>.  Is empty matrix if the lines
+do not intersect, or P1 == <strong>p2</strong>.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Is false if the lines are equivalent since they would intersect at
+an infinite number of points.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Plucker.commonperp.html">Plucker.commonperp</a></p>
+<hr>
+<a name="isparallel"><h1>Plucker.isparallel</h1></a>
+<p><span class="helptopic">Test if lines are parallel</span></p><p>
+P1.<span style="color:red">isparallel</span>(<strong>p2</strong>) is true if the lines represented by <span style="color:red">Plucker</span> objects P1
+and <strong>p2</strong> are parallel.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Plucker.or.html">Plucker.or</a></p>
+<hr>
+<a name="mpower"><h1>Plucker.mpower</h1></a>
+<p><span class="helptopic">Test if lines intersect</span></p><p>
+P1&circ;P2 is true if lines represented by <span style="color:red">Plucker</span> objects P1
+and P2 intersect at a point.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Is false if the lines are equivalent since they would intersect at
+an infinite number of points.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Plucker.parallel.html">Plucker.parallel</a></p>
+<hr>
+<a name="mtimes"><h1>Plucker.mtimes</h1></a>
+<p><span class="helptopic">Plucker multiplication</span></p><p>
+PL1 * PL2 is the scalar reciprocal product.
+
+</p>
+<p>
+PL * M is the product of the <span style="color:red">Plucker</span> skew matrix and M (4xN).
+M * PL is the product of M (Nx4) and the <span style="color:red">Plucker</span> skew matrix.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>The * operator is overloaded for convenience.</li>
+  <li>Multiplication or composition of Plucker lines is not defined.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Plucker.skew.html">Plucker.skew</a></p>
+<hr>
+<a name="ne"><h1>Plucker.ne</h1></a>
+<p><span class="helptopic">Test if two lines are not equivalent</span></p><p>
+PL1 ~= PL2 is true if the <span style="color:red">Plucker</span> objects describe different lines in
+space.  Note that because of the over parameterization, lines can be
+equivalent even if they have different dfifferent parameters.
+
+</p>
+<hr>
+<a name="or"><h1>Plucker.or</h1></a>
+<p><span class="helptopic">Test if lines are parallel</span></p><p>
+P1|P2 is true if the lines represented by <span style="color:red">Plucker</span> objects P1
+and P2 are parallel.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Plucker.isparallel.html">Plucker.isparallel</a></p>
+<hr>
+<a name="plot"><h1>Plucker.plot</h1></a>
+<p><span class="helptopic">Plot a line</span></p><p>
+PL.<span style="color:red">plot</span>(<strong>options</strong>) plots the <span style="color:red">Plucker</span> line within the current <span style="color:red">plot</span> volume.
+
+</p>
+<p>
+PL.<span style="color:red">plot</span>(<strong>b</strong>, <strong>options</strong>) as above but plots within the <span style="color:red">plot</span> bounds <strong>b</strong> = [XMIN
+XMAX YMIN YMAX ZMIN ZMAX].
+
+</p>
+<h2>Options</h2>
+<ul>
+  <li>are passed to plot3.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="plot3.html">plot3</a></p>
+<hr>
+<a name="point"><h1>Plucker.point</h1></a>
+<p><span class="helptopic">Generate point on line</span></p><p>
+<strong>p</strong> = PL.<span style="color:red">point</span>(<strong>lambda</strong>) is a <span style="color:red">point</span> on the line, where <strong>lambda</strong> is the parametric
+distance along the line from the principal <span style="color:red">point</span> of the line.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Plucker.pp.html">Plucker.pp</a>, <a href="Plucker.closest.html">Plucker.closest</a></p>
+<hr>
+<a name="pp"><h1>Plucker.pp</h1></a>
+<p><span class="helptopic">Principal point of the line</span></p><p>
+<strong>p</strong> = PL.<span style="color:red">pp</span>() is the point on the line that is closest to the origin.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Same as Plucker.point(0)</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Plucker.ppd.html">Plucker.ppd</a>, <a href="Plucker.point.html">Plucker.point</a></p>
+<hr>
+<a name="ppd"><h1>Plucker.ppd</h1></a>
+<p><span class="helptopic">Distance from principal point to the origin</span></p><p>
+<strong>p</strong> = PL.<span style="color:red">ppd</span>() is the distance from the principal point to the origin.
+This is the smallest distance of any point on the line
+to the origin.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Plucker.pp.html">Plucker.pp</a></p>
+<hr>
+<a name="skew"><h1>Plucker.skew</h1></a>
+<p><span class="helptopic">Skew matrix form of the line</span></p><p>
+<strong>L</strong> = PL.<span style="color:red">skew</span>() is the <span style="color:red">Plucker</span> matrix, a 4x4 <span style="color:red">skew</span>-symmetric matrix
+representation of the line.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>For two homogeneous points P and Q on the line, PQ'-QP' is also skew
+symmetric.</li>
+</ul>
+<hr>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+  <tr class="subheader" valign="top"><td>&nbsp;</td></tr></table>
+<p class="copy">&copy; 1990-2014 Peter Corke.</p>
+</body></html>

@@ -1,0 +1,803 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="http://www.petercorke.com/RVC/common/toolboxhelp.css">
+    <title>M-File Help: UnitQuaternion</title>
+  </head>
+  <body>
+  <table border="0" cellspacing="0" width="100%">
+    <tr class="subheader">
+      <td class="headertitle">M-File Help: UnitQuaternion</td>
+      <td class="subheader-left"><a href="matlab:open UnitQuaternion">View code for UnitQuaternion</a></td>
+    </tr>
+  </table>
+<h1>UnitQuaternion</h1><p><span class="helptopic">Unit quaternion class</span></p><p>
+A UnitQuaternion is a compact method of representing a 3D rotation that has
+computational advantages including speed and numerical robustness.
+A quaternion has 2 parts, a scalar s, and a vector v and is typically
+written: q = s &amp;lt;vx, vy, vz&amp;gt;.
+
+</p>
+<p>
+A UnitQuaternion is one for which s&circ;2+vx&circ;2+vy&circ;2+vz&circ;2 = 1.  It can be
+considered as a rotation by an angle theta about a unit-vector V in space where
+
+</p>
+<pre style="width: 90%%;" class="examples">
+q&nbsp;=&nbsp;cos&nbsp;(theta/2)&nbsp;<&nbsp;v&nbsp;sin(theta/2)>
+</pre>
+<h2>Constructors</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> UnitQuaternion</td> <td>general constructor</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> UnitQuaternion.eul</td> <td>constructor, from Euler angles</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> UnitQuaternion.rpy</td> <td>constructor, from roll-pitch-yaw angles</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> UnitQuaternion.angvec</td> <td>constructor, from (angle and vector)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> UnitQuaternion.omega</td> <td>constructor for angle*vector</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> UnitQuaternion.Rx</td> <td>constructor, from x-axis rotation</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> UnitQuaternion.Ry</td> <td>constructor, from y-axis rotation</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> UnitQuaternion.Rz</td> <td>constructor, from z-axis rotation</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> UnitQuaternion.vec</td> <td>constructor, from 3-vector</td></tr>
+</table>
+<h2>Display methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> display</td> <td>print in human readable form</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> plot</td> <td>plot a coordinate frame representing orientation of quaternion</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> animate</td> <td>animates a coordinate frame representing changing orientation
+of quaternion sequence</td></tr>
+</table>
+<h2>Operation methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> inv</td> <td>inverse</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> conj</td> <td>conjugate</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> unit</td> <td>unitized quaternion</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> dot</td> <td>derivative of quaternion with angular velocity</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> norm</td> <td>norm, or length</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> inner</td> <td>inner product</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> angle</td> <td>angle between two quaternions</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> interp</td> <td>interpolation (slerp) between two quaternions</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> UnitQuaternion.qvmul</td> <td>multiply unit-quaternions in 3-vector form</td></tr>
+</table>
+<h2>Conversion methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> char</td> <td>convert to string</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> double</td> <td>convert to 4-vector</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> matrix</td> <td>convert to 4x4 matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> tovec</td> <td>convert to 3-vector</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> R </td> <td>convert to 3x3 rotation matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> T </td> <td>convert to 4x4 homogeneous transform matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> toeul</td> <td>convert to Euler angles</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> torpy</td> <td>convert to roll-pitch-yaw angles</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> toangvec</td> <td>convert to angle vector form</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SO3</td> <td>convert to SO3 class</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE3</td> <td>convert to SE3 class</td></tr>
+</table>
+<h2>Overloaded operators</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> q*q2</td> <td>quaternion (Hamilton) product</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> q.*q2</td> <td>quaternion (Hamilton) product followed by unitization</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> q*s</td> <td>quaternion times scalar</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> q/q2</td> <td>q*q2.inv</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> q./q2</td> <td>q*q2.inv followed by unitization</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> q/s</td> <td>quaternion divided by scalar</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> q^n</td> <td>q to power n (integer only)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> q+q2</td> <td>elementwise sum of quaternion elements (result is a Quaternion)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> q-q2</td> <td>elementwise difference of quaternion elements (result is a Quaternion)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> q1==q2</td> <td>test for quaternion equality</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> q1~=q2</td> <td>test for quaternion inequality</td></tr>
+</table>
+<h2>Properties (read only)</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> s </td> <td>real part</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> v </td> <td>vector part</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>Many methods and operators are inherited from the Quaternion superclass.</li>
+  <li>UnitQuaternion objects can be used in vectors and arrays.</li>
+  <li>A subclass of Quaternion</li>
+  <li>The + and - operators return a Quaternion object not a UnitQuaternion</li>
+</ul>
+<p>
+since the result is not, in general, a valid UnitQuaternion.
+
+</p>
+<ul>
+  <li>For display purposes a Quaternion differs from a UnitQuaternion by
+using << >> notation rather than < >.</li>
+  <li>To a large extent polymorphic with the SO3 class.</li>
+</ul>
+<h2>References</h2>
+<ul>
+  <li>Animating rotation with quaternion curves,
+K. Shoemake,
+in Proceedings of ACM SIGGRAPH, (San Fran cisco), pp. 245-254, 1985.</li>
+  <li>On homogeneous transforms, quaternions, and computational efficiency,
+J. Funda, R. Taylor, and R. Paul,
+IEEE Transactions on Robotics and Automation, vol. 6, pp. 382-388, June 1990.</li>
+  <li>Robotics, Vision & Control,
+P. Corke, Springer 2011.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Quaternion.html">Quaternion</a>, <a href="SO3.html">SO3</a></p>
+<hr>
+<a name="UnitQuaternion"><h1>UnitQuaternion.UnitQuaternion</h1></a>
+<p><span class="helptopic">Create a unit quaternion object</span></p><p>
+Construct a <span style="color:red">UnitQuaternion</span> from various other orientation representations.
+
+</p>
+<p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>() is the identitity <span style="color:red">UnitQuaternion</span> 1&amp;lt;0,0,0&amp;gt; representing a null rotation.
+
+</p>
+<p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>(<strong>q1</strong>) is a copy of the <span style="color:red">UnitQuaternion</span> <strong>q1</strong>, if <strong>q1</strong> is a
+Quaternion it is normalised.
+
+</p>
+<p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>(<strong>s</strong>, <strong>v</strong>) is a unit quaternion formed by specifying directly
+its scalar and vector parts which are normalised.
+
+</p>
+<p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>([<strong>s</strong> V1 V2 V3]) is a quaternion formed by specifying
+directly its 4 elements which are normalised.
+
+</p>
+<p>
+<strong>q</strong> = <span style="color:red">Quaternion</span>(<strong>R</strong>) is a <span style="color:red">UnitQuaternion</span> corresponding to the SO(3)
+orthonormal rotation matrix <strong>R</strong> (3x3).  If <strong>R</strong> (3x3xN) is a sequence then <strong>q</strong>
+(Nx1) is a vector of Quaternions corresponding to the elements of <strong>R</strong>.
+
+</p>
+<p>
+<strong>q</strong> = <span style="color:red">Quaternion</span>(<strong>T</strong>) is a <span style="color:red">UnitQuaternion</span> equivalent to the rotational part
+of the SE(3) homogeneous transform <strong>T</strong> (4x4). If <strong>T</strong> (4x4xN) is a sequence
+then <strong>q</strong> (Nx1) is a vector of Quaternions corresponding to the elements of
+<strong>T</strong>.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Only the R and T forms are vectorised.</li>
+</ul>
+<p>
+See also <span style="color:red">UnitQuaternion</span>.eul, <span style="color:red">UnitQuaternion</span>.rpy, <span style="color:red">UnitQuaternion</span>.angvec,
+<span style="color:red">UnitQuaternion</span>.omega, <span style="color:red">UnitQuaternion</span>.Rx, <span style="color:red">UnitQuaternion</span>.Ry,
+<span style="color:red">UnitQuaternion</span>.Rz.
+
+</p>
+<hr>
+<a name="angle"><h1>UnitQuaternion.angle</h1></a>
+<p><span class="helptopic">Angle between two UnitQuaternions</span></p><p>
+Q1.<span style="color:red">theta</span>(<strong>q2</strong>) is the angle (in radians) between two UnitQuaternions Q1 and <strong>q2</strong>.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Either or both Q1 and Q2 can be a vector.</li>
+</ul>
+<h2>References</h2>
+<ul>
+  <li>Metrics for 3D rotations: comparison and analysis
+Du Q. Huynh
+J.Math Imaging Vis. DOFI 10.1007/s10851-009-0161-2</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Quaternion.angvec.html">Quaternion.angvec</a></p>
+<hr>
+<a name="angvec"><h1>UnitQuaternion.angvec</h1></a>
+<p><span class="helptopic">Construct from angle and rotation vector</span></p><p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">angvec</span>(<strong>th</strong>, <strong>v</strong>) is a <span style="color:red">UnitQuaternion</span> representing rotation of <strong>th</strong> about the vector <strong>v</strong> (3x1).
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.omega.html">UnitQuaternion.omega</a></p>
+<hr>
+<a name="animate"><h1>UnitQuaternion.animate</h1></a>
+<p><span class="helptopic">Animate a quaternion object</span></p><p>
+Q.<span style="color:red">animate</span>(<strong>options</strong>) animates a quaternion array Q as a 3D coordinate frame.
+
+</p>
+<p>
+Q.<span style="color:red">animate</span>(<strong>qf</strong>, <strong>options</strong>) animates a 3D coordinate frame moving from
+orientation Q to orientation <strong>qf</strong>.
+
+</p>
+<h2>Options</h2>
+<p>
+Options are passed to tranimate and include:
+
+</p>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1">'fps',  fps</td> <td>Number of frames per second to display (default 10)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'nsteps',  n</td> <td>The number of steps along the path (default 50)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'axis', A</td> <td>Axis bounds [xmin, xmax, ymin, ymax, zmin, zmax]</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'movie', M</td> <td>Save frames as files in the folder M</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'cleanup'</td> <td>Remove the frame at end of animation</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'noxyz'</td> <td>Don't label the axes</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'rgb'</td> <td>Color the axes in the order x=red, y=green, z=blue</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'retain'</td> <td>Retain frames, don't animate</td></tr>
+</table>
+<p>
+Additional <strong>options</strong> are passed through to TRPLOT.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="tranimate.html">tranimate</a>, <a href="trplot.html">trplot</a></p>
+<hr>
+<a name="char"><h1>UnitQuaternion.char</h1></a>
+<p><span class="helptopic">Convert to string</span></p><p>
+<strong>s</strong> = Q.<span style="color:red">char</span>() is a compact string representation of the quaternion's value
+as a 4-tuple.  If Q is a vector then <strong>s</strong> has one line per element.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Quaternion.char.html">Quaternion.char</a></p>
+<hr>
+<a name="dot"><h1>UnitQuaternion.dot</h1></a>
+<p><span class="helptopic">Quaternion derivative</span></p><p>
+<strong>qd</strong> = Q.<span style="color:red">dot</span>(<strong>omega</strong>) is the rate of change in the world frame of a body
+frame with attitude Q and angular velocity OMEGA (1x3) expressed as a
+quaternion.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>This is not a group operator, but it is useful to have the result as a
+quaternion.</li>
+</ul>
+<h2>Reference</h2>
+<ul>
+  <li>Robotics, Vision & Control, 2nd edition, Peter Corke, Chap 3.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.dotb.html">UnitQuaternion.dotb</a></p>
+<hr>
+<a name="dotb"><h1>UnitQuaternion.dotb</h1></a>
+<p><span class="helptopic">Quaternion derivative</span></p><p>
+<strong>qd</strong> = Q.<span style="color:red">dot</span>(<strong>omega</strong>) is the rate of change in the body frame of a body frame
+with attitude Q and angular velocity OMEGA (1x3) expressed as a
+quaternion.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>This is not a group operator, but it is useful to have the result as a
+quaternion.</li>
+</ul>
+<h2>Reference</h2>
+<ul>
+  <li>Robotics, Vision & Control, 2nd edition, Peter Corke, Chap 3.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.dot.html">UnitQuaternion.dot</a></p>
+<hr>
+<a name="eq"><h1>UnitQuaternion.eq</h1></a>
+<p><span class="helptopic">version for UnitQuaternions to support double mapping</span></p><hr>
+<a name="eul"><h1>UnitQuaternion.eul</h1></a>
+<p><span class="helptopic">Construct from Euler angles</span></p><p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">eul</span>(<strong>phi</strong>, <strong>theta</strong>, <strong>psi</strong>, <strong>options</strong>) is a <span style="color:red">UnitQuaternion</span>
+representing rotation equivalent to the specified Euler angles
+angles. These correspond to rotations about the Z, Y, Z axes
+respectively.
+
+</p>
+<p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">eul</span>(<strong>eul</strong>, <strong>options</strong>) as above but the Euler angles are
+taken from the vector (1x3) <strong>eul</strong> = [<strong>phi</strong> <strong>theta</strong> <strong>psi</strong>]. If <strong>eul</strong> is a matrix
+(Nx3) then <strong>q</strong> is a vector (1xN) of <span style="color:red">UnitQuaternion</span> objects where the index
+corresponds to rows of <strong>eul</strong> which are assumed to be [<strong>phi</strong>,<strong>theta</strong>,<strong>psi</strong>].
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'deg'</td> <td>Compute angles in degrees (radians default)</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>Is vectorised, see eul2r for details.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.rpy.html">UnitQuaternion.rpy</a>, <a href="eul2r.html">eul2r</a></p>
+<hr>
+<a name="increment"><h1>UnitQuaternion.increment</h1></a>
+<p><span class="helptopic">Update quaternion by angular displacement</span></p><p>
+<strong>qu</strong> = Q.<span style="color:red">increment</span>(<strong>omega</strong>) updates Q by a rotation which is given as a spatial
+displacement <strong>omega</strong> (3x1) whose direction is the rotation axis and
+magnitude is the amount of rotation.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="tr2delta.html">tr2delta</a></p>
+<hr>
+<a name="interp"><h1>UnitQuaternion.interp</h1></a>
+<p><span class="helptopic">Interpolate UnitQuaternions</span></p><p>
+<strong>qi</strong> = Q.<span style="color:red">scale</span>(<strong>s</strong>, <strong>options</strong>) is a <span style="color:red">UnitQuaternion</span> that interpolates between a null
+rotation (identity quaternion) for <strong>s</strong>=0 to Q for <strong>s</strong>=1.
+
+</p>
+<p>
+<strong>qi</strong> = Q.<span style="color:red">interp</span>(<strong>q2</strong>, <strong>s</strong>, <strong>options</strong>) as above but interpolates a rotation
+between Q for <strong>s</strong>=0 and <strong>q2</strong> for <strong>s</strong>=1.
+
+</p>
+<p>
+If <strong>s</strong> is a vector <strong>qi</strong> is a vector of UnitQuaternions, each element
+corresponding to sequential elements of <strong>s</strong>.
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'shortest'</td> <td>Take the shortest path along the great circle</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>This is a spherical linear interpolation (slerp) that can be interpretted
+as interpolation along a great circle arc on a sphere.</li>
+  <li>It is an error if S is outside the interval 0 to 1.</li>
+</ul>
+<h2>References</h2>
+<ul>
+  <li>Animating rotation with quaternion curves,
+K. Shoemake,
+in Proceedings of ACM SIGGRAPH, (San Francisco), pp. 245-254, 1985.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="ctraj.html">ctraj</a></p>
+<hr>
+<a name="inv"><h1>UnitQuaternion.inv</h1></a>
+<p><span class="helptopic">Invert a UnitQuaternion</span></p><p>
+<strong>qi</strong> = Q.<span style="color:red">inv</span>() is a <span style="color:red">UnitQuaternion</span> object representing the inverse of Q.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Is vectorized, can operate on a vector of UnitQuaternion objects.</li>
+</ul>
+<hr>
+<a name="mrdivide"><h1>UnitQuaternion.mrdivide</h1></a>
+<p><span class="helptopic">Divide unit quaternions</span></p><table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> Q1/Q2</td> <td>is a UnitQuaternion object formed by Hamilton product of Q1 and</td></tr>
+</table>
+<p>
+<span style="color:red">inv</span>(<strong>q2</strong>) where Q1 and <strong>q2</strong> are both <span style="color:red">UnitQuaternion</span> objects.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Overloaded operator '/'</li>
+  <li>For case Q1/Q2 both can be an N-vector, result is elementwise
+division.</li>
+  <li>For case Q1/Q2 if Q1 scalar and Q2 a vector, scalar is divided by each
+element.</li>
+  <li>For case Q1/Q2 if Q2 scalar and Q1 a vector, each element divided by
+scalar.</li>
+  <li>If the dividend and divisor are UnitQuaternions, the quotient will be a
+unit quaternion.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Quaternion.mtimes.html">Quaternion.mtimes</a>, <a href="Quaternion.mpower.html">Quaternion.mpower</a>, <a href="Quaternion.plus.html">Quaternion.plus</a>, <a href="Quaternion.minus.html">Quaternion.minus</a></p>
+<hr>
+<a name="mtimes"><h1>UnitQuaternion.mtimes</h1></a>
+<p><span class="helptopic">Multiply unit quaternions</span></p><table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> Q1*Q2</td> <td>is a UnitQuaternion object formed by Hamilton product</td></tr>
+</table>
+<p>
+of Q1 and Q2 where Q1 and Q2 are both <span style="color:red">UnitQuaternion</span> objects.
+
+</p>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> Q*V</td> <td>is a vector (3x1) formed by rotating the vector V (3x1)by the UnitQuaternion Q.</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>Overloaded operator '*'</li>
+  <li>For case Q1*Q2 both can be an N-vector, result is elementwise
+multiplication.</li>
+  <li>For case Q1*Q2 if Q1 scalar and Q2 a vector, scalar multiplies each
+element.</li>
+  <li>For case Q1*Q2 if Q2 scalar and Q1 a vector, each element multiplies
+scalar.</li>
+  <li>For case Q*V where Q (1xN) and V (3xN), result (3xN) is elementwise
+product of UnitQuaternion and columns of V.</li>
+  <li>For case Q*V where Q (1x1) and V (3xN), result (3xN) is the product
+of the UnitQuaternion by each column of V.</li>
+  <li>For case Q*V where Q (1xN) and V (3x1), result (3xN) is the product of each element
+of Q by the vector V.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Quaternion.mrdivide.html">Quaternion.mrdivide</a>, <a href="Quaternion.mpower.html">Quaternion.mpower</a>, <a href="Quaternion.plus.html">Quaternion.plus</a>, <a href="Quaternion.minus.html">Quaternion.minus</a></p>
+<hr>
+<a name="new"><h1>UnitQuaternion.new</h1></a>
+<p><span class="helptopic">Construct a new unit quaternion</span></p><p>
+<strong>qn</strong> = Q.<span style="color:red">new</span>() constructs a <span style="color:red">new</span> <span style="color:red">UnitQuaternion</span> object of the same type as Q.
+
+</p>
+<p>
+<strong>qn</strong> = Q.<span style="color:red">new</span>([S V1 V2 V3]) as above but specified directly by its 4 elements.
+
+</p>
+<p>
+<strong>qn</strong> = Q.<span style="color:red">new</span>(<strong>s</strong>, <strong>v</strong>) as above but specified directly by the scalar <strong>s</strong> and vector
+part <strong>v</strong> (1x3)
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Polymorphic with Quaternion and RTBPose derived classes.</li>
+</ul>
+<hr>
+<a name="omega"><h1>UnitQuaternion.omega</h1></a>
+<p><span class="helptopic">Construct from angle times rotation vector</span></p><p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">omega</span>(<strong>w</strong>) is a <span style="color:red">UnitQuaternion</span> representing rotation of |<strong>w</strong>| about the vector <strong>w</strong> (3x1).
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.angvec.html">UnitQuaternion.angvec</a></p>
+<hr>
+<a name="plot"><h1>UnitQuaternion.plot</h1></a>
+<p><span class="helptopic">Plot a quaternion object</span></p><p>
+Q.<span style="color:red">plot</span>(<strong>options</strong>) plots the quaternion as an oriented coordinate frame.
+
+</p>
+<p>
+<strong>H</strong> = Q.<span style="color:red">plot</span>(<strong>options</strong>) as above but returns a handle which can be used for animation.
+
+</p>
+<h2>Animation</h2>
+<p>
+Firstly, create a <span style="color:red">plot</span> and keep the the handle as per above.
+
+</p>
+<p>
+Q.<span style="color:red">plot</span>('handle', <strong>H</strong>) updates the coordinate frame described by the handle <strong>H</strong> to
+the orientation of Q.
+
+</p>
+<h2>Options</h2>
+<p>
+Options are passed to trplot and include:
+
+</p>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1">'color', C</td> <td>The color to draw the axes, MATLAB colorspec C</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'frame', F</td> <td>The frame is named {F} and the subscript on the axis labels is F.</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'view', V</td> <td>Set plot view parameters V=[az el] angles, or 'auto'
+for view toward origin of coordinate frame</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'handle', h</td> <td>Update the specified handle</td></tr>
+</table>
+<h2>See also</h2>
+<p>
+<a href="trplot.html">trplot</a></p>
+<hr>
+<a name="q2r"><h1>UnitQuaternion.q2r</h1></a>
+<p><span class="helptopic">Convert UnitQuaternion to homogeneous transform</span></p><p>
+<strong>T</strong> = <span style="color:red">q2tr</span>(<strong>q</strong>)
+
+</p>
+<p>
+Return the rotational homogeneous transform corresponding to the unit
+quaternion <strong>q</strong>.
+
+</p>
+<p>
+See also: TR2Q
+
+</p>
+<hr>
+<a name="qvmul"><h1>UnitQuaternion.qvmul</h1></a>
+<p><span class="helptopic">Multiply unit quaternions defined by vector part</span></p><p>
+<strong>qv</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">QVMUL</span>(<strong>qv1</strong>, <strong>qv2</strong>) multiplies two unit-quaternions
+defined only by their vector components <strong>qv1</strong> and <strong>qv2</strong> (3x1).  The result is
+similarly the vector component of the product (3x1).
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.tovec.html">UnitQuaternion.tovec</a>, <a href="UnitQuaternion.vec.html">UnitQuaternion.vec</a></p>
+<hr>
+<a name="R"><h1>UnitQuaternion.R</h1></a>
+<p><span class="helptopic">Convert to orthonormal rotation matrix</span></p><p>
+<span style="color:red">R</span> = Q.<span style="color:red">R</span>() is the equivalent SO(3) orthonormal rotation matrix (3x3).  If
+Q represents a sequence (Nx1) then <span style="color:red">R</span> is 3x3xN.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.T.html">UnitQuaternion.T</a>, <a href="UnitQuaternion.SO3.html">UnitQuaternion.SO3</a></p>
+<hr>
+<a name="rand"><h1>UnitQuaternion.rand</h1></a>
+<p><span class="helptopic">Construct a random unit quaternion</span></p><p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">rand</span>() is a <span style="color:red">UnitQuaternion</span> representing a random rotation.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Planning Algorithms, Steve LaValle, p164</li>
+</ul>
+<hr>
+<a name="rdivide"><h1>UnitQuaternion.rdivide</h1></a>
+<p><span class="helptopic">Divide unit quaternions and unitize</span></p><table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> Q1./Q2</td> <td>is a UnitQuaternion object formed by Hamilton product of Q1 and</td></tr>
+</table>
+<p>
+<span style="color:red">inv</span>(<strong>q2</strong>) where Q1 and <strong>q2</strong> are both <span style="color:red">UnitQuaternion</span> objects.  The result is
+explicitly unitized.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Overloaded operator '.*'</li>
+  <li>For case Q1./Q2 both can be an N-vector, result is elementwise
+division.</li>
+  <li>For case Q1./Q2 if Q1 scalar and Q2 a vector, scalar is divided by each
+element.</li>
+  <li>For case Q1./Q2 if Q2 scalar and Q1 a vector, each element divided by
+scalar.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Quaternion.mtimes.html">Quaternion.mtimes</a></p>
+<hr>
+<a name="rpy"><h1>UnitQuaternion.rpy</h1></a>
+<p><span class="helptopic">Construct from roll-pitch-yaw angles</span></p><p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">rpy</span>(<strong>roll</strong>, <strong>pitch</strong>, <strong>yaw</strong>, <strong>options</strong>) is a <span style="color:red">UnitQuaternion</span>
+representing rotation equivalent to the specified roll, pitch, yaw angles
+angles. These correspond to rotations about the Z, Y, X axes
+respectively.
+
+</p>
+<p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">rpy</span>(<strong>rpy</strong>, <strong>options</strong>) as above but the angles are given by
+the passed vector <strong>rpy</strong> = [<strong>roll</strong>, <strong>pitch</strong>, <strong>yaw</strong>].  If <strong>rpy</strong> is a matrix (Nx3)
+then <strong>q</strong> is a vector (1xN) of <span style="color:red">UnitQuaternion</span> objects where the index
+corresponds to rows of <strong>rpy</strong> which are assumed to be [<strong>roll</strong>,<strong>pitch</strong>,<strong>yaw</strong>].
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'deg'</td> <td>Compute angles in degrees (radians default)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'zyx'</td> <td>Return solution for sequential rotations about Z, Y, X axes (default)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'xyz'</td> <td>Return solution for sequential rotations about X, Y, Z axes</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'yxz'</td> <td>Return solution for sequential rotations about Y, X, Z axes</td></tr>
+</table>
+<hr>
+<a name="Rx"><h1>UnitQuaternion.Rx</h1></a>
+<p><span class="helptopic">Construct from rotation about x-axis</span></p><p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">Rx</span>(<strong>angle</strong>) is a <span style="color:red">UnitQuaternion</span> representing rotation of <strong>angle</strong> about the x-axis.
+
+</p>
+<p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">Rx</span>(<strong>angle</strong>, 'deg') as above but THETA is in degrees.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.Ry.html">UnitQuaternion.Ry</a>, <a href="UnitQuaternion.Rz.html">UnitQuaternion.Rz</a></p>
+<hr>
+<a name="Ry"><h1>UnitQuaternion.Ry</h1></a>
+<p><span class="helptopic">Construct from rotation about y-axis</span></p><p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">Ry</span>(<strong>angle</strong>) is a <span style="color:red">UnitQuaternion</span> representing rotation of <strong>angle</strong> about the y-axis.
+
+</p>
+<p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">Ry</span>(<strong>angle</strong>, 'deg') as above but THETA is in degrees.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.Rx.html">UnitQuaternion.Rx</a>, <a href="UnitQuaternion.Rz.html">UnitQuaternion.Rz</a></p>
+<hr>
+<a name="Rz"><h1>UnitQuaternion.Rz</h1></a>
+<p><span class="helptopic">Construct from rotation about z-axis</span></p><p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">Rz</span>(<strong>angle</strong>) is a <span style="color:red">UnitQuaternion</span> representing rotation of <strong>angle</strong> about the z-axis.
+
+</p>
+<p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">Rz</span>(<strong>angle</strong>, 'deg') as above but THETA is in degrees.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.Rx.html">UnitQuaternion.Rx</a>, <a href="UnitQuaternion.Ry.html">UnitQuaternion.Ry</a></p>
+<hr>
+<a name="SE3"><h1>UnitQuaternion.SE3</h1></a>
+<p><span class="helptopic">Convert to SE3 object</span></p><p>
+<strong>x</strong> = Q.<span style="color:red">SE3</span>() is an <span style="color:red">SE3</span> object with equivalent rotation and zero translation.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>The translational part of the SE3 object is zero</li>
+  <li>If Q is a vector then an equivalent vector of SE3 objects is created.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.SE3.html">UnitQuaternion.SE3</a>, <a href="SE3.html">SE3</a></p>
+<hr>
+<a name="SO3"><h1>UnitQuaternion.SO3</h1></a>
+<p><span class="helptopic">Convert to SO3 object</span></p><p>
+<strong>x</strong> = Q.<span style="color:red">SO3</span>() is an <span style="color:red">SO3</span> object with equivalent rotation.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>If Q is a vector then an equivalent vector of SO3 objects is created.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.SE3.html">UnitQuaternion.SE3</a>, <a href="SO3.html">SO3</a></p>
+<hr>
+<a name="T"><h1>UnitQuaternion.T</h1></a>
+<p><span class="helptopic">Convert to homogeneous transformation matrix</span></p><p>
+<span style="color:red">T</span> = Q.<span style="color:red">T</span>() is the equivalent SE(3) homogeneous transformation
+matrix (4x4).  If Q is a sequence (Nx1) then <span style="color:red">T</span> is 4x4xN.
+
+</p>
+<p>
+Notes:
+
+</p>
+<ul>
+  <li>Has a zero translational component.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.R.html">UnitQuaternion.R</a>, <a href="UnitQuaternion.SE3.html">UnitQuaternion.SE3</a></p>
+<hr>
+<a name="times"><h1>UnitQuaternion.times</h1></a>
+<p><span class="helptopic">Multiply a quaternion object and unitize</span></p><table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> Q1.*Q2</td> <td>is a UnitQuaternion object formed by Hamilton product of Q1 and</td></tr>
+</table>
+<p>
+Q2. The result is explicitly unitized.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Overloaded operator '.*'</li>
+  <li>For case Q1.*Q2 both can be an N-vector, result is elementwise
+multiplication.</li>
+  <li>For case Q1.*Q2 if Q1 scalar and Q2 a vector, scalar multiplies each
+element.</li>
+  <li>For case Q1.*Q2 if Q2 scalar and Q1 a vector, each element multiplies
+scalar.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Quaternion.mtimes.html">Quaternion.mtimes</a></p>
+<hr>
+<a name="toangvec"><h1>UnitQuaternion.toangvec</h1></a>
+<p><span class="helptopic">Convert to angle-vector form</span></p><p>
+<strong>th</strong> = Q.<span style="color:red">angvec</span>(<strong>options</strong>) is the rotational angle, about some vector,
+corresponding to this quaternion.
+
+</p>
+<p>
+[<strong>th</strong>,<strong>v</strong>] = Q.<span style="color:red">angvec</span>(<strong>options</strong>) as above but also returns a unit vector
+parallel to the rotation axis.
+
+</p>
+<p>
+Q.<span style="color:red">angvec</span>(<strong>options</strong>) prints a compact single line representation of the
+rotational angle and rotation vector corresponding to this quaternion.
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'deg'</td> <td>Display/return angle in degrees rather than radians</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>Due to the double cover of the quaternion, the returned rotation angles
+will be in the interval [-2pi, 2pi).</li>
+  <li>If Q is a UnitQuaternion vector then print one line per element.</li>
+  <li>If Q is a UnitQuaternion vector (1xN) then TH (1xN) and V (Nx3).</li>
+</ul>
+<hr>
+<a name="toeul"><h1>UnitQuaternion.toeul</h1></a>
+<p><span class="helptopic">Convert to roll-pitch-yaw angle form.</span></p><p>
+<strong>eul</strong> = Q.<span style="color:red">toeul</span>(<strong>options</strong>) are the Euler angles (1x3) corresponding to
+the <span style="color:red">UnitQuaternion</span>.  These correspond to rotations about the Z, Y, Z axes
+respectively. <strong>eul</strong> = [PHI,THETA,PSI].
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'deg'</td> <td>Compute angles in degrees (radians default)</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>There is a singularity for the case where THETA=0 in which case PHI is arbitrarily
+set to zero and PSI is the sum (PHI+PSI).</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.toeul.html">UnitQuaternion.toeul</a>, <a href="tr2rpy.html">tr2rpy</a></p>
+<hr>
+<a name="torpy"><h1>UnitQuaternion.torpy</h1></a>
+<p><span class="helptopic">Convert to roll-pitch-yaw angle form.</span></p><p>
+<strong>rpy</strong> = Q.<span style="color:red">torpy</span>(<strong>options</strong>) are the roll-pitch-yaw angles (1x3) corresponding to
+the <span style="color:red">UnitQuaternion</span>.  These correspond to rotations about the Z, Y, X axes
+respectively. <strong>rpy</strong> = [ROLL, PITCH, YAW].
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'deg'</td> <td>Compute angles in degrees (radians default)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'xyz'</td> <td>Return solution for sequential rotations about X, Y, Z axes</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'yxz'</td> <td>Return solution for sequential rotations about Y, X, Z axes</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>There is a singularity for the case where P=pi/2 in which case R is arbitrarily
+set to zero and Y is the sum (R+Y).</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.toeul.html">UnitQuaternion.toeul</a>, <a href="tr2rpy.html">tr2rpy</a></p>
+<hr>
+<a name="tovec"><h1>UnitQuaternion.tovec</h1></a>
+<p><span class="helptopic">Convert to unique 3-vector</span></p><p>
+<strong>v</strong> = Q.<span style="color:red">tovec</span>() is a vector (1x3) that uniquely represents the <span style="color:red">UnitQuaternion</span>.  The scalar
+component can be recovered by 1 - norm(<strong>v</strong>) and will always be positive.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>UnitQuaternions have double cover of SO(3) so the vector is derived
+from the quaternion with positive scalar component.</li>
+  <li>This vector representation of a UnitQuaternion is used for bundle adjustment.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.vec.html">UnitQuaternion.vec</a>, <a href="UnitQuaternion.qvmul.html">UnitQuaternion.qvmul</a></p>
+<hr>
+<a name="tr2q"><h1>UnitQuaternion.tr2q</h1></a>
+<p><span class="helptopic">Convert homogeneous transform to a UnitQuaternion</span></p><p>
+<strong>q</strong> = <span style="color:red">tr2q</span>(<strong>T</strong>)
+
+</p>
+<p>
+Return a <span style="color:red">UnitQuaternion</span> corresponding to the rotational part of the
+homogeneous transform <strong>T</strong>.
+
+</p>
+<h2>Reference</h2>
+<ul>
+  <li>Funda, Taylor, IEEE Trans. Robotics and Automation, 6(3), June 1990, pp.</li>
+</ul>
+<hr>
+<a name="vec"><h1>UnitQuaternion.vec</h1></a>
+<p><span class="helptopic">Construct from 3-vector</span></p><p>
+<strong>q</strong> = <span style="color:red">UnitQuaternion</span>.<span style="color:red">vec</span>(<strong>v</strong>) is a <span style="color:red">UnitQuaternion</span> constructed from just its vector
+component (1x3) and the scalar part is 1 - norm(<strong>v</strong>) and will always be positive.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>This unique and concise vector representation of a UnitQuaternion is used for bundle adjustment.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="UnitQuaternion.tovec.html">UnitQuaternion.tovec</a>, <a href="UnitVector.qvmul.html">UnitVector.qvmul</a></p>
+<hr>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+  <tr class="subheader" valign="top"><td>&nbsp;</td></tr></table>
+<p class="copy">&copy; 1990-2014 Peter Corke.</p>
+</body></html>

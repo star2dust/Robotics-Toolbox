@@ -1,0 +1,304 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="http://www.petercorke.com/RVC/common/toolboxhelp.css">
+    <title>M-File Help: Twist</title>
+  </head>
+  <body>
+  <table border="0" cellspacing="0" width="100%">
+    <tr class="subheader">
+      <td class="headertitle">M-File Help: Twist</td>
+      <td class="subheader-left"><a href="matlab:open Twist">View code for Twist</a></td>
+    </tr>
+  </table>
+<h1>Twist</h1><p><span class="helptopic">SE(2) and SE(3) Twist class</span></p><p>
+A Twist class holds the parameters of a twist, a representation of a
+rigid body displacement in SE(2) or SE(3).
+
+</p>
+<h2>Methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> S </td> <td>twist vector (1x3 or 1x6)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> se</td> <td>twist as (augmented) skew-symmetric matrix (3x3 or 4x4)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> T </td> <td>convert to homogeneous transformation (3x3 or 4x4)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> R </td> <td>convert rotational part to matrix (2x2 or 3x3)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> exp</td> <td>synonym for T</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> ad</td> <td>logarithm of adjoint</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> pitch</td> <td>pitch of the screw, SE(3) only</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> pole</td> <td>a point on the line of the screw</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> prod</td> <td>product of a vector of Twists</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> theta</td> <td>rotation about the screw</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> line</td> <td>Plucker line object representing line of the screw</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> display</td> <td>print the Twist parameters in human readable form</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> char</td> <td>convert to string</td></tr>
+</table>
+<h2>Conversion methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> SE</td> <td>convert to SE2 or SE3 object</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> double</td> <td>convert to real vector</td></tr>
+</table>
+<h2>Overloaded operators</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> * </td> <td>compose two Twists</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> * </td> <td>multiply Twist by a scalar</td></tr>
+</table>
+<h2>Properties (read only)</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> v </td> <td>moment part of twist (2x1 or 3x1)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> w </td> <td>direction part of twist (1x1 or 3x1)</td></tr>
+</table>
+<h2>References</h2>
+<ul>
+  <li>"Mechanics, planning and control"
+Park & Lynch, Cambridge, 2016.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="trexp.html">trexp</a>, <a href="trexp2.html">trexp2</a>, <a href="trlog.html">trlog</a></p>
+<hr>
+<a name="Twist"><h1>Twist.Twist</h1></a>
+<p><span class="helptopic">Create Twist object</span></p><p>
+<strong>tw</strong> = <span style="color:red">Twist</span>(<strong>T</strong>) is a <span style="color:red">Twist</span> object representing the SE(2) or SE(3)
+homogeneous transformation matrix <strong>T</strong> (3x3 or 4x4).
+
+</p>
+<p>
+<strong>tw</strong> = <span style="color:red">Twist</span>(<strong>v</strong>) is a twist object where the vector is specified directly.
+
+</p>
+<p>
+3D CASE::
+
+</p>
+<p>
+<strong>tw</strong> = <span style="color:red">Twist</span>('R', A, Q) is a <span style="color:red">Twist</span> object representing rotation about the
+axis of direction A (3x1) and passing through the point Q (3x1).
+
+</p>
+<p>
+<strong>tw</strong> = <span style="color:red">Twist</span>('R', A, Q, P) as above but with a pitch of P (distance/angle).
+
+</p>
+<p>
+<strong>tw</strong> = <span style="color:red">Twist</span>('<strong>T</strong>', A) is a <span style="color:red">Twist</span> object representing translation in the
+direction of A (3x1).
+
+</p>
+<p>
+2D CASE::
+
+</p>
+<p>
+<strong>tw</strong> = <span style="color:red">Twist</span>('R', Q) is a <span style="color:red">Twist</span> object representing rotation about the point Q (2x1).
+
+</p>
+<p>
+<strong>tw</strong> = <span style="color:red">Twist</span>('<strong>T</strong>', A) is a <span style="color:red">Twist</span> object representing translation in the
+direction of A (2x1).
+
+</p>
+<h2>Notes</h2>
+<p>
+The argument 'P' for prismatic is synonymous with '<strong>T</strong>'.
+
+</p>
+<hr>
+<a name="ad"><h1>Twist.ad</h1></a>
+<p><span class="helptopic">Logarithm of adjoint</span></p><p>
+TW.ad is the logarithm of the adjoint matrix of the corresponding
+homogeneous transformation.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE3.Ad.html">SE3.Ad</a></p>
+<hr>
+<a name="Ad"><h1>Twist.Ad</h1></a>
+<p><span class="helptopic">Adjoint</span></p><p>
+TW.Ad is the adjoint matrix of the corresponding
+homogeneous transformation.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE3.Ad.html">SE3.Ad</a></p>
+<hr>
+<a name="char"><h1>Twist.char</h1></a>
+<p><span class="helptopic">Convert to string</span></p><p>
+<strong>s</strong> = TW.<span style="color:red">char</span>() is a string showing <span style="color:red">Twist</span> parameters in a compact single line format.
+If TW is a vector of <span style="color:red">Twist</span> objects return a string with one line per <span style="color:red">Twist</span>.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Twist.display.html">Twist.display</a></p>
+<hr>
+<a name="display"><h1>Twist.display</h1></a>
+<p><span class="helptopic">Display parameters</span></p><p>
+L.<span style="color:red">display</span>() displays the twist parameters in compact single line format.  If L is a
+vector of <span style="color:red">Twist</span> objects displays one line per element.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>This method is invoked implicitly at the command line when the result
+of an expression is a Twist object and the command has no trailing
+semicolon.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Twist.char.html">Twist.char</a></p>
+<hr>
+<a name="double"><h1>Twist.double</h1></a>
+<p><span class="helptopic">Return the twist vector</span></p><p>
+<span style="color:red">double</span>(<strong>tw</strong>) is the twist vector in se(2) or se(3) as a vector (3x1 or
+6x1). If <strong>tw</strong> is a vector (1xN) of Twists the result is a matrix (6xN) with
+one column per twist.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Sometimes referred to as the twist coordinate vector.</li>
+</ul>
+<hr>
+<a name="exp"><h1>Twist.exp</h1></a>
+<p><span class="helptopic">Convert twist to homogeneous transformation</span></p><p>
+TW.exp is the homogeneous transformation equivalent to the twist (SE2 or SE3).
+
+</p>
+<p>
+TW.<span style="color:red">exp</span>(<strong>theta</strong>) as above but with a rotation of <strong>theta</strong> about the twist.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>For the second form the twist must, if rotational, have a unit rotational component.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Twist.T.html">Twist.T</a>, <a href="trexp.html">trexp</a>, <a href="trexp2.html">trexp2</a></p>
+<hr>
+<a name="line"><h1>Twist.line</h1></a>
+<p><span class="helptopic">Line of twist axis in Plucker form</span></p><p>
+TW.line is a Plucker object representing the line of the twist axis.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>For 3D case only.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Plucker.html">Plucker</a></p>
+<hr>
+<a name="mtimes"><h1>Twist.mtimes</h1></a>
+<p><span class="helptopic">Multiply twist by twist or scalar</span></p><p>
+TW1 * TW2 is a new <span style="color:red">Twist</span> representing the composition of twists TW1 and
+TW2.
+
+</p>
+<p>
+TW * T is an SE2 or SE3 that is the composition of the twist TW and the
+homogeneous transformation object T.
+
+</p>
+<p>
+TW * S with its twist coordinates scaled by scalar S.
+
+</p>
+<p>
+TW * T compounds a twist with an SE2/3 transformation
+
+</p>
+<hr>
+<a name="pitch"><h1>Twist.pitch</h1></a>
+<p><span class="helptopic">Pitch of the twist</span></p><p>
+TW.pitch is the pitch of the <span style="color:red">Twist</span> as a scalar in units of distance per radian.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>For 3D case only.</li>
+</ul>
+<hr>
+<a name="pole"><h1>Twist.pole</h1></a>
+<p><span class="helptopic">Point on the twist axis</span></p><p>
+TW.pole is a point on the twist axis (2x1 or 3x1).
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>For pure translation this point is at infinity.</li>
+</ul>
+<hr>
+<a name="prod"><h1>Twist.prod</h1></a>
+<p><span class="helptopic">Compound array of twists</span></p><p>
+TW.prod is a twist representing the product (composition) of the
+successive elements of TW (1xN), an array of Twists.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="RTBPose.prod.html">RTBPose.prod</a>, <a href="Twist.mtimes.html">Twist.mtimes</a></p>
+<hr>
+<a name="S"><h1>Twist.S</h1></a>
+<p><span class="helptopic">Return the twist vector</span></p><p>
+TW.S is the twist vector in se(2) or se(3) as a vector (3x1 or 6x1).
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Sometimes referred to as the twist coordinate vector.</li>
+</ul>
+<hr>
+<a name="SE"><h1>Twist.SE</h1></a>
+<p><span class="helptopic">Convert twist to SE2 or SE3 object</span></p><p>
+TW.SE is an SE2 or SE3 object representing the homogeneous transformation equivalent to the twist.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Twist.T.html">Twist.T</a>, <a href="SE2.html">SE2</a>, <a href="SE3.html">SE3</a></p>
+<hr>
+<a name="se"><h1>Twist.se</h1></a>
+<p><span class="helptopic">Return the twist matrix</span></p><p>
+TW.se is the twist matrix in se(2) or se(3) which is an augmented
+skew-symmetric matrix (3x3 or 4x4).
+
+</p>
+<hr>
+<a name="T"><h1>Twist.T</h1></a>
+<p><span class="helptopic">Convert twist to homogeneous transformation</span></p><p>
+TW.T is the homogeneous transformation equivalent to the twist (3x3 or 4x4).
+
+</p>
+<p>
+TW.<span style="color:red">T</span>(<strong>theta</strong>) as above but with a rotation of <strong>theta</strong> about the twist.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>For the second form the twist must, if rotational, have a unit rotational component.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="Twist.exp.html">Twist.exp</a>, <a href="trexp.html">trexp</a>, <a href="trexp2.html">trexp2</a>, <a href="trinterp.html">trinterp</a>, <a href="trinterp2.html">trinterp2</a></p>
+<hr>
+<a name="theta"><h1>Twist.theta</h1></a>
+<p><span class="helptopic">Twist rotation</span></p><p>
+TW.theta is the rotation (1x1) about the twist axis in radians.
+
+</p>
+<hr>
+<a name="unit"><h1>Twist.unit</h1></a>
+<p><span class="helptopic">Return a unit twist</span></p><p>
+TW.<span style="color:red">unit</span>() is a <span style="color:red">Twist</span> object representing a <span style="color:red">unit</span> aligned with the <span style="color:red">Twist</span>
+TW.
+
+</p>
+<hr>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+  <tr class="subheader" valign="top"><td>&nbsp;</td></tr></table>
+<p class="copy">&copy; 1990-2014 Peter Corke.</p>
+</body></html>

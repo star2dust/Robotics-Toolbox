@@ -1,0 +1,218 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="http://www.petercorke.com/RVC/common/toolboxhelp.css">
+    <title>M-File Help: RangeBearingSensor</title>
+  </head>
+  <body>
+  <table border="0" cellspacing="0" width="100%">
+    <tr class="subheader">
+      <td class="headertitle">M-File Help: RangeBearingSensor</td>
+      <td class="subheader-left"><a href="matlab:open RangeBearingSensor">View code for RangeBearingSensor</a></td>
+    </tr>
+  </table>
+<h1>RangeBearingSensor</h1><p><span class="helptopic">Range and bearing sensor class</span></p><p>
+A concrete subclass of the Sensor class that implements a range and bearing
+angle sensor that provides robot-centric measurements of landmark points in
+the world. To enable this it holds a references to a map of the world (LandmarkMap object)
+and a robot (Vehicle subclass object) that moves in SE(2).
+
+</p>
+<p>
+The sensor observes landmarks within its angular field of view between
+the minimum and maximum range.
+
+</p>
+<h2>Methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> reading</td> <td>range/bearing observation of random landmark</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> h </td> <td>range/bearing observation of specific landmark</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> Hx</td> <td>Jacobian matrix with respect to vehicle pose dh/dx</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> Hp</td> <td>Jacobian matrix with respect to landmark position dh/dp</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> Hw</td> <td>Jacobian matrix with respect to noise dh/dw</td></tr>
+  <tr></tr>
+  <tr></tr>  <tr><td style="white-space: nowrap;" class="col1"> g </td> <td>feature position given vehicle pose and observation</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> Gx</td> <td>Jacobian matrix with respect to vehicle pose dg/dx</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> Gz</td> <td>Jacobian matrix with respect to observation dg/dz</td></tr>
+</table>
+<h2>Properties (read/write)</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> W </td> <td>measurement covariance matrix (2x2)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> interval</td> <td>valid measurements returned every interval'th call to reading()</td></tr>
+</table>
+<p>
+landmarklog  time history of observed landmarks
+
+</p>
+<h2>Reference</h2>
+<p>
+Robotics, Vision &amp; Control, Chap 6,
+Peter Corke,
+Springer 2011
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Sensor.html">Sensor</a>, <a href="Vehicle.html">Vehicle</a>, <a href="LandmarkMap.html">LandmarkMap</a>, <a href="EKF.html">EKF</a></p>
+<hr>
+<a name="RangeBearingSensor"><h1>RangeBearingSensor.RangeBearingSensor</h1></a>
+<p><span class="helptopic">Range and bearing sensor constructor</span></p><p>
+<strong>s</strong> = <span style="color:red">RangeBearingSensor</span>(<strong>vehicle</strong>, <strong>map</strong>, <strong>options</strong>) is an object
+representing a range and bearing angle sensor mounted on the Vehicle
+subclass object <strong>vehicle</strong> and observing an environment of known landmarks
+represented by the LandmarkMap object <strong>map</strong>.  The sensor covariance is W
+(2x2) representing range and bearing covariance.
+
+</p>
+<p>
+The sensor has specified angular field of view and minimum and maximum
+range.
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1">'covar', W</td> <td>covariance matrix (2x2)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'range', xmax</td> <td>maximum range of sensor</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'range', [xmin xmax]</td> <td>minimum and maximum range of sensor</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'angle', TH</td> <td>angular field of view, from -TH to +TH</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'angle', [THMIN THMAX]</td> <td>detection for angles betwen THMIN
+and THMAX</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'skip', K</td> <td>return a valid reading on every K'th call</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'fail', [TMIN TMAX]</td> <td>sensor simulates failure between
+timesteps TMIN and TMAX</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'animate'</td> <td>animate sensor readings</td></tr>
+</table>
+<h2>See also</h2>
+<p>
+<a href="options for Sensor constructor.html">options for Sensor constructor</a></p>
+<h2>See also</h2>
+<p>
+<a href="RangeBearingSensor.reading.html">RangeBearingSensor.reading</a>, <a href="Sensor.Sensor.html">Sensor.Sensor</a>, <a href="Vehicle.html">Vehicle</a>, <a href="LandmarkMap.html">LandmarkMap</a>, <a href="EKF.html">EKF</a></p>
+<hr>
+<a name="g"><h1>RangeBearingSensor.g</h1></a>
+<p><span class="helptopic">Compute landmark location</span></p><p>
+<strong>p</strong> = S.<span style="color:red">g</span>(<strong>x</strong>, <strong>z</strong>) is the world coordinate (2x1) of a feature given
+the observation <strong>z</strong> (1x2) from a vehicle state with <strong>x</strong> (3x1).
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="RangeBearingSensor.Gx.html">RangeBearingSensor.Gx</a>, <a href="RangeBearingSensor.Gz.html">RangeBearingSensor.Gz</a></p>
+<hr>
+<a name="Gx"><h1>RangeBearingSensor.Gx</h1></a>
+<p><span class="helptopic">Jacobian dg/dx</span></p><p>
+<strong>J</strong> = S.<span style="color:red">Gx</span>(<strong>x</strong>, <strong>z</strong>) is the Jacobian dg/dx (2x3) at the vehicle state <strong>x</strong> (3x1) for
+sensor observation <strong>z</strong> (2x1).
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="RangeBearingSensor.g.html">RangeBearingSensor.g</a></p>
+<hr>
+<a name="Gz"><h1>RangeBearingSensor.Gz</h1></a>
+<p><span class="helptopic">Jacobian dg/dz</span></p><p>
+<strong>J</strong> = S.<span style="color:red">Gz</span>(<strong>x</strong>, <strong>z</strong>) is the Jacobian dg/dz (2x2) at the vehicle state <strong>x</strong> (3x1) for
+sensor observation <strong>z</strong> (2x1).
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="RangeBearingSensor.g.html">RangeBearingSensor.g</a></p>
+<hr>
+<a name="h"><h1>RangeBearingSensor.h</h1></a>
+<p><span class="helptopic">Landmark range and bearing</span></p><p>
+<strong>z</strong> = S.<span style="color:red">h</span>(<strong>x</strong>, <strong>k</strong>) is a sensor observation (1x2), range and bearing, from vehicle at
+pose <strong>x</strong> (1x3) to the <strong>k</strong>'th landmark.
+
+</p>
+<p>
+<strong>z</strong> = S.<span style="color:red">h</span>(<strong>x</strong>, <strong>p</strong>) as above but compute range and bearing to a landmark at coordinate <strong>p</strong>.
+
+</p>
+<p>
+<strong>z</strong> = s.<span style="color:red">h</span>(<strong>x</strong>) as above but computes range and bearing to all
+map features.  <strong>z</strong> has one row per landmark.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Noise with covariance W (propertyW) is added to each row of Z.</li>
+  <li>Supports vectorized operation where XV (Nx3) and Z (Nx2).</li>
+  <li>The landmark is assumed visible, field of view and range liits are not
+applied.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="RangeBearingSensor.reading.html">RangeBearingSensor.reading</a>, <a href="RangeBearingSensor.Hx.html">RangeBearingSensor.Hx</a>, <a href="RangeBearingSensor.Hw.html">RangeBearingSensor.Hw</a>, <a href="RangeBearingSensor.Hp.html">RangeBearingSensor.Hp</a></p>
+<hr>
+<a name="Hp"><h1>RangeBearingSensor.Hp</h1></a>
+<p><span class="helptopic">Jacobian dh/dp</span></p><p>
+<strong>J</strong> = S.<span style="color:red">Hp</span>(<strong>x</strong>, <strong>k</strong>) is the Jacobian dh/dp (2x2) at the vehicle
+state <strong>x</strong> (3x1) for map landmark <strong>k</strong>.
+
+</p>
+<p>
+<strong>J</strong> = S.<span style="color:red">Hp</span>(<strong>x</strong>, <strong>p</strong>) as above but for a landmark at coordinate <strong>p</strong> (1x2).
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="RangeBearingSensor.h.html">RangeBearingSensor.h</a></p>
+<hr>
+<a name="Hw"><h1>RangeBearingSensor.Hw</h1></a>
+<p><span class="helptopic">Jacobian dh/dw</span></p><p>
+<strong>J</strong> = S.<span style="color:red">Hw</span>(<strong>x</strong>, <strong>k</strong>) is the Jacobian dh/dw (2x2) at the vehicle
+state <strong>x</strong> (3x1) for map landmark <strong>k</strong>.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="RangeBearingSensor.h.html">RangeBearingSensor.h</a></p>
+<hr>
+<a name="Hx"><h1>RangeBearingSensor.Hx</h1></a>
+<p><span class="helptopic">Jacobian dh/dx</span></p><p>
+<strong>J</strong> = S.<span style="color:red">Hx</span>(<strong>x</strong>, <strong>k</strong>) returns the Jacobian dh/dx (2x3) at the vehicle
+state <strong>x</strong> (3x1) for map landmark <strong>k</strong>.
+
+</p>
+<p>
+<strong>J</strong> = S.<span style="color:red">Hx</span>(<strong>x</strong>, <strong>p</strong>) as above but for a landmark at coordinate <strong>p</strong>.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="RangeBearingSensor.h.html">RangeBearingSensor.h</a></p>
+<hr>
+<a name="reading"><h1>RangeBearingSensor.reading</h1></a>
+<p><span class="helptopic">Choose landmark and return observation</span></p><p>
+[<strong>z</strong>,<strong>k</strong>] = S.<span style="color:red">reading</span>() is an observation of a random visible landmark where
+<strong>z</strong>=[R,THETA] is the range and bearing with additive Gaussian noise of
+covariance W (property W). <strong>k</strong> is the index of the map feature that was
+observed.
+
+</p>
+<p>
+The landmark is chosen randomly from the set of all visible landmarks,
+those within the angular field of view and range limits.  If no valid
+measurement, ie. no features within range, interval subsampling enabled
+or simulated failure the return is <strong>z</strong>=[] and <strong>k</strong>=0.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Noise with covariance W (property W) is added to each row of Z.</li>
+  <li>If 'animate' option set then show a line from the vehicle to the
+landmark</li>
+  <li>If 'animate' option set and the angular and distance limits are set
+then display that region as a shaded polygon.</li>
+  <li>Implements sensor failure and subsampling if specified to constructor.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="RangeBearingSensor.h.html">RangeBearingSensor.h</a></p>
+<hr>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+  <tr class="subheader" valign="top"><td>&nbsp;</td></tr></table>
+<p class="copy">&copy; 1990-2014 Peter Corke.</p>
+</body></html>
