@@ -1,0 +1,765 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="http://www.petercorke.com/RVC/common/toolboxhelp.css">
+    <title>M-File Help: SE3</title>
+  </head>
+  <body>
+  <table border="0" cellspacing="0" width="100%">
+    <tr class="subheader">
+      <td class="headertitle">M-File Help: SE3</td>
+      <td class="subheader-left"><a href="matlab:open SE3">View code for SE3</a></td>
+    </tr>
+  </table>
+<h1>SE3</h1><p><span class="helptopic">SE(3) homogeneous transformation class</span></p><p>
+This subclasss of SE3 &amp;lt; SO3 &amp;lt; RTBPose is an object that represents an SE(3)
+rigid-body motion
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">se3</span>() is an SE(3) homogeneous transformation (4x4) representing zero
+translation and rotation.
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">se3</span>(<strong>x</strong>,<strong>y</strong>,<strong>z</strong>) as above represents a pure translation.
+
+</p>
+<p>
+<strong>T</strong> = SE3.<span style="color:red">rx</span>(<strong>theta</strong>) as above represents a pure rotation about the x-axis.
+
+</p>
+<h2>Constructor methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> SE3</td> <td>general constructor</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE3.exp</td> <td>exponentiate an se(3) matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE3.angvec</td> <td>rotation about vector</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE3.eul</td> <td>rotation defined by Euler angles</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE3.oa</td> <td>rotation defined by o- and a-vectors</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE3.rpy</td> <td>rotation defined by roll-pitch-yaw angles</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE3.Rx</td> <td>rotation about x-axis</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE3.Ry</td> <td>rotation about y-axis</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE3.Rz</td> <td>rotation about z-axis</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE3.rand</td> <td>random transformation</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> new</td> <td>new SE3 object</td></tr>
+</table>
+<h2>Information and test methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> dim*</td> <td>returns 4</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> isSE*</td> <td>returns true</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> issym*</td> <td>true if rotation matrix has symbolic elements</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> isidentity</td> <td>true for null motion</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE3.isa</td> <td>check if matrix is SO2</td></tr>
+</table>
+<h2>Display and print methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> plot*</td> <td>graphically display coordinate frame for pose</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> animate*</td> <td>graphically animate coordinate frame for pose</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> print*</td> <td>print the pose in single line format</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> display*</td> <td>print the pose in human readable matrix form</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> char*</td> <td>convert to human readable matrix as a string</td></tr>
+</table>
+<h2>Operation methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> det</td> <td>determinant of matrix component</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> eig</td> <td>eigenvalues of matrix component</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> log</td> <td>logarithm of rotation matrixr>=0 && r<=1ub</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> inv</td> <td>inverse</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> simplify*</td> <td>apply symbolic simplication to all elements</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> Ad</td> <td>adjoint matrix (6x6)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> increment</td> <td>update pose based on incremental motion</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> interp</td> <td>interpolate poses</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> velxform</td> <td>compute velocity transformation</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> interp</td> <td>interpolate between poses</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> ctraj</td> <td>Cartesian motion</td></tr>
+</table>
+<h2>Conversion methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> SE3.check</td> <td>convert object or matrix to SE3 object</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> double</td> <td>convert to rotation matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> R </td> <td>return rotation matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SO3</td> <td>return rotation part as an SO3 object</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> T </td> <td>convert to homogeneous transformation matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> UnitQuaternion</td> <td>convert to UnitQuaternion object</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> toangvec</td> <td>convert to rotation about vector form</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> toeul</td> <td>convert to Euler angles</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> torpy</td> <td>convert to roll-pitch-yaw angles</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> t </td> <td>translation column vector</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> tv</td> <td>translation column vector for vector of SE3</td></tr>
+</table>
+<h2>Compatibility methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> homtrans</td> <td>apply to vector</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> isrot*</td> <td>returns false</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> ishomog*</td> <td>returns true</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> tr2rt*</td> <td>convert to rotation matrix and translation vector</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> t2r*</td> <td>convert to rotation matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> trprint*</td> <td>print single line representation</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> trplot*</td> <td>plot coordinate frame</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> tranimate*</td> <td>animate coordinate frame</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> tr2eul</td> <td>convert to Euler angles</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> tr2rpy</td> <td>convert to roll-pitch-yaw angles</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> trnorm</td> <td>normalize the rotation matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> transl</td> <td>return translation as a row vector</td></tr>
+</table>
+<p>
+* means inherited from RTBPose
+
+</p>
+<h2>Operators</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> + </td> <td>elementwise addition, result is a matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> - </td> <td>elementwise subtraction, result is a matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> * </td> <td>multiplication within group, also group x vector</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> .*</td> <td>multiplication within group followed by normalization</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> / </td> <td>multiply by inverse</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> ./</td> <td>multiply by inverse followed by normalization</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> ==</td> <td>test equality</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> ~=</td> <td>test inequality</td></tr>
+</table>
+<h2>Properties</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> n </td> <td>normal (x) vector</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> o </td> <td>orientation (y) vector</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> a </td> <td>approach (z) vector</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> t </td> <td>translation vector</td></tr>
+</table>
+<p>
+For single SE3 objects only, for a vector of SE3 objects use the
+equivalent methods
+
+</p>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> t </td> <td>translation as a 3x1 vector (read/write)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> R </td> <td>rotation as a 3x3 matrix (read/write)</td></tr>
+</table>
+<h2>Methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> tv</td> <td>return translations as a 3xN vector</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>The properies R, t are implemented as MATLAB dependent properties.
+When applied to a vector of SE3 object the result is a comma-separated
+list which can be converted to a matrix by enclosing it in square
+brackets, eg [T.t] or more conveniently using the method T.transl</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SO3.html">SO3</a>, <a href="SE2.html">SE2</a>, <a href="RTBPose.html">RTBPose</a></p>
+<hr>
+<a name="SE3"><h1>SE3.SE3</h1></a>
+<p><span class="helptopic">Create an SE(3) object</span></p><p>
+Constructs an SE(3) pose object that contains a 4x4 homogeneous transformation matrix.
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE3</span>() is a null relative motion
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE3</span>(<strong>x</strong>, <strong>y</strong>, <strong>z</strong>) is an object representing pure translation defined by <strong>x</strong>,
+<strong>y</strong> and <strong>z</strong>.
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE3</span>(<strong>xyz</strong>) is an object representing pure translation defined by <strong>xyz</strong>
+(3x1).  If <strong>xyz</strong> (Nx3) returns an array of <span style="color:red">SE3</span> objects, corresponding to
+the rows of <strong>xyz</strong>
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE3</span>(<strong>R</strong>, <strong>xyz</strong>) is an object representing rotation defined by the
+orthonormal rotation matrix <strong>R</strong> (3x3) and position given by <strong>xyz</strong> (3x1)
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE3</span>(<strong>T</strong>) is an object representing translation and rotation defined by
+the homogeneous transformation matrix <strong>T</strong> (3x3).  If <strong>T</strong> (3x3xN) returns an array of <span style="color:red">SE3</span> objects, corresponding to
+the third index of <strong>T</strong>
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE3</span>(<strong>T</strong>) is an object representing translation and rotation defined by
+the <span style="color:red">SE3</span> object <strong>T</strong>, effectively cloning the object. If <strong>T</strong> (Nx1) returns an array of <span style="color:red">SE3</span> objects, corresponding to
+the index of <strong>T</strong>
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'deg'</td> <td>Angle is specified in degrees</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>Arguments can be symbolic</li>
+</ul>
+<hr>
+<a name="Ad"><h1>SE3.Ad</h1></a>
+<p><span class="helptopic">Adjoint matrix</span></p><p>
+<strong>a</strong> = S.<span style="color:red">Ad</span>() is the adjoint matrix (6x6) corresponding to the SE(3) value
+S.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="Twist.ad.html">Twist.ad</a></p>
+<hr>
+<a name="angvec"><h1>SE3.angvec</h1></a>
+<p><span class="helptopic">Construct an SE(3) object from angle and axis vector</span></p><p>
+<strong>R</strong> = <span style="color:red">SE3</span>.<span style="color:red">angvec</span>(<strong>theta</strong>, <strong>v</strong>) is an orthonormal rotation matrix (3x3)
+equivalent to a rotation of <strong>theta</strong> about the vector <strong>v</strong>.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>If THETA == 0 then return identity matrix.</li>
+  <li>If THETA ~= 0 then V must have a finite length.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SO3.angvec.html">SO3.angvec</a>, <a href="eul2r.html">eul2r</a>, <a href="rpy2r.html">rpy2r</a>, <a href="tr2angvec.html">tr2angvec</a></p>
+<hr>
+<a name="check"><h1>SE3.check</h1></a>
+<p><span class="helptopic">Convert to SE3</span></p><p>
+<strong>q</strong> = <span style="color:red">SE3</span>.<span style="color:red">check</span>(<strong>x</strong>) is an <span style="color:red">SE3</span> object where <strong>x</strong> is <span style="color:red">SE3</span> object or 4x4
+homogeneous transformation matrix.
+
+</p>
+<hr>
+<a name="ctraj"><h1>SE3.ctraj</h1></a>
+<p><span class="helptopic">Cartesian trajectory between two poses</span></p><p>
+<strong>tc</strong> = T0.<span style="color:red">ctraj</span>(<strong>T1</strong>, <strong>n</strong>) is a Cartesian trajectory defined by a vector of <span style="color:red">SE3</span>
+objects (1xN) from pose T0 to <strong>T1</strong>, both described by <span style="color:red">SE3</span> objects.  There
+are <strong>n</strong> points on the trajectory that follow a trapezoidal velocity profile
+along the trajectory.
+
+</p>
+<p>
+<strong>tc</strong> = <span style="color:red">CTRAJ</span>(<strong>T0</strong>, <strong>T1</strong>, <strong>s</strong>) as above but the elements of <strong>s</strong> (Nx1) specify the
+fractional distance  along the path, and these values are in the range [0 1].
+The i'th point corresponds to a distance <strong>s</strong>(i) along the path.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>In the second case S could be generated by a scalar trajectory generator
+such as TPOLY or LSPB (default).</li>
+  <li>Orientation interpolation is performed using quaternion interpolation.</li>
+</ul>
+<h2>Reference</h2>
+<p>
+Robotics, Vision &amp; Control, Sec 3.1.5,
+Peter Corke, Springer 2011
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="lspb.html">lspb</a>, <a href="mstraj.html">mstraj</a>, <a href="trinterp.html">trinterp</a>, <a href="ctraj.html">ctraj</a>, <a href="UnitQuaternion.interp.html">UnitQuaternion.interp</a></p>
+<hr>
+<a name="delta"><h1>SE3.delta</h1></a>
+<p><span class="helptopic">SE3 object from differential motion vector</span></p><p>
+<strong>T</strong> = <span style="color:red">SE3</span>.<span style="color:red">delta</span>(<strong>d</strong>) is an <span style="color:red">SE3</span> pose object representing differential
+translation and rotation. The vector <strong>d</strong>=(dx, dy, dz, dRx, dRy, dRz)
+represents an infinitessimal motion, and is an approximation to the spatial
+velocity multiplied by time.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE3.todelta.html">SE3.todelta</a>, <a href="SE3.increment.html">SE3.increment</a>, <a href="tr2delta.html">tr2delta</a></p>
+<hr>
+<a name="eul"><h1>SE3.eul</h1></a>
+<p><span class="helptopic">Construct an SE(3) object from Euler angles</span></p><p>
+<strong>p</strong> = <span style="color:red">SE3</span>.<span style="color:red">eul</span>(<strong>phi</strong>, <strong>theta</strong>, <strong>psi</strong>, <strong>options</strong>) is an <span style="color:red">SE3</span> object equivalent to the
+specified Euler angles with zero translation.  These correspond to rotations about the Z, Y, Z
+axes respectively. If <strong>phi</strong>, <strong>theta</strong>, <strong>psi</strong> are column vectors (Nx1) then they
+are assumed to represent a trajectory then <strong>p</strong> is a vector (1xN) of <span style="color:red">SE3</span> objects.
+
+</p>
+<p>
+<strong>p</strong> = <span style="color:red">SE3</span>.<span style="color:red">eul2R</span>(<strong>eul</strong>, <strong>options</strong>) as above but the Euler angles are taken from
+consecutive columns of the passed matrix <strong>eul</strong> = [<strong>phi</strong> <strong>theta</strong> <strong>psi</strong>].  If <strong>eul</strong>
+is a matrix (Nx3) then they are assumed to represent a trajectory then <strong>p</strong>
+is a vector (1xN) of <span style="color:red">SE3</span> objects.
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'deg'</td> <td>Compute angles in degrees (radians default)</td></tr>
+</table>
+<h2>Note</h2>
+<ul>
+  <li>The vectors PHI, THETA, PSI must be of the same length.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SO3.eul.html">SO3.eul</a>, <a href="SE3.rpy.html">SE3.rpy</a>, <a href="eul2tr.html">eul2tr</a>, <a href="rpy2tr.html">rpy2tr</a>, <a href="tr2eul.html">tr2eul</a></p>
+<hr>
+<a name="exp"><h1>SE3.exp</h1></a>
+<p><span class="helptopic">SE3 object from se(3)</span></p><p>
+<span style="color:red">SE3</span>.<span style="color:red">exp</span>(<strong>sigma</strong>) is the <span style="color:red">SE3</span> rigid-body motion given by the se(3) element <strong>sigma</strong> (4x4).
+
+</p>
+<p>
+<span style="color:red">SE3</span>.<span style="color:red">exp</span>(<span style="color:red">exp</span>(S) as above, but the se(3) value is expressed as a twist vector (6x1).
+
+</p>
+<p>
+<span style="color:red">SE3</span>.<span style="color:red">exp</span>(<strong>sigma</strong>, <strong>theta</strong>) as above, but the motion is given by <strong>sigma</strong>*<strong>theta</strong>
+where <strong>sigma</strong> is an se(3) element (4x4) whose rotation part has a unit norm.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>wraps trexp.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="trexp.html">trexp</a></p>
+<hr>
+<a name="homtrans"><h1>SE3.homtrans</h1></a>
+<p><span class="helptopic">Apply transformation to points</span></p><p>
+P.<span style="color:red">homtrans</span>(<strong>v</strong>) applies <span style="color:red">SE3</span> pose object P to the points stored columnwise in
+<strong>v</strong> (3xN) and returns transformed points (3xN).
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>P is an SE3 object defining the pose of {A} with respect to {B}.</li>
+  <li>The points are defined with respect to frame {A} and are transformed to be
+with respect to frame {B}.</li>
+  <li>Equivalent to P*V using overloaded SE3 operators.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="RTBPose.mtimes.html">RTBPose.mtimes</a>, <a href="homtrans.html">homtrans</a></p>
+<hr>
+<a name="increment"><h1>SE3.increment</h1></a>
+<p><span class="helptopic">Apply incremental motion to an SE3 pose</span></p><p>
+<strong>p1</strong> = P.<span style="color:red">increment</span>(<strong>d</strong>) is an <span style="color:red">SE3</span> pose object formed by applying the
+incremental motion vector <strong>d</strong> (1x6) in the frame associated with <span style="color:red">SE3</span> pose
+P.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE3.todelta.html">SE3.todelta</a>, <a href="delta2tr.html">delta2tr</a>, <a href="tr2delta.html">tr2delta</a></p>
+<hr>
+<a name="interp"><h1>SE3.interp</h1></a>
+<p><span class="helptopic">Interpolate SE3 poses</span></p><p>
+P1.<span style="color:red">interp</span>(<strong>p2</strong>, <strong>s</strong>) is an <span style="color:red">SE3</span> object representing an interpolation
+between poses represented by <span style="color:red">SE3</span> objects P1 and <strong>p2</strong>.  <strong>s</strong> varies from 0
+(P1) to 1 (<strong>p2</strong>).  If <strong>s</strong> is a vector (1xN) then the result will be a vector
+of SO3 objects.
+
+</p>
+<p>
+P1.<span style="color:red">interp</span>(<strong>p2</strong>,<strong>n</strong>) as above but returns a vector (1xN) of <span style="color:red">SE3</span> objects
+interpolated between P1 and <strong>p2</strong> in <strong>n</strong> steps.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>The rotational interpolation (slerp) can be interpretted
+as interpolation along a great circle arc on a sphere.</li>
+  <li>It is an error if S is outside the interval 0 to 1.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="trinterp.html">trinterp</a>, <a href="UnitQuaternion.html">UnitQuaternion</a></p>
+<hr>
+<a name="inv"><h1>SE3.inv</h1></a>
+<p><span class="helptopic">Inverse of SE3 object</span></p><p>
+<strong>q</strong> = <span style="color:red">inv</span>(<strong>p</strong>) is the inverse of the <span style="color:red">SE3</span> object <strong>p</strong>.  <strong>p</strong>*<strong>q</strong> will be the identity
+matrix.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>This is formed explicitly, no matrix inverse required.</li>
+</ul>
+<hr>
+<a name="isa"><h1>SE3.isa</h1></a>
+<p><span class="helptopic">Test if a homogeneous transformation</span></p><p>
+<span style="color:red">SE3</span>.<span style="color:red">ISA</span>(<strong>T</strong>) is true (1) if the argument <strong>T</strong> is of dimension 4x4 or 4x4xN, else
+false (0).
+
+</p>
+<p>
+<span style="color:red">SE3</span>.<span style="color:red">ISA</span>(<strong>T</strong>, 'valid') as above, but also checks the validity of the rotation
+sub-matrix.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>The first form is a fast, but incomplete, test for a transform in SE(3).</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SO3.ISA.html">SO3.ISA</a>, <a href="SE2.ISA.html">SE2.ISA</a>, <a href="SO2.ISA.html">SO2.ISA</a></p>
+<hr>
+<a name="isidentity"><h1>SE3.isidentity</h1></a>
+<p><span class="helptopic">Apply incremental motion to an SE(3) pose</span></p><p>
+P.<span style="color:red">isidentity</span>() is true of the <span style="color:red">SE3</span> object P corresponds to null motion,
+that is, its homogeneous transformation matrix is identity.
+
+</p>
+<hr>
+<a name="log"><h1>SE3.log</h1></a>
+<p><span class="helptopic">Lie algebra</span></p><p>
+<strong>se3</strong> = P.<span style="color:red">log</span>() is the Lie algebra expressed as an augmented skew-symmetric
+matrix (4x4) corresponding to the <span style="color:red">SE3</span> object P.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE3.logs.html">SE3.logs</a>, <a href="SE3.Twist.html">SE3.Twist</a>, <a href="trlog.html">trlog</a>, <a href="logm.html">logm</a></p>
+<hr>
+<a name="logs"><h1>SE3.logs</h1></a>
+<p><span class="helptopic">Lie algebra</span></p><p>
+<strong>se3</strong> = P.<span style="color:red">log</span>() is the Lie algebra expressed as vector (1x6)
+corresponding to the SE2 object P.  The vector comprises the
+translational elements followed by the unique elements of the
+skew-symmetric rotation submatrix.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE3.log.html">SE3.log</a>, <a href="SE3.Twist.html">SE3.Twist</a>, <a href="trlog.html">trlog</a>, <a href="logm.html">logm</a></p>
+<hr>
+<a name="new"><h1>SE3.new</h1></a>
+<p><span class="helptopic">Construct a new object of the same type</span></p><p>
+<strong>p2</strong> = P.<span style="color:red">new</span>(<strong>x</strong>) creates a <span style="color:red">new</span> object of the same type as P, by invoking the <span style="color:red">SE3</span> constructor on the matrix
+<strong>x</strong> (4x4).
+
+</p>
+<p>
+<strong>p2</strong> = P.<span style="color:red">new</span>() as above but defines a null motion.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Serves as a dynamic constructor.</li>
+  <li>This method is polymorphic across all RTBPose derived classes, and
+allows easy creation of a new object of the same class as an existing
+one.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SO3.new.html">SO3.new</a>, <a href="SO2.new.html">SO2.new</a>, <a href="SE2.new.html">SE2.new</a></p>
+<hr>
+<a name="oa"><h1>SE3.oa</h1></a>
+<p><span class="helptopic">Construct an SE(3) object from orientation and approach vectors</span></p><p>
+<strong>p</strong> = <span style="color:red">SE3</span>.<span style="color:red">oa</span>(<strong>o</strong>, <strong>a</strong>) is an <span style="color:red">SE3</span> object for the specified
+orientation and approach vectors (3x1) formed from 3 vectors such that R
+= [N <strong>o</strong> <strong>a</strong>] and N = <strong>o</strong> x <strong>a</strong>, with zero translation.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>The rotation submatrix is guaranteed to be orthonormal so long as O and A
+are not parallel.</li>
+  <li>The vectors O and A are parallel to the Y- and Z-axes of the coordinate
+frame.</li>
+</ul>
+<h2>References</h2>
+<ul>
+  <li>Robot manipulators: mathematis, programming and control
+Richard Paul, MIT Press, 1981.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="rpy2r.html">rpy2r</a>, <a href="eul2r.html">eul2r</a>, <a href="oa2tr.html">oa2tr</a>, <a href="SO3.oa.html">SO3.oa</a></p>
+<hr>
+<a name="rand"><h1>SE3.rand</h1></a>
+<p><span class="helptopic">Construct a random SE(3) object</span></p><p>
+<span style="color:red">SE3</span>.<span style="color:red">rand</span>() is an <span style="color:red">SE3</span> object with a uniform random translation and a
+uniform random RPY/ZYX orientation.  Random numbers are in the interval 0 to
+1.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="rand.html">rand</a></p>
+<hr>
+<a name="rpy"><h1>SE3.rpy</h1></a>
+<p><span class="helptopic">Construct an SE(3) object from roll-pitch-yaw angles</span></p><p>
+<strong>p</strong> = <span style="color:red">SE3</span>.<span style="color:red">rpy</span>(<strong>roll</strong>, <strong>pitch</strong>, <strong>yaw</strong>, <strong>options</strong>) is an <span style="color:red">SE3</span> object equivalent to the
+specified roll, pitch, yaw angles angles with zero translation. These correspond to rotations
+about the Z, Y, X axes respectively. If <strong>roll</strong>, <strong>pitch</strong>, <strong>yaw</strong> are column
+vectors (Nx1) then they are assumed to represent a trajectory then <strong>p</strong> is a
+vector (1xN) of <span style="color:red">SE3</span> objects.
+
+</p>
+<p>
+<strong>p</strong> = <span style="color:red">SE3</span>.<span style="color:red">rpy</span>(<strong>rpy</strong>, <strong>options</strong>) as above but the roll, pitch, yaw angles angles
+angles are taken from consecutive columns of the passed matrix <strong>rpy</strong> =
+[<strong>roll</strong>, <strong>pitch</strong>, <strong>yaw</strong>].  If <strong>rpy</strong> is a matrix (Nx3) then they are assumed to
+represent a trajectory and <strong>p</strong> is a vector (1xN) of <span style="color:red">SE3</span> objects.
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'deg'</td> <td>Compute angles in degrees (radians default)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'xyz'</td> <td>Rotations about X, Y, Z axes (for a robot gripper)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'yxz'</td> <td>Rotations about Y, X, Z axes (for a camera)</td></tr>
+</table>
+<h2>See also</h2>
+<p>
+<a href="SO3.rpy.html">SO3.rpy</a>, <a href="SE3.eul.html">SE3.eul</a>, <a href="tr2rpy.html">tr2rpy</a>, <a href="eul2tr.html">eul2tr</a></p>
+<hr>
+<a name="Rx"><h1>SE3.Rx</h1></a>
+<p><span class="helptopic">Rotation about X axis</span></p><p>
+<strong>p</strong> = <span style="color:red">SE3</span>.<span style="color:red">Rx</span>(<strong>theta</strong>) is an <span style="color:red">SE3</span> object representing a rotation of <strong>theta</strong>
+radians about the x-axis.  If the <strong>theta</strong> is a vector (1xN) then <strong>p</strong> will be
+a vector (1xN) of corresponding <span style="color:red">SE3</span> objects.
+
+</p>
+<p>
+<strong>p</strong> = <span style="color:red">SE3</span>.<span style="color:red">Rx</span>(<strong>theta</strong>, 'deg') as above but <strong>theta</strong> is in degrees.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE3.Ry.html">SE3.Ry</a>, <a href="SE3.Rz.html">SE3.Rz</a>, <a href="rotx.html">rotx</a></p>
+<hr>
+<a name="Ry"><h1>SE3.Ry</h1></a>
+<p><span class="helptopic">Rotation about Y axis</span></p><p>
+<strong>p</strong> = <span style="color:red">SE3</span>.<span style="color:red">Ry</span>(<strong>theta</strong>) is an <span style="color:red">SE3</span> object representing a rotation of <strong>theta</strong>
+radians about the y-axis.  If the <strong>theta</strong> is a vector (1xN) then <strong>p</strong> will be
+a vector (1xN) of corresponding <span style="color:red">SE3</span> objects.
+
+</p>
+<p>
+<strong>p</strong> = <span style="color:red">SE3</span>.<span style="color:red">Ry</span>(<strong>theta</strong>, 'deg') as above but <strong>theta</strong> is in degrees.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE3.Ry.html">SE3.Ry</a>, <a href="SE3.Rz.html">SE3.Rz</a>, <a href="rotx.html">rotx</a></p>
+<hr>
+<a name="Rz"><h1>SE3.Rz</h1></a>
+<p><span class="helptopic">Rotation about Z axis</span></p><p>
+<strong>p</strong> = <span style="color:red">SE3</span>.<span style="color:red">Rz</span>(<strong>theta</strong>) is an <span style="color:red">SE3</span> object representing a rotation of <strong>theta</strong>
+radians about the z-axis.  If the <strong>theta</strong> is a vector (1xN) then <strong>p</strong> will be
+a vector (1xN) of corresponding <span style="color:red">SE3</span> objects.
+
+</p>
+<p>
+<strong>p</strong> = <span style="color:red">SE3</span>.<span style="color:red">Rz</span>(<strong>theta</strong>, 'deg') as above but <strong>theta</strong> is in degrees.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE3.Ry.html">SE3.Ry</a>, <a href="SE3.Rz.html">SE3.Rz</a>, <a href="rotx.html">rotx</a></p>
+<hr>
+<a name="set.t"><h1>SE3.set.t</h1></a>
+<p><span class="helptopic">Get translation vector</span></p><p>
+T = P.t is the translational part of <span style="color:red">SE3</span> object as a 3-element column
+vector.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>If applied to  a vector will return a comma-separated list, use
+.transl() instead.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SE3.transl.html">SE3.transl</a>, <a href="transl.html">transl</a></p>
+<hr>
+<a name="SO3"><h1>SE3.SO3</h1></a>
+<p><span class="helptopic">Convert rotational component to SO3 object</span></p><p>
+P.SO3 is an SO3 object representing the rotational component of the <span style="color:red">SE3</span>
+pose P.  If P is a vector (Nx1) then the result is a vector (Nx1).
+
+</p>
+<hr>
+<a name="T"><h1>SE3.T</h1></a>
+<p><span class="helptopic">Get homogeneous transformation matrix</span></p><p>
+<span style="color:red">T</span> = P.<span style="color:red">T</span>() is the homogeneous transformation matrix (3x3) associated with the
+SO2 object P, and has zero translational component.  If P is a vector
+(1xN) then <span style="color:red">T</span> (3x3xN) is a stack of rotation matrices, with the third
+dimension corresponding to the index of P.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SO2.T.html">SO2.T</a></p>
+<hr>
+<a name="toangvec"><h1>SE3.toangvec</h1></a>
+<p><span class="helptopic">Convert to angle-vector form</span></p><p>
+[<strong>theta</strong>,<strong>v</strong>] = P.<span style="color:red">toangvec</span>(<strong>options</strong>) is rotation expressed in terms of an
+angle <strong>theta</strong> (1x1) about the axis <strong>v</strong> (1x3) equivalent to the rotational
+part of the <span style="color:red">SE3</span> object P.
+
+</p>
+<p>
+If P is a vector (1xN) then <strong>theta</strong> (Kx1) is a vector of angles for
+corresponding elements of the vector and <strong>v</strong> (Kx3) are the corresponding
+axes, one per row.
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'deg'</td> <td>Return angle in degrees</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>If no output arguments are specified the result is displayed.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="angvec2r.html">angvec2r</a>, <a href="angvec2tr.html">angvec2tr</a>, <a href="trlog.html">trlog</a></p>
+<hr>
+<a name="todelta"><h1>SE3.todelta</h1></a>
+<p><span class="helptopic">Convert SE(3) object to differential motion vector</span></p><p>
+<strong>d</strong> = <span style="color:red">SE3</span>.<span style="color:red">todelta</span>(<strong>p0</strong>, <strong>p1</strong>) is the (6x1) differential motion vector (dx, dy,
+dz, dRx, dRy, dRz) corresponding to infinitessimal motion (in the <strong>p0</strong>
+frame) from SE(3) pose <strong>p0</strong> to <strong>p1</strong>. .
+
+</p>
+<p>
+<strong>d</strong> = <span style="color:red">SE3</span>.<span style="color:red">todelta</span>(<strong>p</strong>) as above but the motion is with respect to the world frame.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>D is only an approximation to the motion, and assumes
+that P0 ~ P1 or P ~ eye(4,4).</li>
+  <li>can be considered as an approximation to the effect of spatial velocity over a
+a time interval, average spatial velocity multiplied by time.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SE3.increment.html">SE3.increment</a>, <a href="tr2delta.html">tr2delta</a>, <a href="delta2tr.html">delta2tr</a></p>
+<hr>
+<a name="toeul"><h1>SE3.toeul</h1></a>
+<p><span class="helptopic">Convert  to Euler angles</span></p><p>
+<strong>eul</strong> = P.<span style="color:red">toeul</span>(<strong>options</strong>) are the ZYZ Euler angles (1x3) corresponding to
+the rotational part of the <span style="color:red">SE3</span> object P. The 3 angles <strong>eul</strong>=[PHI,THETA,PSI]
+correspond to sequential rotations about the Z, Y and Z axes
+respectively.
+
+</p>
+<p>
+If P is a vector (1xN) then each row of <strong>eul</strong> corresponds to an element of
+the vector.
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'deg'</td> <td>Compute angles in degrees (radians default)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'flip'</td> <td>Choose first Euler angle to be in quadrant 2 or 3.</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>There is a singularity for the case where THETA=0 in which case PHI is arbitrarily
+set to zero and PSI is the sum (PHI+PSI).</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SO3.toeul.html">SO3.toeul</a>, <a href="SE3.torpy.html">SE3.torpy</a>, <a href="eul2tr.html">eul2tr</a>, <a href="tr2rpy.html">tr2rpy</a></p>
+<hr>
+<a name="torpy"><h1>SE3.torpy</h1></a>
+<p><span class="helptopic">Convert to roll-pitch-yaw angles</span></p><p>
+<strong>rpy</strong> = P.<span style="color:red">torpy</span>(<strong>options</strong>) are the roll-pitch-yaw angles (1x3) corresponding
+to the rotational part of the <span style="color:red">SE3</span> object P. The 3 angles <strong>rpy</strong>=[R,P,Y]
+correspond to sequential rotations about the Z, Y and X axes
+respectively.
+
+</p>
+<p>
+If P is a vector (1xN) then each row of <strong>rpy</strong> corresponds to an element of
+the vector.
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'deg'</td> <td>Compute angles in degrees (radians default)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'xyz'</td> <td>Return solution for sequential rotations about X, Y, Z axes</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'yxz'</td> <td>Return solution for sequential rotations about Y, X, Z axes</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>There is a singularity for the case where P=pi/2 in which case R is arbitrarily
+set to zero and Y is the sum (R+Y).</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SE3.torpy.html">SE3.torpy</a>, <a href="SE3.toeul.html">SE3.toeul</a>, <a href="rpy2tr.html">rpy2tr</a>, <a href="tr2eul.html">tr2eul</a></p>
+<hr>
+<a name="transl"><h1>SE3.transl</h1></a>
+<p><span class="helptopic">Get translation vector</span></p><p>
+<strong>T</strong> = P.<span style="color:red">transl</span>() is the translational part of <span style="color:red">SE3</span> object as a 3-element row
+vector.  If P is a vector (1xN) then
+
+</p>
+<p>
+the rows of <strong>T</strong> (Mx3) are the translational component of the
+
+</p>
+<p>
+corresponding pose in the sequence.
+
+</p>
+<p>
+[<strong>x</strong>,<strong>y</strong>,<strong>z</strong>] = P.<span style="color:red">transl</span>() as above but the translational part is returned as
+three components.  If P is a vector (1xN) then <strong>x</strong>,<strong>y</strong>,<strong>z</strong> (1xN) are the
+translational components of the corresponding pose in the sequence.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>The .t method only works for a single pose object, on  a vector it
+returns a comma-separated list.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SE3.t.html">SE3.t</a>, <a href="transl.html">transl</a></p>
+<hr>
+<a name="tv"><h1>SE3.tv</h1></a>
+<p><span class="helptopic">Return translation for a vector of SE3 objects</span></p><p>
+P.tv is a column vector (3x1) representing the translational part of the
+<span style="color:red">SE3</span> pose object P.  If P is a vector of <span style="color:red">SE3</span> objects (Nx1) then the result
+is a matrix (3xN) with columns corresponding to the elements of P.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE3.t.html">SE3.t</a></p>
+<hr>
+<a name="Twist"><h1>SE3.Twist</h1></a>
+<p><span class="helptopic">Convert to Twist object</span></p><p>
+<strong>tw</strong> = P.<span style="color:red">Twist</span>() is the equivalent <span style="color:red">Twist</span> object.  The elements of the twist are the unique
+elements of the Lie algebra of the <span style="color:red">SE3</span> object P.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE3.logs.html">SE3.logs</a>, <a href="Twist.html">Twist</a></p>
+<hr>
+<a name="velxform"><h1>SE3.velxform</h1></a>
+<p><span class="helptopic">Velocity transformation</span></p><p>
+Transform velocity between frames.  A is the world frame, B is the body
+frame and C is another frame attached to the body.  PAB is the pose of
+the body frame with respect to the world frame, PCB is the pose of the
+body frame with respect to frame C.
+
+</p>
+<p>
+<strong>J</strong> = PAB.<span style="color:red">velxform</span>() is a 6x6 Jacobian matrix that maps velocity from frame
+B to frame A.
+
+</p>
+<p>
+<strong>J</strong> = PCB.<span style="color:red">velxform</span>('samebody') is a 6x6 Jacobian matrix that maps velocity
+from frame C to frame B.  This is also the adjoint of PCB.
+
+</p>
+<hr>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+  <tr class="subheader" valign="top"><td>&nbsp;</td></tr></table>
+<p class="copy">&copy; 1990-2014 Peter Corke.</p>
+</body></html>

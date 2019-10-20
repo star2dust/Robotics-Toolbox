@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="http://www.petercorke.com/RVC/common/toolboxhelp.css">
+    <title>M-File Help: models</title>
+  </head>
+  <body>
+  <table border="0" cellspacing="0" width="100%">
+    <tr class="subheader">
+      <td class="headertitle">M-File Help: models</td>
+      <td class="subheader-left"><a href="matlab:open models">View code for models</a></td>
+    </tr>
+  </table>
+<h1>models</h1><p><span class="helptopic">Summarise and search available robot models</span></p><p>
+<span style="color:red">models</span>() lists keywords associated with each of the <span style="color:red">models</span> in Robotics Toolbox.
+
+</p>
+<p>
+<span style="color:red">models</span>(<strong>query</strong>) lists those <span style="color:red">models</span> that match the keyword <strong>query</strong>.  Case is
+ignored in the comparison.
+
+</p>
+<p>
+<strong>m</strong> = <span style="color:red">models</span>(<strong>query</strong>) as above but returns a cell array (Nx1) of the names of the
+<strong>m</strong>-files that define the <span style="color:red">models</span>.
+
+</p>
+<h2>Examples</h2>
+<pre style="width: 90%%;" class="examples">
+models
+models('modified_DH')&nbsp;&nbsp;%&nbsp;all&nbsp;models&nbsp;using&nbsp;modified&nbsp;DH&nbsp;notation
+models('kinova')&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;all&nbsp;Kinova&nbsp;robot&nbsp;models
+models('6dof')&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;all&nbsp;6dof&nbsp;robot&nbsp;models
+models('redundant')&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;all&nbsp;redundant&nbsp;robot&nbsp;models,&nbsp;>6&nbsp;DOF
+models('prismatic')&nbsp;&nbsp;&nbsp;&nbsp;%&nbsp;all&nbsp;robots&nbsp;with&nbsp;a&nbsp;prismatic&nbsp;joint
+</pre>
+<h2>Notes</h2>
+<ul>
+  <li>A model is a file mdl_*.m in the models folder of the RTB directory.</li>
+  <li>The keywords are indicated by a line '% MODEL: ' after the main comment
+block.</li>
+</ul>
+<hr>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+  <tr class="subheader" valign="top"><td>&nbsp;</td></tr></table>
+<p class="copy">&copy; 1990-2014 Peter Corke.</p>
+</body></html>
