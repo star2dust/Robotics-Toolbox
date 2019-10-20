@@ -1,0 +1,370 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="http://www.petercorke.com/RVC/common/toolboxhelp.css">
+    <title>M-File Help: ETS2</title>
+  </head>
+  <body>
+  <table border="0" cellspacing="0" width="100%">
+    <tr class="subheader">
+      <td class="headertitle">M-File Help: ETS2</td>
+      <td class="subheader-left"><a href="matlab:open ETS2">View code for ETS2</a></td>
+    </tr>
+  </table>
+<h1>ETS2</h1><p><span class="helptopic">Elementary transform sequence in 2D</span></p><p>
+This class and package allows experimentation with sequences of spatial
+transformations in 2D.
+
+</p>
+<pre style="width: 90%%;" class="examples">
+import&nbsp;ETS2.*
+a1&nbsp;=&nbsp;1;&nbsp;a2&nbsp;=&nbsp;1;
+E&nbsp;=&nbsp;Rz('q1')&nbsp;*&nbsp;Tx(a1)&nbsp;*&nbsp;Rz('q2')&nbsp;*&nbsp;Tx(a2)
+</pre>
+<h2>Operation methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> fkine</td> <td>forward kinematics</td></tr>
+</table>
+<h2>Information methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> isjoint</td> <td>test if transform is a joint</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> njoints</td> <td>the number of joint variables</td></tr>
+</table>
+<p>
+structure  a string listing the joint types
+
+</p>
+<h2>Display methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> display</td> <td>display value as a string</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> plot</td> <td>graphically display the sequence as a robot</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> teach</td> <td>graphically display as robot and allow user control</td></tr>
+</table>
+<h2>Conversion methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> char</td> <td>convert to string</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> string</td> <td>convert to string with symbolic variables</td></tr>
+</table>
+<h2>Operators</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> * </td> <td>compound two elementary transforms</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> + </td> <td>compound two elementary transforms</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>The sequence is an array of objects of superclass ETS2, but with
+distinct subclasses: Rz, Tx, Ty.</li>
+  <li>Use the command 'clear imports' after using ETS3.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="ETS3.html">ETS3</a></p>
+<hr>
+<a name="ETS2"><h1>ETS2.ETS2</h1></a>
+<p><span class="helptopic">Create an ETS2 object</span></p><p>
+<strong>E</strong> = <span style="color:red">ETS2</span>(<strong>w</strong>, <strong>v</strong>) is a new <span style="color:red">ETS2</span> object that defines an elementary transform where
+<strong>w</strong> is 'Rz', 'Tx' or 'Ty' and <strong>v</strong> is the paramter for the transform.  If <strong>v</strong> is a string
+of the form 'qN' where N is an integer then the transform is considered
+to be a joint.  Otherwise the transform is a constant.
+
+</p>
+<p>
+<strong>E</strong> = <span style="color:red">ETS2</span>(<strong>e1</strong>) is a new <span style="color:red">ETS2</span> object that is a clone of the <span style="color:red">ETS2</span> object <strong>e1</strong>.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="ETS2.Rz.html">ETS2.Rz</a>, <a href="ETS2.Tx.html">ETS2.Tx</a>, <a href="ETS2.Ty.html">ETS2.Ty</a></p>
+<hr>
+<a name="char"><h1>ETS2.char</h1></a>
+<p><span class="helptopic">Convert to string</span></p><p>
+E.<span style="color:red">char</span>() is a string showing transform parameters in a compact format.  If E is a transform sequence (1xN) then
+the string describes each element in sequence in a single line format.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="ETS2.display.html">ETS2.display</a></p>
+<hr>
+<a name="display"><h1>ETS2.display</h1></a>
+<p><span class="helptopic">Display parameters</span></p><p>
+E.<span style="color:red">display</span>() displays the transform or transform sequence parameters in
+compact single line format.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>This method is invoked implicitly at the command line when the result
+of an expression is an ETS2 object and the command has no trailing
+semicolon.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="ETS2.char.html">ETS2.char</a></p>
+<hr>
+<a name="find"><h1>ETS2.find</h1></a>
+<p><span class="helptopic">Find joints in transform sequence</span></p><p>
+E.<span style="color:red">find</span>(<strong>J</strong>) is the index in the transform sequence ETS (1xN) corresponding
+to the <strong>J</strong>'th joint.
+
+</p>
+<hr>
+<a name="fkine"><h1>ETS2.fkine</h1></a>
+<p><span class="helptopic">Forward kinematics</span></p><p>
+ETS.<span style="color:red">fkine</span>(<strong>q</strong>, <strong>options</strong>) is the forward kinematics, the pose of the end of the
+sequence as an SE2 object.  <strong>q</strong> (1xN) is a vector of joint variables.
+
+</p>
+<p>
+ETS.<span style="color:red">fkine</span>(<strong>q</strong>, <strong>n</strong>, <strong>options</strong>) as above but process only the first <strong>n</strong> elements
+of the transform sequence.
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'deg'</td> <td>Angles are given in degrees.</td></tr>
+</table>
+<hr>
+<a name="isjoint"><h1>ETS2.isjoint</h1></a>
+<p><span class="helptopic">Test if transform is a joint</span></p><p>
+E.isjoint is true if the transform element is a joint, that is, its
+parameter is of the form 'qN'.
+
+</p>
+<hr>
+<a name="isprismatic"><h1>ETS2.isprismatic</h1></a>
+<p><span class="helptopic">Test if transform is prismatic joint</span></p><p>
+E.isprismatic is true if the transform element is a joint, that is, its
+parameter is of the form 'qN' and it controls a translation.
+
+</p>
+<hr>
+<a name="mtimes"><h1>ETS2.mtimes</h1></a>
+<p><span class="helptopic">Compound transforms</span></p><p>
+E1 * E2 is a sequence of two elementary transform.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="ETS2.plus.html">ETS2.plus</a></p>
+<hr>
+<a name="n"><h1>ETS2.n</h1></a>
+<p><span class="helptopic">Number of joints in transform sequence</span></p><p>
+E.njoints is the number of joints in the transform sequence.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Is a wrapper on njoints, for compatibility with SerialLink object.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="ETS2.n.html">ETS2.n</a></p>
+<hr>
+<a name="njoints"><h1>ETS2.njoints</h1></a>
+<p><span class="helptopic">Number of joints in transform sequence</span></p><p>
+E.njoints is the number of joints in the transform sequence.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="ETS2.n.html">ETS2.n</a></p>
+<hr>
+<a name="plot"><h1>ETS2.plot</h1></a>
+<p><span class="helptopic">Graphical display and animation</span></p><p>
+ETS.<span style="color:red">plot</span>(<strong>q</strong>, <strong>options</strong>) displays a graphical animation of a robot based on
+the transform sequence.  Constant translations are represented as pipe segments, rotational joints as cylinder, and
+prismatic joints as boxes. The robot is displayed at the joint angle <strong>q</strong> (1xN), or
+if a matrix (MxN) it is animated as the robot moves along the M-point trajectory.
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1">'workspace',  W</td> <td>Size of robot 3D workspace, W = [xmn, xmx ymn ymx zmn zmx]</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'floorlevel', L</td> <td>Z-coordinate of floor (default -1)</td></tr>
+  <tr></tr>
+  <tr></tr>  <tr><td style="white-space: nowrap;" class="col1">'delay', D</td> <td>Delay betwen frames for animation (s)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'fps', fps</td> <td>Number of frames per second for display, inverse of 'delay' option</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> '[no]loop'</td> <td>Loop over the trajectory forever</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> '[no]raise'</td> <td>Autoraise the figure</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'movie', M</td> <td>Save an animation to the movie M</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'trail', L</td> <td>Draw a line recording the tip path, with line style L</td></tr>
+  <tr></tr>
+  <tr></tr>  <tr><td style="white-space: nowrap;" class="col1">'scale', S</td> <td>Annotation scale factor</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'zoom', Z</td> <td>Reduce size of auto-computed workspace by Z, makes
+robot look bigger</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'ortho'</td> <td>Orthographic view</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'perspective'</td> <td>Perspective view (default)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'view', V</td> <td>Specify view V='x', 'y', 'top' or [az el] for side elevations,
+plan view, or general view by azimuth and elevation
+angle.</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'top'</td> <td>View from the top.</td></tr>
+  <tr></tr>
+  <tr></tr>  <tr><td style="white-space: nowrap;" class="col1"> '[no]shading'</td> <td>Enable Gouraud shading (default true)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'lightpos', L</td> <td>Position of the light source (default [0 0 20])</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> '[no]name'</td> <td>Display the robot's name</td></tr>
+  <tr></tr>
+  <tr></tr>  <tr><td style="white-space: nowrap;" class="col1"> '[no]wrist'</td> <td>Enable display of wrist coordinate frame</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'xyz'</td> <td>Wrist axis label is XYZ</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'noa'</td> <td>Wrist axis label is NOA</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> '[no]arrow'</td> <td>Display wrist frame with 3D arrows</td></tr>
+  <tr></tr>
+  <tr></tr>  <tr><td style="white-space: nowrap;" class="col1"> '[no]tiles'</td> <td>Enable tiled floor (default true)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'tilesize', S</td> <td>Side length of square tiles on the floor (default 0.2)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'tile1color', C</td> <td>Color of even tiles [r g b] (default [0.5 1 0.5]  light green)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'tile2color', C</td> <td>Color of odd tiles [r g b] (default [1 1 1] white)</td></tr>
+  <tr></tr>
+  <tr></tr>  <tr><td style="white-space: nowrap;" class="col1"> '[no]shadow'</td> <td>Enable display of shadow (default true)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'shadowcolor', C</td> <td>Colorspec of shadow, [r g b]</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'shadowwidth', W</td> <td>Width of shadow line (default 6)</td></tr>
+  <tr></tr>
+  <tr></tr>  <tr><td style="white-space: nowrap;" class="col1"> '[no]jaxes'</td> <td>Enable display of joint axes (default false)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> '[no]jvec'</td> <td>Enable display of joint axis vectors (default false)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> '[no]joints'</td> <td>Enable display of joints</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'jointcolor', C</td> <td>Colorspec for joint cylinders (default [0.7 0 0])</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'jointcolor', C</td> <td>Colorspec for joint cylinders (default [0.7 0 0])</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'jointdiam', D</td> <td>Diameter of joint cylinder in scale units (default 5)</td></tr>
+  <tr></tr>
+  <tr></tr>  <tr><td style="white-space: nowrap;" class="col1">'linkcolor', C</td> <td>Colorspec of links (default 'b')</td></tr>
+  <tr></tr>
+  <tr></tr>  <tr><td style="white-space: nowrap;" class="col1"> '[no]base'</td> <td>Enable display of base 'pedestal'</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'basecolor', C</td> <td>Color of base (default 'k')</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'basewidth', W</td> <td>Width of base (default 3)</td></tr>
+</table>
+<p>
+The <strong>options</strong> come from 3 sources and are processed in order:
+
+</p>
+<ul>
+  <li>Cell array of options returned by the function PLOTBOTOPT (if it exists)</li>
+  <li>Cell array of options given by the 'plotopt' option when creating the
+SerialLink object.</li>
+  <li>List of arguments in the command line.</li>
+</ul>
+<p>
+Many boolean <strong>options</strong> can be enabled or disabled with the 'no' prefix.  The
+various option sources can toggle an option, the last value encountered is used.
+
+</p>
+<h2>Graphical annotations and options</h2>
+<p>
+The robot is displayed as a basic stick figure robot with annotations
+such as:
+
+</p>
+<ul>
+  <li>shadow on the floor</li>
+  <li>XYZ wrist axes and labels</li>
+  <li>joint cylinders and axes</li>
+</ul>
+<p>
+which are controlled by <strong>options</strong>.
+
+</p>
+<p>
+The size of the annotations is determined using a simple heuristic from
+the workspace dimensions.  This dimension can be changed by setting the
+multiplicative scale factor using the 'mag' option.
+
+</p>
+<h2>Figure behaviour</h2>
+<ul>
+  <li>If no figure exists one will be created and the robot drawn in it.</li>
+  <li>If no robot of this name is currently displayed then a robot will
+be drawn in the current figure.  If hold is enabled (hold on) then the
+robot will be added to the current figure.</li>
+  <li>If the robot already exists then that graphical model will be found
+and moved.</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+  <li>The options are processed when the figure is first drawn, to make different options come
+into effect it is neccessary to clear the figure.</li>
+  <li>Delay betwen frames can be eliminated by setting option 'delay', 0 or
+'fps', Inf.</li>
+  <li>The size of the plot volume is determined by a heuristic for an all-revolute
+robot.  If a prismatic joint is present the 'workspace' option is
+required.  The 'zoom' option can reduce the size of this workspace.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="ETS2.teach.html">ETS2.teach</a>, <a href="SerialLink.plot3d.html">SerialLink.plot3d</a></p>
+<hr>
+<a name="plus"><h1>ETS2.plus</h1></a>
+<p><span class="helptopic">Compound transforms</span></p><p>
+E1 + E2 is a sequence of two elementary transform.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="ETS2.mtimes.html">ETS2.mtimes</a></p>
+<hr>
+<a name="string"><h1>ETS2.string</h1></a>
+<p><span class="helptopic">Convert to string with symbolic variables</span></p><p>
+E.string is a string representation of the transform sequence where
+non-joint parameters have symbolic names L1, L2, L3 etc.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="trchain.html">trchain</a></p>
+<hr>
+<a name="structure"><h1>ETS2.structure</h1></a>
+<p><span class="helptopic">Show joint type structure</span></p><p>
+E.structure is a character array comprising the letters 'R' or 'P' that
+indicates the types of joints in the elementary transform sequence E.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>The string will be E.njoints long.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SerialLink.config.html">SerialLink.config</a></p>
+<hr>
+<a name="teach"><h1>ETS2.teach</h1></a>
+<p><span class="helptopic">Graphical teach pendant</span></p><p>
+Allow the user to "drive" a graphical robot using a graphical slider
+panel.
+
+</p>
+<p>
+ETS.<span style="color:red">teach</span>(<strong>options</strong>) adds a slider panel to a current ETS plot. If no
+graphical robot exists one is created in a new window.
+
+</p>
+<p>
+ETS.<span style="color:red">teach</span>(<strong>q</strong>, <strong>options</strong>) as above but the robot joint angles are set to <strong>q</strong> (1xN).
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'eul'</td> <td>Display tool orientation in Euler angles (default)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'rpy'</td> <td>Display tool orientation in roll/pitch/yaw angles</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'approach'</td> <td>Display tool orientation as approach vector (z-axis)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> '[no]deg'</td> <td>Display angles in degrees (default true)</td></tr>
+</table>
+<h2>GUI</h2>
+<ul>
+  <li>The Quit (red X) button removes the teach panel from the robot plot.</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+  <li>The currently displayed robots move as the sliders are adjusted.</li>
+  <li>The slider limits are derived from the joint limit properties.  If not
+set then for</li>
+<ul>
+  <li>a revolute joint they are assumed to be [-pi, +pi]</li>
+  <li>a prismatic joint they are assumed unknown and an error occurs.</li>
+</ul>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="ETS2.plot.html">ETS2.plot</a></p>
+<hr>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+  <tr class="subheader" valign="top"><td>&nbsp;</td></tr></table>
+<p class="copy">&copy; 1990-2014 Peter Corke.</p>
+</body></html>

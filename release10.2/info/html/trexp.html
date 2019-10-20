@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="http://www.petercorke.com/RVC/common/toolboxhelp.css">
+    <title>M-File Help: trexp</title>
+  </head>
+  <body>
+  <table border="0" cellspacing="0" width="100%">
+    <tr class="subheader">
+      <td class="headertitle">M-File Help: trexp</td>
+      <td class="subheader-left"><a href="matlab:open trexp">View code for trexp</a></td>
+    </tr>
+  </table>
+<h1>trexp</h1><p><span class="helptopic">matrix exponential for so(3) and se(3)</span></p><h2>For so(3)</h2>
+<p>
+<strong>R</strong> = <span style="color:red">trexp</span>(<strong>omega</strong>) is the matrix exponential (3x3) of the so(3) element <strong>omega</strong> that
+yields a rotation matrix (3x3).
+
+</p>
+<p>
+<strong>R</strong> = <span style="color:red">trexp</span>(<strong>omega</strong>, <strong>theta</strong>) as above, but so(3) motion of <strong>theta</strong>*<strong>omega</strong>.
+
+</p>
+<p>
+<strong>R</strong> = <span style="color:red">trexp</span>(<strong>s</strong>, <strong>theta</strong>) as above, but rotation of <strong>theta</strong> about the unit vector <strong>s</strong>.
+
+</p>
+<p>
+<strong>R</strong> = <span style="color:red">trexp</span>(<strong>w</strong>) as above, but the so(3) value is expressed as a vector <strong>w</strong>
+(1x3) where <strong>w</strong> = <strong>s</strong> * <strong>theta</strong>. Rotation by ||<strong>w</strong>|| about the vector <strong>w</strong>.
+
+</p>
+<h2>For se(3)</h2>
+<p>
+<strong>T</strong> = <span style="color:red">trexp</span>(<strong>sigma</strong>) is the matrix exponential (4x4) of the se(3) element <strong>sigma</strong> that
+yields a homogeneous transformation  matrix (4x4).
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">trexp</span>(<strong>tw</strong>) as above, but the se(3) value is expressed as a twist vector <strong>tw</strong>
+(1x6).
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">trexp</span>(<strong>sigma</strong>, <strong>theta</strong>) as above, but se(3) motion of <strong>sigma</strong>*<strong>theta</strong>, the
+rotation part of <strong>sigma</strong> (4x4) must be unit norm.
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">trexp</span>(<strong>tw</strong>, <strong>theta</strong>) as above, but se(3) motion of <strong>tw</strong>*<strong>theta</strong>, the
+rotation part of <strong>tw</strong> (1x6) must be unit norm.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Efficient closed-form solution of the matrix exponential for arguments that are
+so(3) or se(3).</li>
+  <li>If theta is given then the first argument must be a unit vector or a
+skew-symmetric matrix from a unit vector.</li>
+  <li>Angle vector argument order is different to ANGVEC2R.</li>
+</ul>
+<h2>References</h2>
+<ul>
+  <li>Robotics, Vision & Control: Second Edition, Chap 2,
+P. Corke, Springer 2016.</li>
+  <li>"Mechanics, planning and control"
+Park & Lynch, Cambridge, 2017.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="angvec2r.html">angvec2r</a>, <a href="trlog.html">trlog</a>, <a href="trexp2.html">trexp2</a>, <a href="skew.html">skew</a>, <a href="skewa.html">skewa</a>, <a href="Twist.html">Twist</a></p>
+<hr>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+  <tr class="subheader" valign="top"><td>&nbsp;</td></tr></table>
+<p class="copy">&copy; 1990-2014 Peter Corke.</p>
+</body></html>

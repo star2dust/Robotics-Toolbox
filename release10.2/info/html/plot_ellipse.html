@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="http://www.petercorke.com/RVC/common/toolboxhelp.css">
+    <title>M-File Help: plot_ellipse</title>
+  </head>
+  <body>
+  <table border="0" cellspacing="0" width="100%">
+    <tr class="subheader">
+      <td class="headertitle">M-File Help: plot_ellipse</td>
+      <td class="subheader-left"><a href="matlab:open plot_ellipse">View code for plot_ellipse</a></td>
+    </tr>
+  </table>
+<h1>plot_ellipse</h1><p><span class="helptopic">Draw an ellipse or ellipsoid</span></p><p>
+<span style="color:red">plot_ellipse</span>(<strong>E</strong>, <strong>options</strong>) draws an ellipse or ellipsoid defined by X'EX =
+0 on the current plot, centred at the origin.  <strong>E</strong> (2x2) for an ellipse and
+<strong>E</strong> (2x3) for an ellipsoid.
+
+</p>
+<p>
+<span style="color:red">plot_ellipse</span>(<strong>E</strong>, <strong>C</strong>, <strong>options</strong>) as above but centred at <strong>C</strong>=[X,Y].  If
+<strong>C</strong>=[X,Y,Z] the ellipse is parallel to the XY plane but at height Z.
+
+</p>
+<p>
+<strong>H</strong> = <span style="color:red">plot_ellipse</span>(<strong>E</strong>, <strong>C</strong>, <strong>options</strong>) as above but return graphic handle.
+
+</p>
+<h2>Animation</h2>
+<p>
+First draw the ellipse and keep its graphic handle, then alter it, eg.
+
+</p>
+<pre style="width: 90%%;" class="examples">
+H&nbsp;=&nbsp;PLOT_ELLIPSE(E,&nbsp;C,&nbsp;'r')
+PLOT_ELLIPSE(C,&nbsp;R,&nbsp;'alter',&nbsp;H);
+</pre>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1">'confidence', C</td> <td>confidence interval, range 0 to 1</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'alter', H</td> <td>alter existing ellipses with handle H</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1">'npoints', N</td> <td>use N points to define the ellipse (default 40)</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'edgecolor'</td> <td>color of the ellipse boundary edge, MATLAB color spec</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'fillcolor'</td> <td>the color of the circle's interior, MATLAB color spec</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'alpha'</td> <td>transparency of the fillcolored circle: 0=transparent, 1=solid</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> 'shadow'</td> <td>show shadows on the 3 walls of the plot box</td></tr>
+</table>
+<ul>
+  <li>For an unfilled ellipse any standard MATLAB LineStyle such as 'r' or 'b---'.</li>
+  <li>For an unfilled ellipse any MATLAB LineProperty options can be given such as 'LineWidth', 2.</li>
+  <li>For a filled ellipse any MATLAB PatchProperty options can be given.</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+  <li>If A (2x2) draw an ellipse, else if A(3x3) draw an ellipsoid.</li>
+  <li>The ellipse is added to the current plot irrespective of hold status.</li>
+  <li>Shadow option only valid for ellipsoids.</li>
+  <li>If a confidence interval is given the scaling factor is com;uted using
+an approximate inverse chi-squared function.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="plot_ellipse_inv.html">plot_ellipse_inv</a>, <a href="plot_circle.html">plot_circle</a>, <a href="plot_box.html">plot_box</a>, <a href="plot_poly.html">plot_poly</a></p>
+<hr>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+  <tr class="subheader" valign="top"><td>&nbsp;</td></tr></table>
+<p class="copy">&copy; 1990-2014 Peter Corke.</p>
+</body></html>

@@ -1,0 +1,348 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="http://www.petercorke.com/RVC/common/toolboxhelp.css">
+    <title>M-File Help: SE2</title>
+  </head>
+  <body>
+  <table border="0" cellspacing="0" width="100%">
+    <tr class="subheader">
+      <td class="headertitle">M-File Help: SE2</td>
+      <td class="subheader-left"><a href="matlab:open SE2">View code for SE2</a></td>
+    </tr>
+  </table>
+<h1>SE2</h1><p><span class="helptopic">Representation of 2D rigid-body motion</span></p><p>
+This subclasss of SO2 &amp;lt; RTBPose is an object that represents an SE(2)
+rigid-body motion.
+
+</p>
+<h2>Constructor methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> SE2</td> <td>general constructor</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE2.exp</td> <td>exponentiate an se(2) matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE2.rand</td> <td>random transformation</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> new</td> <td>new SE2 object</td></tr>
+</table>
+<h2>Information and test methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> dim*</td> <td>returns 2</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> isSE*</td> <td>returns true</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> issym*</td> <td>true if rotation matrix has symbolic elements</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> isa</td> <td>check if matrix is SE2</td></tr>
+</table>
+<h2>Display and print methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> plot*</td> <td>graphically display coordinate frame for pose</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> animate*</td> <td>graphically animate coordinate frame for pose</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> print*</td> <td>print the pose in single line format</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> display*</td> <td>print the pose in human readable matrix form</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> char*</td> <td>convert to human readable matrix as a string</td></tr>
+</table>
+<h2>Operation methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> det</td> <td>determinant of matrix component</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> eig</td> <td>eigenvalues of matrix component</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> log</td> <td>logarithm of rotation matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> inv</td> <td>inverse</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> simplify*</td> <td>apply symbolic simplication to all elements</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> interp</td> <td>interpolate between poses</td></tr>
+</table>
+<h2>Conversion methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> check</td> <td>convert object or matrix to SE2 object</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> theta</td> <td>return rotation angle</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> double</td> <td>convert to rotation matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> R </td> <td>convert to rotation matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> SE2</td> <td>convert to SE2 object with zero translation</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> T </td> <td>convert to homogeneous transformation matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> t </td> <td>translation column vector</td></tr>
+</table>
+<h2>Compatibility methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> isrot2*</td> <td>returns false</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> ishomog2*</td> <td>returns true</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> tr2rt*</td> <td>convert to rotation matrix and translation vector</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> t2r*</td> <td>convert to rotation matrix</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> trprint2*</td> <td>print single line representation</td></tr>
+  <tr><td style="white-space: nowrap;" class="col1"> trplot2*</td> <td>plot coordinate frame</td></tr>
+</table>
+<p>
+tranimate2*  animate coordinate frame
+
+</p>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> transl2</td> <td>return translation as a row vector</td></tr>
+</table>
+<h2>Static methods</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> check</td> <td>convert object or matrix to SO2 object</td></tr>
+</table>
+<hr>
+<a name="SE2"><h1>SE2.SE2</h1></a>
+<p><span class="helptopic">Construct an SE(2) object</span></p><p>
+Constructs an SE(2) pose object that contains a 3x3 homogeneous transformation
+matrix.
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE2</span>() is a null relative motion
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE2</span>(<strong>x</strong>, <strong>y</strong>) is an object representing pure translation defined by <strong>x</strong> and
+<strong>y</strong>
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE2</span>(<strong>xy</strong>) is an object representing pure translation defined by <strong>xy</strong>
+(2x1). If <strong>xy</strong> (Nx2) returns an array of <span style="color:red">SE2</span> objects, corresponding to
+the rows of <strong>xy</strong>.
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE2</span>(<strong>x</strong>, <strong>y</strong>, <strong>theta</strong>) is an object representing translation, <strong>x</strong> and <strong>y</strong>, and
+rotation, angle <strong>theta</strong>.
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE2</span>(<strong>xy</strong>, <strong>theta</strong>) is an object representing translation, <strong>xy</strong> (2x1), and
+rotation, angle <strong>theta</strong>
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE2</span>(<strong>xyt</strong>) is an object representing translation, <strong>xyt</strong>(1) and <strong>xyt</strong>(2),
+and rotation, angle <strong>xyt</strong>(3). If <strong>xyt</strong> (Nx3) returns an array of <span style="color:red">SE2</span> objects, corresponding to
+the rows of <strong>xyt</strong>.
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE2</span>(<strong>R</strong>) is an object representing pure rotation defined by the
+orthonormal rotation matrix <strong>R</strong> (2x2)
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE2</span>(<strong>R</strong>, <strong>xy</strong>) is an object representing rotation defined by the
+orthonormal rotation matrix <strong>R</strong> (2x2) and position given by <strong>xy</strong> (2x1)
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE2</span>(<strong>T</strong>) is an object representing translation and rotation defined by
+the homogeneous transformation matrix <strong>T</strong> (3x3).  If <strong>T</strong> (3x3xN) returns an array of <span style="color:red">SE2</span> objects, corresponding to
+the third index of <strong>T</strong>
+
+</p>
+<p>
+<strong>T</strong> = <span style="color:red">SE2</span>(<strong>T</strong>) is an object representing translation and rotation defined by
+the <span style="color:red">SE2</span> object <strong>T</strong>, effectively cloning the object. If <strong>T</strong> (Nx1) returns an array of <span style="color:red">SE2</span> objects, corresponding to
+the index of <strong>T</strong>
+
+</p>
+<h2>Options</h2>
+<table class="list">
+  <tr><td style="white-space: nowrap;" class="col1"> 'deg'</td> <td>Angle is specified in degrees</td></tr>
+</table>
+<h2>Notes</h2>
+<ul>
+  <li>Arguments can be symbolic</li>
+  <li>The form SE2(XY) is ambiguous with SE2(R) if XY has 2 rows, the second form is assumed.</li>
+  <li>The form SE2(XYT) is ambiguous with SE2(T) if XYT has 3 rows, the second form is assumed.</li>
+</ul>
+<hr>
+<a name="check"><h1>SE2.check</h1></a>
+<p><span class="helptopic">Convert to SE2</span></p><p>
+<strong>q</strong> = <span style="color:red">SE2</span>.<span style="color:red">check</span>(<strong>x</strong>) is an <span style="color:red">SE2</span> object where <strong>x</strong> is <span style="color:red">SE2</span> or 3x3
+homogeneous transformation matrix.
+
+</p>
+<hr>
+<a name="exp"><h1>SE2.exp</h1></a>
+<p><span class="helptopic">Construct SE2 object from Lie algebra</span></p><p>
+<strong>p</strong> = <span style="color:red">SE2</span>.<span style="color:red">exp</span>(<strong>se2</strong>) creates an <span style="color:red">SE2</span> object by exponentiating the se(2)
+argument (3x3).
+
+</p>
+<hr>
+<a name="get.t"><h1>SE2.get.t</h1></a>
+<p><span class="helptopic">Get translational component</span></p><p>
+P.t is a column vector (2x1) representing the translational component of
+the rigid-body motion described by the <span style="color:red">SE2</span> object P.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>If P is a vector the result is a MATLAB comma separated list, in this</li>
+</ul>
+<p>
+case use P.transl().
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE2.transl.html">SE2.transl</a></p>
+<hr>
+<a name="interp"><h1>SE2.interp</h1></a>
+<p><span class="helptopic">Interpolate between SO2 objects</span></p><p>
+P1.<span style="color:red">interp</span>(<strong>p2</strong>, <strong>s</strong>) is an <span style="color:red">SE2</span> object representing interpolation
+between rotations represented by SE3 objects P1 and <strong>p2</strong>.  <strong>s</strong> varies from 0
+(P1) to 1 (<strong>p2</strong>). If <strong>s</strong> is a vector (1xN) then the result will be a vector
+of <span style="color:red">SE2</span> objects.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>It is an error if S is outside the interval 0 to 1.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SO2.angle.html">SO2.angle</a></p>
+<hr>
+<a name="inv"><h1>SE2.inv</h1></a>
+<p><span class="helptopic">Inverse of SE2 object</span></p><p>
+<strong>q</strong> = <span style="color:red">inv</span>(<strong>p</strong>) is the inverse of the <span style="color:red">SE2</span> object <strong>p</strong>.  <strong>p</strong>*<strong>q</strong> will be the identity
+matrix.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>This is formed explicitly, no matrix inverse required.</li>
+</ul>
+<hr>
+<a name="isa"><h1>SE2.isa</h1></a>
+<p><span class="helptopic">Test if matrix is SE(2)</span></p><p>
+<span style="color:red">SE2</span>.<span style="color:red">ISA</span>(<strong>T</strong>) is true (1) if the argument <strong>T</strong> is of dimension 3x3 or 3x3xN, else
+false (0).
+
+</p>
+<p>
+<span style="color:red">SE2</span>.<span style="color:red">ISA</span>(<strong>T</strong>, true') as above, but also checks the validity of the rotation
+sub-matrix.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>The first form is a fast, but incomplete, test for a transform in SE(3).</li>
+  <li>There is ambiguity in the dimensions of SE2 and SO3 in matrix form.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SO3.ISA.html">SO3.ISA</a>, <a href="SE2.ISA.html">SE2.ISA</a>, <a href="SO2.ISA.html">SO2.ISA</a>, <a href="ishomog2.html">ishomog2</a></p>
+<hr>
+<a name="log"><h1>SE2.log</h1></a>
+<p><span class="helptopic">Lie algebra</span></p><p>
+<strong>se2</strong> = P.<span style="color:red">log</span>() is the Lie algebra augmented skew-symmetric matrix (3x3)
+corresponding to the <span style="color:red">SE2</span> object P.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE2.Twist.html">SE2.Twist</a>, <a href="logm.html">logm</a></p>
+<hr>
+<a name="new"><h1>SE2.new</h1></a>
+<p><span class="helptopic">Construct a new object of the same type</span></p><p>
+<strong>p2</strong> = P.<span style="color:red">new</span>(<strong>x</strong>) creates a <span style="color:red">new</span> object of the same type as P, by invoking the <span style="color:red">SE2</span> constructor on the matrix
+<strong>x</strong> (3x3).
+
+</p>
+<p>
+<strong>p2</strong> = P.<span style="color:red">new</span>() as above but defines a null motion.
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>Serves as a dynamic constructor.</li>
+  <li>This method is polymorphic across all RTBPose derived classes, and
+allows easy creation of a new object of the same class as an existing
+one.</li>
+</ul>
+<h2>See also</h2>
+<p>
+<a href="SE3.new.html">SE3.new</a>, <a href="SO3.new.html">SO3.new</a>, <a href="SO2.new.html">SO2.new</a></p>
+<hr>
+<a name="rand"><h1>SE2.rand</h1></a>
+<p><span class="helptopic">Construct a random SE(2) object</span></p><p>
+<span style="color:red">SE2</span>.<span style="color:red">rand</span>() is an <span style="color:red">SE2</span> object with a uniform random translation and a
+uniform random orientation.  Random numbers are in the interval 0 to
+1.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="rand.html">rand</a></p>
+<hr>
+<a name="SE3"><h1>SE2.SE3</h1></a>
+<p><span class="helptopic">Lift to 3D</span></p><p>
+<strong>q</strong> = P.<span style="color:red">SE3</span>() is an <span style="color:red">SE3</span> object formed by lifting the rigid-body motion
+described by the <span style="color:red">SE2</span> object P from 2D to 3D.  The rotation is about the
+z-axis, and the translational is within the xy-plane.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE3.html">SE3</a></p>
+<hr>
+<a name="set.t"><h1>SE2.set.t</h1></a>
+<p><span class="helptopic">Set translational component</span></p><p>
+P.t = TV sets the translational component of the rigid-body motion
+described by the <span style="color:red">SE2</span> object P to TV (2x1).
+
+</p>
+<h2>Notes</h2>
+<ul>
+  <li>TV can be a row or column vector.</li>
+  <li>If TV contains a symbolic value then the entire matrix is converted to
+symbolic.</li>
+</ul>
+<hr>
+<a name="SO2"><h1>SE2.SO2</h1></a>
+<p><span class="helptopic">Extract SO(2) rotation</span></p><p>
+<strong>q</strong> = <span style="color:red">SO2</span>(<strong>p</strong>) is an <span style="color:red">SO2</span> object that represents the rotational component of
+the <span style="color:red">SE2</span> rigid-body motion.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE2.R.html">SE2.R</a></p>
+<hr>
+<a name="T"><h1>SE2.T</h1></a>
+<p><span class="helptopic">Get homogeneous transformation matrix</span></p><p>
+<span style="color:red">T</span> = P.<span style="color:red">T</span>() is the homogeneous transformation matrix (3x3) associated with the
+<span style="color:red">SE2</span> object P, and has zero translational component.  If P is a vector
+(1xN) then <span style="color:red">T</span> (3x3xN) is a stack of rotation matrices, with the third
+dimension corresponding to the index of P.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SO2.T.html">SO2.T</a></p>
+<hr>
+<a name="transl"><h1>SE2.transl</h1></a>
+<p><span class="helptopic">Get translational component</span></p><p>
+<strong>tv</strong> = P.<span style="color:red">transl</span>() is a row vector (1x2) representing the translational component of
+the rigid-body motion described by the <span style="color:red">SE2</span> object P.  If P is a vector of
+objects (1xN) then <strong>tv</strong> (Nx2) will have one row per object element.
+
+</p>
+<hr>
+<a name="Twist"><h1>SE2.Twist</h1></a>
+<p><span class="helptopic">Convert to Twist object</span></p><p>
+<strong>tw</strong> = P.<span style="color:red">Twist</span>() is the equivalent <span style="color:red">Twist</span> object.  The elements of the twist are the unique
+elements of the Lie algebra of the <span style="color:red">SE2</span> object P.
+
+</p>
+<h2>See also</h2>
+<p>
+<a href="SE2.log.html">SE2.log</a>, <a href="Twist.html">Twist</a></p>
+<hr>
+<a name="xyt"><h1>SE2.xyt</h1></a>
+<p><span class="helptopic">Construct SE2 object from Lie algebra</span></p><p>
+<strong>xyt</strong> = P.<span style="color:red">xyt</span>() is a column vector (3x1) comprising the minimum three
+parameters of this rigid-body motion [x; y; theta] with translation (x,y)
+and rotation theta.
+
+</p>
+<hr>
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0">
+  <tr class="subheader" valign="top"><td>&nbsp;</td></tr></table>
+<p class="copy">&copy; 1990-2014 Peter Corke.</p>
+</body></html>
