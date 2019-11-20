@@ -55,7 +55,6 @@ classdef (Sealed) HebiKeyboard < handle
     
     methods (Static, Access = public)
         function loadLibs()
-            import hebi.*
             HebiJoystick.loadLibs();
         end
     end
@@ -63,8 +62,6 @@ classdef (Sealed) HebiKeyboard < handle
     methods (Access = public)
         
         function this = HebiKeyboard(driver, index)
-            
-            import hebi.*
             
             if nargin < 2
                 index = 1;

@@ -2,12 +2,12 @@
 close all
 clear
 
-kb = hebi.HebiKeyboard;
+kb = HebiKeyboard;
 while true
    state = read(kb);
    % number 0-9, letter A-Z or a-z, symbol []\;
    letter = find(state.keys('0':']'))+'0'-1;
-   if ~isempty(letter)sddfgdeadvx
+   if ~isempty(letter)
        disp([char(letter) ' are pressed!']);
    end
    if state.UP

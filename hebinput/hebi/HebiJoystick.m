@@ -71,7 +71,6 @@ classdef (Sealed) HebiJoystick < handle
     methods (Access = public)
         
         function this = HebiJoystick(index, ~)
-            import hebi.*
             
             % creates a joystick object
             if nargin < 2
