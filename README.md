@@ -10,7 +10,7 @@
 - Add the toolbox folder to MATLAB path:
   ```matlab
   addpath('<RVCHOME>/rvctools/release10.3.1');
-  addpath('<RVCHOME>/rvcdlcs/release1.0.0');
+  addpath('<RVCHOME>/rvcdlcs/src');
   ```
-- Add `startup_rvc` and `startup_rte` to the last line of the file `startup.m` in your MATLAB default working folder.
+- Add `startup_rvc` to the last line of the file `startup.m` in your MATLAB default working folder.
 
