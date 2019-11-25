@@ -26,7 +26,7 @@ A(4,:) = [k2,-1]; b(4,:) = b2;
 px = [-0.6;-0.2];
 plot(px(1),px(2),'bo');
 % proj test
-[pj,ps] = proj(px,A,b);
+[pj,ps] = cvxproj(px,A,b);
 hold on
 axis equal
 patch(ps(1,:),ps(2,:),'y');
