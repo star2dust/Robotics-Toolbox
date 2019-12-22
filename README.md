@@ -21,10 +21,6 @@ A robotics toolbox and a few useful scripts.
 	- stlwrite: Write STL file from patch or surface data.
 	- surf2stl: Write STL file from surface data.
 
-5. Convex Set Projection Scripts (cvxproj) (c) 2019 star2dust
-	- cvxproj: Calculate the projection of x to a convex set defined by Ax+b<=0.
-	- circproj: Calculate the projection of x to a convex set defined by a circle B(c,r).
-
 ## Installation
 
 For RVC, you can install it by following the procedures below.

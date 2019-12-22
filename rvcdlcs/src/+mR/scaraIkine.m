@@ -1,4 +1,4 @@
-function th_mat = ikine4(l_vec, tool_SE3, elbow_type)
+function th_mat = scaraIkine(l_vec, tool_SE3, elbow_type)
 % get inverse kinematics of scara robot from tool frame (SE3)
 
 if nargin<3

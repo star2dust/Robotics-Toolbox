@@ -2,8 +2,8 @@
 close all
 clear
 
-
-addpath('/home/chu/Documents/MATLAB/Toolboxes/inhull');
+import SE3.*
+addpath('/home/chu/Documents/MATLAB/Toolboxes/Robotics-Toolbox/cvxhull/inhull');
 %% frictionless point contact (4 fingers) page 227 
 % force-closure can be checked by convexity condition (props. 5.3)
 g_oc1 = transl(-1,1/4,0)*trotz(-pi/2); % a=0.25, b=0.5 (rectangle: 4bx4a)

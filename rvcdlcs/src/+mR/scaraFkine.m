@@ -1,4 +1,4 @@
-function tool_SE3 = fkine4(l_vec,th_mat)
+function tool_SE3 = scaraFkine(l_vec,th_mat)
 % get forward kinematics of scara robot from joint angles (4 dof)
 %SCARAFKINE
 %    TOOL_T = SCARAFKINE(L1,L2,L3,TH1,TH2,TH3,TH4)
