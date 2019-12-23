@@ -4,14 +4,14 @@
 A robotics toolbox and a few useful scripts.
 
 1. Robotic Toolbox
-	- Robotics, Vision &amp; Control (rvctools) (c) Peter Corke 1992-2017 http://www.petercorke.com 
-	- Robotics Toolbox Extensions  (rvcdlcs)  (c) 2019 star2dust 
+	- Robotics, Vision &amp; Control (rvctools) (c) [Peter Corke](http://www.petercorke.com) 1992-2017 
+	- Robotics Toolbox Extensions  (rvcdlcs)  (c) 2019 star2dust ([what is new?](https://github.com/star2dust/Robotics-Toolbox/tree/master/rvcdlcs))
 
 2. Convex Hull Scripts (cvxhull)
-	- inhull: Tests if a set of points are inside a convex hull (c) 2009 John D'Errico https://nl.mathworks.com/matlabcentral/fileexchange/10226-inhull 
-	- inpoly: Fast point-in-polygon queries in MATLAB (c) Darren Engwirda https://github.com/dengwirda/inpoly 
+	- [inhull](https://nl.mathworks.com/matlabcentral/fileexchange/10226-inhull ): Tests if a set of points are inside a convex hull (c) 2009 John D'Errico 
+	- [inpoly](https://github.com/dengwirda/inpoly ): Fast point-in-polygon queries in MATLAB (c) Darren Engwirda 
 
-3. Input Scripts (hebinput) (c) HebiRobotics https://github.com/HebiRobotics/MatlabInput 
+3. Input Scripts (hebinput) (c) [HebiRobotics](https://github.com/HebiRobotics/MatlabInput)
 	-  HebiJoystick creates a joystick object. 
 	-  HebiKeyboard creates a keyboard object.
 	-  Library for getting keyboard and joystick input into MATLAB.

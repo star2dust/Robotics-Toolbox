@@ -1,5 +1,5 @@
 function [qarray, qdarray, qddarray, tf] = calctraj(qvia,qdmax,dt,tacc)
-% calculate trajectory (q,qd,qdd) through qvia
+% calculate trajectory (q,qd,qdd) by qvia and qdmax
 qlen = size(qvia,2);
 q0 = qvia(1,:);
 qarray = mstraj(qvia(2:end,:),qdmax,[],q0,dt,tacc); % row vector for each xr
