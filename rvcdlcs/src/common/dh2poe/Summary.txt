@@ -1,0 +1,2 @@
+These codes (example.m) demonstrate the algorithm of bidirectional convertion between D-H parameters and POE parameters. Please refer to "Liao Wu, Ross Crawford, Jonathan Roberts. An analytic approach to converting POE parameters into D-H parameters for serial-link robots. IEEE
+Robotics and Automation Letters."

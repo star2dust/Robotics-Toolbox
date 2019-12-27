@@ -6,7 +6,7 @@ close all
 clear
 % D-H params (page 114, toolbox page 216)
 % if you use D-H params, the i-th frame should be in the end of the i-th link
-% g = SE3(transl([0,0,d])*trotz(th)*transl([a,0,0])*trotx(alpha))
+% g = SE3(trotz(th)*transl([0,0,d])*trotx(alpha)*transl([a,0,0]))
 % see also https://robotics.stackexchange.com/questions/4364/denavit-hartenberg-parameters-for-scara-manipulator
 %% SCARA robot
 link = [ Revolute('d',0.4,'a',0.25), Revolute('a', 0.15, 'alpha', pi), Prismatic('qlim', [0 0.325]), Revolute('d', 0.075)];

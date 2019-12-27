@@ -10,26 +10,25 @@ A extension package for [Robotics Toolbox](http://petercorke.com/wordpress/toolb
 - Simplify the plot for SE3 and SE2 object, you can easily change the color and line style.
 - Add support for velocity and acceleration in trajectory generation.
 - Add some templates for rigid body and mR manipulator.
+- Add translations between DH parameters and POE parameters.
 
+## Third Party Scripts
+
+1. Convex Hull Scripts (cvxhull)
+	- [inhull](https://nl.mathworks.com/matlabcentral/fileexchange/10226-inhull ): Tests if a set of points are inside a convex hull (c) 2009 John D'Errico 
+	- [inpoly](https://github.com/dengwirda/inpoly ): Fast point-in-polygon queries in MATLAB (c) Darren Engwirda 
+
+2. STL Read & Write Scripts (stlreader) (c) 2011 [Eric Johnson](https://nl.mathworks.com/matlabcentral/profile/authors/2990507-eric-johnson)
+	- [stlread](https://nl.mathworks.com/matlabcentral/fileexchange/22409-stl-file-reader): Imports geometry from an STL file into MATLAB.
+	- stlwrite: Write STL file from patch or surface data.
+	- surf2stl: Write STL file from surface data.
+
+3. Planning Scripts 
+    - ([graphsearch](https://nl.mathworks.com/matlabcentral/fileexchange/68871-robotpathplanning)): Dijkstra, A star and dynamic planning on Undirected Graph by [muhammet balcilar](https://nl.mathworks.com/matlabcentral/profile/authors/7269297-muhammet-balcilar).  
+    - ([iris-distro](https://github.com/rdeits/iris-distro)): Iterative Regional Inflation by SDP. 
 
 ## Installation
 
-- Make sure you have already installed the Robotics Toolbox of Peter Corke
+- See [here](https://github.com/star2dust/Robotics-Toolbox).
 
-- `git clone https://github.com/star2dust/Robotics-Toolbox-Extensions.git`
-
-- Add the project folder to matlab path
-
-- Add `startup_rte` to the last line of the file `startup.m` in you matlab default working folder (or just run it directly)
-
-- Examples:
-
-  ```matlab
-  % add robotics toolbox
-  addpath([toolpath 'Robotics-Toolbox/rvctools/release10.3.1'])
-  addpath([toolpath 'Robotics-Toolbox/rvcdlcs'])
-  startup_rvc
-  startup_rte
-  ```
-
-  
+- To use `iris`, the [MOSEK-MATLAB](https://github.com/star2dust/MOSEK-MATLAB) toolbox is needed.

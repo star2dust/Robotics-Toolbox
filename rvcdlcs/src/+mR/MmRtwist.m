@@ -1,3 +1,4 @@
+% calculate POE twist by l = [lm,la,le]
 function xi = MmRtwist(l)
 % choose q according to type of joints
 l0 = [0;l(1:end-1)];

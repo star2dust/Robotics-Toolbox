@@ -1,7 +1,9 @@
-function h = MmRupdate(h,Fe,th,xi,l)
+% update mobile mR manipulator figure
+function h = MmRupdate(h,ge,th,xi,l)
+import SE3.*
 lm = l(1); la = l(2:end-1); le = l(end); 
 % reference config for each joint
-for i=1:length(Fe)
+for i=1:length(ge)
     g_sl0{i} = transl(0,0,0);
 end
 la0 = [0;la(1:end-1)];
@@ -26,7 +28,7 @@ for k=length(q):-1:1
     mTe = expm(hatwedge(xi{k}).*q(k))*mTe;
 end
 eTm = invg(mTe);
-Te = rt2tr(rotz(Fe(3)),[Fe(1:2);0]);
+Te = rt2tr(rotz(ge(3)),[ge(1:2);0]);
 Tm = Te*eTm;
 [Rm,tm] = tr2rt(Tm);
 phim = vex(logm(Rm));

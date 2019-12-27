@@ -1,7 +1,9 @@
-function h = MmRplot(Fe,th,xi,l,C)
+% plot a template mobile mR manipulator
+function h = MmRplot(ge,th,xi,l,C)
+import SE3.*
 lm = l(1); la = l(2:end-1); le = l(end); 
 % reference config for each joint
-for i=1:length(Fe)
+for i=1:length(ge)
     g_sl0{i} = transl(0,0,0);
 end
 la0 = [0;la(1:end-1)];
@@ -26,7 +28,7 @@ for k=length(q):-1:1
     mTe = expm(hatwedge(xi{k}).*q(k))*mTe;
 end
 eTm = invg(mTe);
-Te = rt2tr(rotz(Fe(3)),[Fe(1:2);0]);
+Te = rt2tr(rotz(ge(3)),[ge(1:2);0]);
 Tm = Te*eTm;
 [Rm,tm] = tr2rt(Tm);
 phim = vex(logm(Rm));
@@ -52,7 +54,9 @@ end
 % convas
 subplot(1,1,1);
 hold on
-for i=1:length(link)
-    h(i) = plot3(link{i}(1,:),link{i}(2,:),link{i}(3,:),C);
+h(1) = patch(link{1}(1,:),link{1}(2,:),link{1}(3,:),C(1));
+for i=2:length(link)-1  
+    h(i) = plot3(link{i}(1,:),link{i}(2,:),link{i}(3,:),C(i),'linewidth',2,'marker','.','markersize',16);
 end
+h(end+1) = plot3(link{end}(1,:),link{end}(2,:),link{end}(3,:),C(end),'linewidth',2);
 end

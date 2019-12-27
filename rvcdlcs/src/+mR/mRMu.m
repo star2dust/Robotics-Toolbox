@@ -1,12 +1,13 @@
-function [mu,nablamu] = mRmu(th,l)
+% calculate manipulability and its derivative
+function [mu,nablamu] = mRMu(th,la)
 m = size(th,1);
 ls = zeros(m,1);
 lc = ls; dx = ls; dy = ls;
 % lsin and lcos
 for i=1:m
     for j=1:m
-        ls(i) = l(i)*sin(sum(th(1:i)));
-        lc(i) = l(i)*cos(sum(th(1:i)));
+        ls(i) = la(i)*sin(sum(th(1:i)));
+        lc(i) = la(i)*cos(sum(th(1:i)));
     end
 end
 % dxdth and dydth
