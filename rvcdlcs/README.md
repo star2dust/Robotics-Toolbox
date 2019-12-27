@@ -2,15 +2,20 @@
 
 ## Introduction
 
-A extension package for [Robotics Toolbox](http://petercorke.com/wordpress/toolboxes/robotics-toolbox) by Peter Corke. I add some new functions to based on the theories I learned from [R. Murray Book (1994)](https://www.crcpress.com/A-Mathematical-Introduction-to-Robotic-Manipulation/Murray/p/book/9780849379819).
+A extension package for [Robotics Toolbox](http://petercorke.com/wordpress/toolboxes/robotics-toolbox) by Peter Corke. I add some new features based on the theories I learned from [R. Murray Book (1994)](https://www.crcpress.com/A-Mathematical-Introduction-to-Robotic-Manipulation/Murray/p/book/9780849379819).
 
 ## Features
 
-- Add support for SE(3) matrix (double), now you can directly calculate the adjoint transformation, inverse, Lie bracket, wedge(^) and vee(ˇ) without transform it to SE3 object.
-- Simplify the plot for SE3 and SE2 object, you can easily change the color and line style.
-- Add support for velocity and acceleration in trajectory generation.
-- Add some templates for rigid body and mR manipulator.
-- Add translations between DH parameters and POE parameters.
+Updates on Dec. 27, 2019
+
+1. Add translations between DH parameters and POE parameters.
+
+Updates on Dec. 20, 2019
+
+1. Add support for SE(3) matrix (double), now you can directly calculate the adjoint transformation, inverse, Lie bracket, wedge(^) and vee(ˇ) without transform it to SE3 object.
+2. Simplify the plot for SE3 and SE2 object, you can easily change the color and line style.
+3. Add support for velocity and acceleration in trajectory generation.
+4. Add some templates for rigid body and mR manipulator.
 
 ## Third Party Scripts
 
@@ -24,8 +29,8 @@ A extension package for [Robotics Toolbox](http://petercorke.com/wordpress/toolb
 	- surf2stl: Write STL file from surface data.
 
 3. Planning Scripts 
-    - ([graphsearch](https://nl.mathworks.com/matlabcentral/fileexchange/68871-robotpathplanning)): Dijkstra, A star and dynamic planning on Undirected Graph by [muhammet balcilar](https://nl.mathworks.com/matlabcentral/profile/authors/7269297-muhammet-balcilar).  
-    - ([iris-distro](https://github.com/rdeits/iris-distro)): Iterative Regional Inflation by SDP. 
+    - [graphsearch](https://nl.mathworks.com/matlabcentral/fileexchange/68871-robotpathplanning): Dijkstra, A star and dynamic planning on undirected graph (c) [muhammet balcilar](https://nl.mathworks.com/matlabcentral/profile/authors/7269297-muhammet-balcilar).  
+    - [iris-distro](https://github.com/rdeits/iris-distro): Iterative regional inflation by SDP. 
 
 ## Installation
 

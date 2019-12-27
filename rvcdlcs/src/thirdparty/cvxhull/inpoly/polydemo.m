@@ -29,6 +29,7 @@ function polydemo(varargin)
 end
 
 function demo1
+
 %-----------------------------------------------------------
     fprintf(1,[...
 '   INPOLY2 provides fast point-in-polygon queries for ob-\n',... 
