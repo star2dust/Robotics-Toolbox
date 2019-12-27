@@ -139,6 +139,7 @@ function hout = trplot(T, varargin)
     opt.framelabeloffset = [0 0];
     opt.handle = [];
     opt.perspective = false;
+    opt.style = '-';
     
     [opt,args] = tb_optparse(opt, varargin);
     
@@ -278,13 +279,13 @@ function hout = trplot(T, varargin)
 %         end
           daspect([1,1,1])
           for i=1:3
-              ha = arrow3(mstart(i,1:3), mend(i,1:3), axcolors{i}, opt.width);
+              ha = arrow3(mstart(i,1:3), mend(i,1:3), [axcolors{i}, num2str(opt.width), opt.style]);
               set(ha, 'Parent', hg);
           end
     else
         for i=1:3
             plot2([mstart(i,1:3); mend(i,1:3)], 'Color', axcolors{i}, ...
-                'LineWidth', opt.thick, ...
+                'LineWidth', opt.thick, 'LineStyle', opt.style, ...
                 'Parent', hg);
         end
     end

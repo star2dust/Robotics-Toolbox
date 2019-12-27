@@ -308,6 +308,15 @@ classdef SE3 < SO3
             end
         end
         
+        function q = toqeul(obj)
+            % SE3.qeul Get translation and eular angle in a column vector
+            q = [obj.t;obj.toeul'];
+        end
+        
+        function q = toqrpy(obj)
+            % SE3.qrpy Get translation and rpy angle in a column vector
+            q = [obj.t;obj.torpy'];
+        end
         
         function TT = T(obj)
             %SO2.T  Get homogeneous transformation matrix
@@ -822,6 +831,18 @@ classdef SE3 < SO3
             %
             % See also SO3.eul, SE3.rpy, EUL2TR, RPY2TR, TR2EUL.
             obj = SE3( SO3.eul(varargin{:}) );
+        end
+        
+        function obj = qrpy(q)
+            %SE3.qrpy Construct an SE(3) object from translation and roll-pitch-yaw angles
+            pose = q(:);
+            obj = SE3(q(1:3))*SE3( SO3.rpy(pose(4:end)') );
+        end
+        
+        function obj = qeul(q)
+            %SE3.qeul Construct an SE(3) object from translation and Euler angles
+            pose = q(:);
+            obj = SE3(q(1:3))*SE3( SO3.eul(pose(4:end)') );
         end
         
         function T = rand()

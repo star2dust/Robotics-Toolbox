@@ -56,14 +56,14 @@ for i=1:n
             g_ji = eye(4);
             for k=j+1:i
                 % if i>j then
-                g_ji = g_ji*expm(hatwedge(xi{k}).*th(k));
+                g_ji = g_ji*expm(wedge(xi{k}).*th(k));
             end
             % adjoint transform from j-th frame to i-th frame
             A{i,j} = Adg(invg(g_ji));
         else
             A{i,j} = zeros(6);
         end
-        xi_apo{j}=Adg(expm(-hatwedge(xi{j}).*th(j)))*xi{j};
+        xi_apo{j}=Adg(expm(-wedge(xi{j}).*th(j)))*xi{j};
         % J_sl is always body Jacobian 
         J_sl{i}(:,j) = Adg(invg(g_sl0{i}))*A{i,j}*xi_apo{j};
         J_sl{i}(:,j) = simplify(J_sl{i}(:,j));

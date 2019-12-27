@@ -2,20 +2,22 @@
 
 ## Introduction
 
-A extension package for [Robotics Toolbox](http://petercorke.com/wordpress/toolboxes/robotics-toolbox) by Peter Corke. I add some new features based on the theories I learned from [R. Murray Book (1994)](https://www.crcpress.com/A-Mathematical-Introduction-to-Robotic-Manipulation/Murray/p/book/9780849379819).
+A extension package for [Robotics Toolbox](http://petercorke.com/wordpress/toolboxes/robotics-toolbox) by Peter Corke. I add some new features for personal usage in my research works. I also integrated some useful third party scripts in this toolbox. 
 
 ## Features
 
 Updates on Dec. 27, 2019
 
 1. Add translations between DH parameters and POE parameters.
+2. Add 'LineStyle' support for `trplot2` and `trplot`. (use 'style').
+3. Add pose support for SE2 and SE3. (use 'SE2.q' and 'SE3.toqeul', 'SE3.toqrpy' to get pose, 'SE3.qeul' and 'SE3.qrpy' to construct SE3 object.)
 
 Updates on Dec. 20, 2019
 
-1. Add support for SE(3) matrix (double), now you can directly calculate the adjoint transformation, inverse, Lie bracket, wedge(^) and vee(ˇ) without transform it to SE3 object.
-2. Simplify the plot for SE3 and SE2 object, you can easily change the color and line style.
-3. Add support for velocity and acceleration in trajectory generation.
-4. Add some templates for rigid body and mR manipulator.
+1. Add calculation support (adjoint transformation`Adg`, inverse`invg`, Lie bracket`bracket`, wedge`^` and vee`ˇ` ) for SE(3) double matrix.
+3. Add velocity and acceleration support for `calctraj`.
+4. Add class for 2D and 3D rigid cuboid.
+4. Add some functions for mR manipulator.
 
 ## Third Party Scripts
 
@@ -35,5 +37,8 @@ Updates on Dec. 20, 2019
 ## Installation
 
 - See [here](https://github.com/star2dust/Robotics-Toolbox).
-
 - To use `iris`, the [MOSEK-MATLAB](https://github.com/star2dust/MOSEK-MATLAB) toolbox is needed.
+
+## References
+
+1. [Murray, R. M. (1994). A mathematical introduction to robotic manipulation. CRC press.](https://www.crcpress.com/A-Mathematical-Introduction-to-Robotic-Manipulation/Murray/p/book/9780849379819)

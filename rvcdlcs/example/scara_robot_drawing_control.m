@@ -73,11 +73,11 @@ ptraj = transl(scarafkine(l,thtraj));
 % scaraplot(l,xi,g_sl0,thtraj); 
 %% robot control
 dt = 0.05; %
-[tharray, thdarray, thddarray, tf] = calctraj(thtraj(:,:,1),[0.1 0.1 0.1 0.5],dt,0.2);
+[tharray, thdarray, thddarray, tarray] = calctraj(thtraj(:,:,1),[0.1 0.1 0.1 0.5],dt,0.2);
 % test tharray by scaraplot(l,xi,g_sl0,tharray); 
 ththd0 = [tharray(1,:), thdarray(1,:)]; % q0 can be either row or column vector
 opt = {m,I,xi,g_sl0,{g,b}};
-[tarray,ththdarray] = ode45(@(t,ththd) scaraqdot(t,ththd,tharray, thdarray, thddarray, 0:dt:tf,opt),[0 tf],ththd0);
+[tarray,ththdarray] = ode45(@(t,ththd) scaraqdot(t,ththd,tharray, thdarray, thddarray, tarray, opt),tarray,ththd0);
 %% robot figure
 figure
 % plot tool trajectory

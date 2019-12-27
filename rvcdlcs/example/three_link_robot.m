@@ -55,14 +55,14 @@ for i=1:n
             g_ji = eye(4);
             for k=j+1:i
                 % if i>j then
-                g_ji = g_ji*expm(hatwedge(xi{k}).*th(k));
+                g_ji = g_ji*expm(wedge(xi{k}).*th(k));
             end
             % adjoint transform from j-th frame to i-th frame
             A{i,j} = Adg(invg(g_ji));
         else
             A{i,j} = zeros(6);
         end
-        xi_apo{j}=Adg(expm(-hatwedge(xi{j}).*th(j)))*xi{j};
+        xi_apo{j}=Adg(expm(-wedge(xi{j}).*th(j)))*xi{j};
         % J_sl is always body Jacobian 
         J_sl{i}(:,j) = Adg(invg(g_sl0{i}))*A{i,j}*xi_apo{j};
         J_sl{i}(:,j) = simplify(J_sl{i}(:,j));
@@ -98,9 +98,9 @@ dM21_dth1 = 0;
 dM31_dth1 = 0;
 Gamma112 = (dM11_dth2+dM12_dth1-dM21_dth1)/2;
 Gamma113 = (dM11_dth3+dM13_dth1-dM31_dth1)/2;
-g_31 = expm(-hatwedge(xi{3}.*th(3)))*expm(-hatwedge(xi{2}.*th(2)));
+g_31 = expm(-wedge(xi{3}.*th(3)))*expm(-wedge(xi{2}.*th(2)));
 A31 = Adg(g_31);
-dA31xi1_apo = bracket(A31*xi_apo{1},xi{3}); % hatvee(-hatwedge(xi{3})*g_31*hatwedge(xi_apo{1})*invg(g_31)+g_31*hatwedge(xi_apo{1})*invg(g_31)*hatwedge(xi{3}));
+dA31xi1_apo = bracket(A31*xi_apo{1},xi{3}); % hatvee(-wedge(xi{3})*g_31*wedge(xi_apo{1})*invg(g_31)+g_31*wedge(xi_apo{1})*invg(g_31)*wedge(xi{3}));
 dM_dth113 = dA31xi1_apo'*Ml_apo{3}*A31*xi_apo{1}+xi_apo{1}'*A31'*Ml_apo{3}*dA31xi1_apo;
 % Christoffel symbols calculation
 dM_dth = sym(zeros(n,n,n));
@@ -136,7 +136,7 @@ g_sl=cell(1,n);
 h=cell(1,n);
 g_0i=eye(4);
 for i=1:n
-    g_0i = g_0i*expm(hatwedge(xi{i}).*th(i));
+    g_0i = g_0i*expm(wedge(xi{i}).*th(i));
     g_sl{i} = g_0i*g_sl0{i};
     [~,p_t] = tr2rt(g_sl{i});
     wz = [0,0,1]';

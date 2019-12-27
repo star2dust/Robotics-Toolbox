@@ -26,7 +26,7 @@ for i=1:size(thtraj,1)
     for j=1:size(thtraj,2)
         g_sl{j} = g_sl0{j};
         for k=j:-1:1
-            g_sl{j} =  expm(hatwedge(xi{k}).*thtraj(i,k))*g_sl{j};
+            g_sl{j} =  expm(wedge(xi{k}).*thtraj(i,k))*g_sl{j};
         end
     end
     % update position

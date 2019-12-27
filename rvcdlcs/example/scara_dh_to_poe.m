@@ -1,8 +1,6 @@
 close all
 clear
 
-
-import SE3.*
 % D-H params (page 114, toolbox page 216)
 % if you use D-H params, the i-th frame should be in the end of the i-th link
 % g = SE3(trotz(th)*transl([0,0,d])*trotx(alpha)*transl([a,0,0]))
@@ -22,7 +20,7 @@ dh = [0,0.4,0,0.25;
     0,0,0,0;
     0,0.075,0,0];
 xi = dh2poe(dh,'RRPR');
-g_st = expm(hatwedge(xi(:,1))*rth(1))*expm(hatwedge(xi(:,2))*rth(2))*expm(hatwedge(xi(:,3))*rth(3))*expm(hatwedge(xi(:,4))*rth(4))*expm(hatwedge(xi(:,5)));
+g_st = expm(wedge(xi(:,1))*rth(1))*expm(wedge(xi(:,2))*rth(2))*expm(wedge(xi(:,3))*rth(3))*expm(wedge(xi(:,4))*rth(4))*expm(wedge(xi(:,5)));
 %% DH yp PoE (L. Wu 2017)
 % xi2 = DH2POE( dh, eye(4), eye(4), 'RRPR', 'std');
 %% PoE to DH (L. Wu 2017)

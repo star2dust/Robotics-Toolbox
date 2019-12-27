@@ -29,7 +29,7 @@ for i=1:n
         else
             A{i,j} = zeros(6);
         end
-        xi_apo{j}=Adg(expm(-hatwedge(xi{j}).*th(j)))*xi{j};
+        xi_apo{j}=Adg(expm(-wedge(xi{j}).*th(j)))*xi{j};
         % J_sl is always body Jacobian 
         J_sl{i}(:,j) = Adg(invg(g_sl0{i}))*A{i,j}*xi_apo{j};
     end  
@@ -91,7 +91,7 @@ for i=1:n
     for k=1:n
         if k<=i
             g_km1i = gtr(xi,th,k-1,i);
-            dh{i}(:,k) = z_t'*g_0i*invg(g_km1i)*hatwedge(xi{k})*g_km1i*g_sl0{i}*a_t;
+            dh{i}(:,k) = z_t'*g_0i*invg(g_km1i)*wedge(xi{k})*g_km1i*g_sl0{i}*a_t;
         else
             dh{i}(:,k) = 0;
         end

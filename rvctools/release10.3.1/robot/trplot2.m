@@ -29,6 +29,7 @@
 % 'length',s         Length of the coordinate frame arms (default 1)
 % 'arrow'            Use arrows rather than line segments for the axes
 % 'width', w         Width of arrow tips
+% 'style', sty       Style of arrow lines
 %
 % Examples::
 %
@@ -96,6 +97,7 @@ function hout = trplot2(T, varargin)
     opt.lefty = false;
     opt.framelabeloffset = 0.2*[1 1];
     opt.handle = [];
+    opt.style = '-';
 
     [opt,args] = tb_optparse(opt, varargin);
 
@@ -184,15 +186,15 @@ function hout = trplot2(T, varargin)
     hg = hgtransform('Parent', hax);
     if opt.arrow
         % draw the 2 arrows
-        S = [opt.color num2str(opt.width)];
+        S = [opt.color,opt.style,num2str(opt.width)];
         daspect([1 1 1]);
-        ha = arrow3(mstart, mend, S);
+        ha = arrow3(mstart, mend, S); 
         for h=ha'
             set(h, 'Parent', hg);
         end
     else
         for i=1:2
-            plot2([mstart(i,1:2); mend(i,1:2)], 'Color', opt.color, 'Parent', hg);
+            plot2([mstart(i,1:2); mend(i,1:2)], 'Color', opt.color, 'linestyle', opt.style, 'Parent', hg);
         end
     end
 

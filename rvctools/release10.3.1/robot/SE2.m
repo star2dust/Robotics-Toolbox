@@ -286,6 +286,11 @@ classdef SE2 < SO2
             t = obj.t';
         end
         
+        function q = q(obj)
+            % SE2.q Get translation and angle in a column vector
+            q = [obj.t;obj.angle];
+        end
+        
         function T = T(obj)
             %SE2.T  Get homogeneous transformation matrix
             %

@@ -23,7 +23,7 @@ end
     
 end
 
-[theta1, d1, alpha1, a1, theta2, d2] = POE2DH_Tool (g\expm(hatwedge(xi_mat(:,n+1))));
+[theta1, d1, alpha1, a1, theta2, d2] = POE2DH_Tool (g\expm(wedge(xi_mat(:,n+1))));
 
 dh_mat(n+1,:) = [theta1, d1, alpha1, a1];
 dh_mat(1,:) = [];

@@ -5,7 +5,7 @@ u = max([i,j]);
 g_lu = eye(4);
 for k=l+1:u
     % if i>j then
-    g_lu = g_lu*expm(hatwedge(xi_cell{k}).*th_vec(k));
+    g_lu = g_lu*expm(wedge(xi_cell{k}).*th_vec(k));
 end
 if i>=j
     g_ij=invg(g_lu);
@@ -19,7 +19,7 @@ end
 %     g_ji = eye(4);
 %     for k=j+1:i
 %         % if i>j then
-%         g_ji = g_ji*expm(hatwedge(xi_cell{k}).*th_vec(k));
+%         g_ji = g_ji*expm(wedge(xi_cell{k}).*th_vec(k));
 %     end
 %     g_ij=invg(g_ji);
 % else
@@ -27,6 +27,6 @@ end
 %     g_ij = eye(4);
 %     for k=i+1:j
 %         % if i>j then
-%         g_ij = g_ij*expm(hatwedge(xi_cell{k}).*th_vec(k));
+%         g_ij = g_ij*expm(wedge(xi_cell{k}).*th_vec(k));
 %     end
 % end
