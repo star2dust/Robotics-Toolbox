@@ -1,5 +1,6 @@
 function gl_sdh = stdDH(dh)
-theta = dh(1); d = dh(2); alpha = dh(3); a = dh(4);
+% dh = [theta,d,a,alpha] same order with rvc toolbox
+theta = dh(1); d = dh(2); alpha = dh(4); a = dh(3);
 gl_sdh = trotz(theta)*transl([0,0,d])*trotx(alpha)*transl([a,0,0]);
 % cannot be too accurate
 gl_sdh = [cos(theta) -sin(theta)*cos(alpha)  sin(theta)*sin(alpha)   a*cos(theta)

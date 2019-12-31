@@ -6,18 +6,31 @@ A extension package for [Robotics Toolbox](http://petercorke.com/wordpress/toolb
 
 ## Features
 
-Updates on Dec. 27, 2019
+- Updates on Dec. 31, 2019
 
-1. Add translations between DH parameters and POE parameters.
-2. Add 'LineStyle' support for `trplot2` and `trplot`. (use 'style').
-3. Add pose support for SE2 and SE3. (use 'SE2.q' and 'SE3.toqeul', 'SE3.toqrpy' to get pose, 'SE3.qeul' and 'SE3.qrpy' to construct SE3 object.)
+    1. All third party packages are put inside `thirdparty` folder and managed by `startup_rte.m`.
+    2. Add `qlim` support for `SerialLink` object construction by DH parameters. (`Qlim`: m x 2 matrix)
+       - Example: `SerialLink([dh,sigma], 'base', Hb, 'tool', Ht, 'qlim', Qlim)`.
 
-Updates on Dec. 20, 2019
+- Updates on Dec. 27, 2019
 
-1. Add calculation support (adjoint transformation`Adg`, inverse`invg`, Lie bracket`bracket`, wedge`^` and vee`ˇ` ) for SE(3) double matrix.
-3. Add velocity and acceleration support for `calctraj`.
-4. Add class for 2D and 3D rigid cuboid.
-4. Add some functions for mR manipulator.
+    1. Add translations between DH parameters and POE parameters.
+    2. Add `LineStyle` support for `trplot2` and `trplot`. 
+       -  Example:  `SE3.plot('style','-.')`. (4 styles: -. / : / .. / --)
+    3. Add pose support for `SE2` and `SE3` object. 
+       - Use `SE2.q` and `SE3.toqeul`, `SE3.toqrpy` to get pose.
+       - Use `SE3.qeul` and `SE3.qrpy` to construct `SE3` object.
+
+- Updates on Dec. 20, 2019
+
+    1. Add calculation support for  4 x 4 double matrix.
+       - `Adg`: adjoint transformation.
+       - `invg`:  inverse transformation.
+       - `bracket`: Lie bracket.
+       - `wedge` and `vee`: `w^` and `Wˇ` calculation for twists.
+    2. Add velocity and acceleration support for `calctraj`.
+    3. Add class for 2D and 3D rigid cuboid (`Cuboid2` and `Cuboid3`).
+    4. Add some functions for mR manipulator.
 
 ## Third Party Scripts
 
@@ -34,6 +47,11 @@ Updates on Dec. 20, 2019
     - [graphsearch](https://nl.mathworks.com/matlabcentral/fileexchange/68871-robotpathplanning): Dijkstra, A star and dynamic planning on undirected graph (c) [muhammet balcilar](https://nl.mathworks.com/matlabcentral/profile/authors/7269297-muhammet-balcilar).  
     - [iris-distro](https://github.com/rdeits/iris-distro): Iterative regional inflation by SDP. 
 
+4. Input Scripts (hebinput) (c) [HebiRobotics](https://github.com/HebiRobotics/MatlabInput)
+	-  `HebiJoystick` creates a joystick object. 
+	-  `HebiKeyboard` creates a keyboard object.
+	-  Library for getting keyboard and joystick input into MATLAB.
+
 ## Installation
 
 - See [here](https://github.com/star2dust/Robotics-Toolbox).
@@ -42,3 +60,4 @@ Updates on Dec. 20, 2019
 ## References
 
 1. [Murray, R. M. (1994). A mathematical introduction to robotic manipulation. CRC press.](https://www.crcpress.com/A-Mathematical-Introduction-to-Robotic-Manipulation/Murray/p/book/9780849379819)
+2. [Deits, R., & Tedrake, R. (2015). Computing large convex regions of obstacle-free space through semidefinite programming. *Springer Tracts in Advanced Robotics*, *107*, 109–124.](http://groups.csail.mit.edu/robotics-center/public_papers/Deits14.pdf)

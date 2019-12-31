@@ -12,5 +12,7 @@ addpath([thirdpartypath 'cvxhull']); % add cvxhull
 addpath([thirdpartypath 'graphsearch']); % add graphsearch
 addpath([thirdpartypath 'stlreader']); % add stlreader
 addpath([thirdpartypath 'iris-distro/src/matlab']); % add iris
+addpath([thirdpartypath 'hebinput/hebi']); % add hebi input
+
 
 

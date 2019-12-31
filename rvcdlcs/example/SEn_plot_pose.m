@@ -1,7 +1,6 @@
 close all
 clear
 
-import RTB.*
 % test SE2,SE3 plot and transfer to pose
 a = SE2([1,2,3]);
 b = SE3.qrpy([2,3,0,1,2,3]);

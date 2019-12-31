@@ -320,10 +320,13 @@ classdef SerialLink < handle & dynamicprops % & matlab.mixin.Copyable
                     clear L
                     for j=1:numrows(dh_dyn)
                         if opt.modified
-                            L(j) =        Link(dh_dyn(j,:), 'modified');
+                            L(j) =        Link(dh_dyn(j,:), 'modified');     
                         else
                             L(j) =        Link(dh_dyn(j,:));
-                        end                      
+                        end   
+                        if ~isempty(opt.qlim)
+                            L(j).qlim = opt.qlim(j,:);
+                        end
                     end
                     r.links = L;
                     

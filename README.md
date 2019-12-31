@@ -1,17 +1,11 @@
 # Robotics-Toolbox
 ## Introduction
 
-A robotics toolbox and a few useful scripts.
+A robotics toolbox and add-ons for MATLAB.
 
-1. Robotic Toolbox
-	- Robotics, Vision &amp; Control (rvctools) (c) [Peter Corke](http://www.petercorke.com) 1992-2017 
-	- Robotics Toolbox Extensions  (rvcdlcs)  (c) star2dust 2019 ([what is new?](https://github.com/star2dust/Robotics-Toolbox/tree/master/rvcdlcs))
+1. Robotics, Vision &amp; Control (rvctools) (c) [Peter Corke](http://www.petercorke.com) 1992-2017 
 
-2. Input Scripts (hebinput) (c) [HebiRobotics](https://github.com/HebiRobotics/MatlabInput)
-	-  HebiJoystick creates a joystick object. 
-	-  HebiKeyboard creates a keyboard object.
-	-  Library for getting keyboard and joystick input into MATLAB.
-
+2. Robotics Toolbox Extensions  (rvcdlcs)  (c) star2dust 2019 ([what is new?](https://github.com/star2dust/Robotics-Toolbox/tree/master/rvcdlcs))
 
 ## Installation
 
