@@ -1,22 +1,23 @@
-% Rigid Cuboid 3D Model class
-% (last mod.: 31-12-2019, Author: Chu Wu)
-% Requires Robotics Toolbox of Peter Corke http://petercorke.com/wordpress/toolboxes/robotics-toolbox
+% Rigid Cuboid 3D Model class (rpy)
+% (last mod.: 01-01-2020, Author: Chu Wu)
+% Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
-% - name: name
-% - states: pose (6x1), frame (SE3)
-% - dynamics parameters: mass, inertia, inerMat
-% - shapes: verts, faces, edges
+% - name: str
+% - dynamics parameters: mass(1x1), inertia(1x6), inerMat(6x6)
+% - shapes: faces(6x4), edges(1x3), bverts(body)(8x3)
 % Methods:
-% - update
-% - 
+% - Cuboid: construction (opt: name)
+% - verts: get vertices in inertia frame
+% - plot (opt: facecolor,facealpha, workspace, [no]frame, framecolor)
+% - animate
 classdef Cuboid < handle
     properties (SetAccess = protected) % all display variables are row vectors
         name
         % translation & rotation states in world frame (6 dim)
         % angle expressed in Euler angle rotations "ZYX" 
-        pose % [x,y,z,thr,thp,thy]
+        % pose % [x,y,z,thr,thp,thy]
         % frames (SE3) 
-        frame % (R = rotz(thy)*roty(thp)*rotx(thr)=SE3.rpy([thr,thp,thy]))
+        % frame % (R = rotz(thy)*roty(thp)*rotx(thr)=SE3.rpy([thr,thp,thy]))
         % params
         mass % center of body frame (1 dim)
         inertia % [Ixx Iyy Izz -Iyz Ixz -Ixy] vector relative to the body frame (6 dim)
@@ -24,7 +25,7 @@ classdef Cuboid < handle
         inerMat % [M,0;0,I]
         % a list of verts and edges
         bverts % (8x3) (body frame)
-        verts % (8x3) (inertia frame)
+        % verts % (8x3) (inertia frame)
         faces % (6x4)
         edges % (1x3) depth(x) width(y) height(z)
     end
@@ -63,32 +64,33 @@ classdef Cuboid < handle
                 obj.edges = edges(:)';
                 obj.edge2body;
                 % update pose
-                obj.update(zeros(1,6))
+%                 obj.update(zeros(1,6));
             else
                 error('Improper input dimension')
             end
         end
         
-        function obj = addDynParam(obj,inputMass)
-            inputEdges = obj.edges;
-            obj.mass = inputMass;
-            obj.inertia = 1/12*inputMass*[inputEdges(2)^2+inputEdges(3)^2 inputEdges(1)^2+inputEdges(3)^2 inputEdges(2)^2+inputEdges(1)^2 0 0 0];
+        function obj = addDynParam(obj,mass)
+            edge = obj.edges;
+            obj.mass = mass;
+            obj.inertia = 1/12*mass*[edge(2)^2+edge(3)^2 edge(1)^2+edge(3)^2 edge(2)^2+edge(1)^2 0 0 0];
             obj.inerMat = [obj.mass*eye(3),zeros(3);zeros(3),diag(obj.inertia(1:3))+skew(obj.inertia(4:end))];
         end
         
-        function obj = update(obj,inputPose)
-            obj.pose = inputPose(:)';
-            % regulate angles within [0,2*pi]
-            obj.pose(4:6) = mod(obj.pose(4:6),2*pi);
-            obj.frame = SE3.qrpy(obj.pose);
-            % update verts
-            obj.updateVerts;
-        end
+%         function obj = update(obj,pose)
+%             obj.pose = pose(:)';
+%             % regulate angles within [-pi,pi]
+%             obj.pose(4:6) = mod(obj.pose(4:6)+pi,2*pi)-pi;
+%             obj.frame = SE3.qrpy(obj.pose);
+%             % update verts
+%             obj.updateVerts;
+%         end
         
-        function handle = plot(varargin)  
+        function h = plot(varargin)  
             % opt statement
             opt.facecolor = 'y';
-            opt.facealpha = 0.5;
+            opt.facealpha = 0.8;
+            opt.edgecolor = 'k';
             opt.workspace = [];
             opt.frame = false;
             opt.framecolor = 'b';
@@ -97,7 +99,7 @@ classdef Cuboid < handle
             obj = arg{1};
             q = arg{2};
             % update pose
-            obj.update(q);
+            % obj.update(q);
             % logic to handle where the plot is drawn, are old figures updated or
             % replaced?
             %  calls create_floor() and create_robot() as required.
@@ -108,7 +110,7 @@ classdef Cuboid < handle
                     % this robot doesnt exist here, create it or add it  
                     if ishold
                         % hold is on, add the robot, don't change the floor
-                        handle = createCuboid(obj, opt);
+                        h = createCuboid(obj, q, opt);
                         % tag one of the graphical handles with the robot name and hang
                         % the handle structure off it
                         %                 set(handle.joint(1), 'Tag', robot.name);
@@ -116,13 +118,13 @@ classdef Cuboid < handle
                     else
                         % create the robot 
                         newplot();
-                        handle = createCuboid(obj, opt);
+                        h = createCuboid(obj, q, opt);
                         set(gca, 'Tag', 'RTB.plot');
                     end 
                 end      
             else
                 % this axis never had a robot drawn in it before, let's use it
-                handle = createCuboid(obj, opt);
+                h = createCuboid(obj, q, opt);
                 set(gca, 'Tag', 'RTB.plot');
                 set(gcf, 'Units', 'Normalized');
                 pf = get(gcf, 'Position');
@@ -138,19 +140,26 @@ classdef Cuboid < handle
             if nargin < 3
                 handles = findobj('Tag', obj.name);
             end
-            obj.update(q);
             for i=1:length(handles.Children)
-                if strcmp(get(handles.Children(i),'Tag'), [obj.name '_cuboid'])
-                    set(handles.Children(i),'vertices',obj.verts,'faces',obj.faces);
+                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-cuboid'])
+                    set(handles.Children(i),'vertices',obj.verts(q),'faces',obj.faces);
                 else
-                    set(handles.Children(i),'matrix',obj.frame.T);
+                    frame = SE3.qrpy(q);
+                    set(handles.Children(i),'matrix',frame.T);
                 end
             end
+        end
+        
+        function verts = verts(obj,pose)
+            % frame update
+            frame = SE3(pose(1:3))*SE3.rpy(pose(4:6));
+            % verts position   
+            verts = h2e(frame.T*e2h(obj.bverts'))';
         end
     end
     
     methods (Access = protected)   
-        function h = createCuboid(obj,opt)
+        function h = createCuboid(obj,q,opt)
             % create an axis
             ish = ishold();
             if ~ishold
@@ -163,26 +172,20 @@ classdef Cuboid < handle
             
             group = hggroup('Tag', obj.name);
             h.group = group;
-            h.cub = patch('vertices',obj.verts, 'faces', obj.faces, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'parent', group);
-            set(h.cub,'Tag', [obj.name '_cuboid']);
+            h.cub = patch('vertices',obj.verts(q), 'faces', obj.faces, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor, 'parent', group);
+            set(h.cub,'Tag', [obj.name '-cuboid']);
             
             if opt.frame
-                h.frame = obj.frame.plot('color', opt.framecolor);
+                frame = SE3.qrpy(q);
+                h.frame = frame.plot('color', opt.framecolor);
                 set(h.frame,'parent',group);
-                set(h.frame,'Tag', [obj.name '_frame']);
+                set(h.frame,'Tag', [obj.name '-frame']);
             end
                       
             % restore hold setting
             if ~ish
                 hold off
             end
-        end
-        
-        function obj = updateVerts(obj)       
-            % frame update
-            obj.frame = SE3(obj.pose(1:3))*SE3.rpy(obj.pose(4:6));
-            % verts position   
-            obj.verts = h2e(obj.frame.T*e2h(obj.bverts'))';
         end
         
         function obj = edge2body(obj)

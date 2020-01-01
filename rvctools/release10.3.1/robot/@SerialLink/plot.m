@@ -199,7 +199,7 @@
 % TODO
 % deal with base transform and tool
 % more consistent option names, scale, mag etc.
-function plot(robot, qq, varargin)
+function handle = plot(robot, qq, varargin)
     
     % check the joint angle data matches the robot
     n = robot.n;

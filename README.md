@@ -1,7 +1,7 @@
 # Robotics-Toolbox
 ## Introduction
 
-A robotics toolbox and add-ons for MATLAB.
+A robotics toolbox and extensions for MATLAB.
 
 1. Robotics, Vision &amp; Control (rvctools) (c) [Peter Corke](http://www.petercorke.com) 1992-2017 
 
