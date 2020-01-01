@@ -7,15 +7,15 @@ A extension package for [Robotics Toolbox](http://petercorke.com/wordpress/toolb
 ## Features
 
 - Updates on Jan. 01, 2020
-1. Add class `Cuboid`. (See `model/Cuboid.m`)
-    2. Add class `MobileRobot`. (See `model/MobileRobot.m`) 
-    3. All class above support `plot` and `animate` method like class`SerialLink`. (see `example/mr_sim/mr_eg.m`)
+	1. Add class `Cuboid`. (See `model/Cuboid.m`)
+    2. Add class `MobileRobot`, which supports all kinds of mobile manipulators. (See `model/MobileRobot.m`) 
+    3. All class above support `plot` and `animate` method like class`SerialLink`. 	
+       - Example: See `example/mr_sim/mr_eg.m`.
 - Updates on Dec. 31, 2019
-1. All third party packages are put inside `thirdparty` folder and managed by `startup_rte.m`.
+	1. All third party packages are put inside `thirdparty` folder and managed by `startup_rte.m`.
     2. Add `qlim` support for `SerialLink` object construction by DH parameters. (`Qlim`: m x 2 matrix)
        - Example: `SerialLink([dh,sigma], 'base', Hb, 'tool', Ht, 'qlim', Qlim)`.
 - Updates on Dec. 27, 2019
-
     1. Add translations between DH parameters and POE parameters.
     2. Add `LineStyle` support for `trplot2` and `trplot`. 
        -  Example:  `SE3.plot('style','-.')`. (4 styles: -. / : / .. / --)
@@ -23,14 +23,12 @@ A extension package for [Robotics Toolbox](http://petercorke.com/wordpress/toolb
        - Use `SE2.q` and `SE3.toqeul`, `SE3.toqrpy` to get pose.
        - Use `SE3.qeul` and `SE3.qrpy` to construct `SE3` object.
 - Updates on Dec. 20, 2019
-
     1. Add calculation support for  4 x 4 double matrix.
        - `Adg`: adjoint transformation.
        - `invg`:  inverse transformation.
        - `bracket`: Lie bracket.
        - `wedge` and `vee`: `w^` and `Wˇ` calculation for twists.
     2. Add velocity and acceleration support for `calctraj`.
-    4. Add some functions for mR manipulator.
 
 ## Third Party Scripts
 
