@@ -28,15 +28,23 @@ classdef MobileRobot < handle
             [opt,arg] = tb_optparse(opt, varargin); 
             obj.name = opt.name; 
             % argument parse
-            if length(arg)==2
-                edge = arg{1};
+            if length(arg)==3
+                edge = arg{1}(:)';
                 twist = arg{2};
-                [dh, Hb, Ht] = poe2dh(twist);  
-                obj.mount = SE3(Hb);
-                plotopt = {'noname', 'nobase', 'notiles', 'noshading', 'noshadow', 'nowrist'};
+                Hb = arg{3};
+                [dh, Ht, sigma] = poe2dh(twist); 
+                dh = [dh,sigma];
+                obj.mount = SE3(Hb);              
+            elseif length(arg)==4
+                edge = arg{1}(:)';
+                dh = arg{2};
+                Hb = arg{3};
+                Ht = arg{4};
+                obj.mount = SE3(Hb);         
             else
                 error('unknown arguments');
             end
+            plotopt = {'noname', 'nobase', 'notiles', 'noshading', 'noshadow', 'nowrist'};
             % set qlim
             if ~isempty(opt.qlim)
                 obj.base = Cuboid(edge,'name', [obj.name '-base']);
@@ -59,7 +67,7 @@ classdef MobileRobot < handle
                 % get object
                 obj = arg{1};
                 % get pose
-                q = arg{2};
+                q = arg{2}(:)';
             else
                 error('unknown arguments');
             end

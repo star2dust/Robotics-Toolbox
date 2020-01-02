@@ -21,18 +21,18 @@ dh = [0,0.4,0.25,0;
     0,0.075,0,0];
 xi = dh2poe(dh,'RRPR');
 g_st = expm(wedge(xi(:,1))*rth(1))*expm(wedge(xi(:,2))*rth(2))*expm(wedge(xi(:,3))*rth(3))*expm(wedge(xi(:,4))*rth(4))*expm(wedge(xi(:,5)));
-%% DH yp PoE (L. Wu 2017)
+%% DH to PoE (L. Wu 2017)
 % xi2 = DH2POE( dh, eye(4), eye(4), 'RRPR', 'std');
 %% PoE to DH (L. Wu 2017)
-[dh3,Hb,Ht] = poe2dh(xi);
-sigma = [0,0,1,0]';
+qb = 0.4; % stdDH([0,0.4,0,0]); % only theta (P) and d (R)
+[dh3,Ht,sigma] = poe2dh(xi,qb);
 qlim = [0,pi/2;0,pi/2;0,0.5;0,pi/2];
 % dh3 = [  0         0    0.2500         0
 %          0         0         0    3.1416
 %     0.0000         0    0.1500         0
 %          0   -0.3250    0.0000    0.0000];
 figure
-scara2 = SerialLink([dh3,sigma], 'name', 'scara2', 'base', Hb, 'tool', Ht, 'qlim', qlim);
+scara2 = SerialLink([dh3,sigma], 'name', 'scara2', 'tool', Ht, 'qlim', qlim);
 rth = [0.5,0.5,0.2,0.5];
 scara2.plot(rth,'workspace',[-1 1 -1 1 -1 1], 'tilesize', 0.5);
 scara2.fkine(rth)

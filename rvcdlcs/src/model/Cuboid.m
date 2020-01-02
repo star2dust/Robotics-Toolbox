@@ -44,7 +44,7 @@ classdef Cuboid < handle
     methods
         function obj = Cuboid(varargin)
             % opt statement
-            opt.name = [];
+            opt.name = 'cub';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin); 
             obj.name = opt.name;
@@ -52,7 +52,7 @@ classdef Cuboid < handle
             if isempty(arg)
                 edges = ones(1,3);
             elseif length(arg)==1
-                edges = arg{1};
+                edges = arg{1}(:)';
             else
                 error('unknown arguments');
             end           
@@ -66,7 +66,7 @@ classdef Cuboid < handle
                 % update pose
 %                 obj.update(zeros(1,6));
             else
-                error('Improper input dimension')
+                error('improper input dimension')
             end
         end
         
@@ -97,7 +97,7 @@ classdef Cuboid < handle
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin); 
             obj = arg{1};
-            q = arg{2};
+            q = arg{2}(:)';
             % update pose
             % obj.update(q);
             % logic to handle where the plot is drawn, are old figures updated or
