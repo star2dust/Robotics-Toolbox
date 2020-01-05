@@ -1,7 +1,7 @@
 close all
 clear
 
-load('path_example.mat');
+load('path_3D_example.mat');
 test_rloc = 2;
 if test_rloc==1
     [quav,~,~,tq] = calctraj(rloc1,0.5*ones(size(rloc1(1,:))),0.1,2);
@@ -10,7 +10,6 @@ else
 end
 quav = [quav,zeros(size(quav))];
 
-% uav = Cuboid([1,1,0.2],'name','uav'); 
 mdl_quadrotor; qrsize = 1;
 
 figure;
@@ -19,7 +18,6 @@ for i=1:length(obs)
    hold on; 
 end
 h = qrplot(quav(1,:),qrsize,quadrotor);
-% uav.plot(quav(1,:));
 plot3(quav(:,1),quav(:,2),quav(:,3),'r-','linewidth',2);
 view(3); xlabel('x');ylabel('y');zlabel('z'); rotate3d on;
 hold off

@@ -113,13 +113,13 @@ classdef MobileRobot < handle
             qa = q(7:end); qb = q(1:6);
             obj.arm.base = SE3.qrpy(qb)*obj.mount;
             % animate
-            obj.base.animate(qb);
-            obj.arm.animate(qa);
-            for i=1:length(handles.Children)
+            for i=1:length(handles.Children) % draw frame first otherwise there will be delay
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-tool'])
                     set(handles.Children(i),'matrix',obj.arm.fkine(qa).T);
                 end
             end
+            obj.base.animate(qb);
+            obj.arm.animate(qa);        
         end
     end
     

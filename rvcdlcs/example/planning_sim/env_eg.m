@@ -1,7 +1,7 @@
 close all
 clear
 
-tile = 1; edge = [ones(1,2)*tile,0.5]; smap = [ones(1,2)*20,1]; pct = 0.2;
+tile = 2; edge = [ones(1,2)*tile,0.5]; smap = [ones(1,2)*10,1]; pct = 0.2;
 [obs, qobs, map] = environment(edge,smap,pct);
 [bigraph,biloc] = map2graph(map);
 n = smap(1)*smap(2)*smap(3);
@@ -15,6 +15,10 @@ route2 = dijkstra(bigraph,biloc,1);
 for i=1:length(route2{n})
     rloc2(i,:) = ind2loc(smap,route2{n}(i),edge);
 end
+%% save path
+if ~exist('path_example.mat', 'file')
+    save('path_example.mat','rloc1','rloc2','obs','qobs');
+end   
 %% plot
 figure;
 for i=1:length(obs)

@@ -15,6 +15,11 @@ route2 = dijkstra(bigraph,biloc,1);
 for i=1:length(route2{n})
     rloc2(i,:) = ind2loc(smap,route2{n}(i),edge);
 end
+%% save path
+if ~exist('path_3D_example.mat', 'file')
+    save('path_3d_example.mat','rloc1','rloc2','obs','qobs');
+end   
+%% plot
 figure;
 for i=1:length(obs)
    obs(i).plot(qobs(i,:),'workspace', [0 edge(1)*smap(1) 0 edge(2)*smap(2) 0 edge(3)*smap(3)],'facecolor','k','facealpha',0.5);

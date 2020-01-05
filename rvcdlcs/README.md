@@ -1,17 +1,18 @@
-# Robotics-Toolbox-Extensions
+# Robotics-Toolbox-Expansion-Package
 
 ## Introduction
 
-A extension package for [Robotics Toolbox](http://petercorke.com/wordpress/toolboxes/robotics-toolbox) by Peter Corke. I add some new features for personal usage in my research works. I also integrated some useful third party scripts in this toolbox. 
+A expansion package for [Robotics Toolbox](http://petercorke.com/wordpress/toolboxes/robotics-toolbox) by Peter Corke. I add some new features for personal usage in my research works. I also integrated some useful third party scripts in this toolbox. 
 
 ## Features
 
 - Updates on Jan. 05, 2020
     1. Add some planning functions in the folder `src/planning`.
     	- `environment`: Generate an obstacles environment with grid cell.
-        - `ind2loc`: Get real positions in a map matrix by index.
-        - `map2graph`: Generate graph for A* and Dijkstra searching methods by map matrix.
+        - `ind2loc`: Get real coordinate from map index.
+        - `map2graph`: Transfer map matrix to search graph for A* and Dijkstra.
     2. Add examples in the folder `example/planning_sim`.
+    3. Add edges for diagonal grid cells in `map2graph`. 
 
 - Updates on Jan. 02, 2020
     1. Add class `MobilePlanarRevolute`, which supports mobile platform with m-dof planar revolute manipulator. (See `model/MobilePlanarRevolute.m`)
@@ -21,8 +22,8 @@ A extension package for [Robotics Toolbox](http://petercorke.com/wordpress/toolb
 - Updates on Jan. 01, 2020
 	1. Add class `Cuboid`. (See `model/Cuboid.m`)
     2. Add class `MobileRobot`, which supports all kinds of mobile manipulators. (See `model/MobileRobot.m`) 
-    3. All class above support `plot` and `animate` method like class`SerialLink`. 	
-       - Example: See `example/mr_sim/mr_eg.m`.
+    3. All class above support `plot` and `animate` methods same as class`SerialLink`. 	
+       - Example: See `example/model_sim/mr_eg.m`.
 
 - Updates on Dec. 31, 2019
 	1. All third party packages are put inside `thirdparty` folder and managed by `startup_rte.m`.

@@ -1,5 +1,5 @@
 % Mobile Planar Revolute Robot 3D Model class (rpy, stdDH)
-% (last mod.: 02-01-2020, Author: Chu Wu)
+% (last mod.: 05-01-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
 % - name: str
@@ -7,14 +7,16 @@
 % - base: Cuboid
 % - arm: SerialLink
 % - mount: SE3 (from base to first link)
+% - height: initial end-effector height above the ground
 % Methods:
-% - MobilePlanarRevolute: construction (opt: name, type)
+% - MobilePlanarRevolute: construction (opt: name, type) (arg: edge, link, mount)
 % - plot (opt: workspace, [no]frame, framecolor)
 % - animate
 % - twist: calculate twists by link length and mounted base
 classdef MobilePlanarRevolute < MobileRobot
     properties
         type
+        height
     end
     
     methods
@@ -29,6 +31,8 @@ classdef MobilePlanarRevolute < MobileRobot
             if length(arg)==3
                 edge = arg{1}(:)';
                 link = arg{2}(:)';
+                % mount(1:2): base coordinate on platform
+                % mount(3): initial end-effector height
                 mount = arg{3}(:)';
             else
                error('unknown argument') 
@@ -70,6 +74,7 @@ classdef MobilePlanarRevolute < MobileRobot
             % construct MobileRobot
             obj = obj@MobileRobot(edge,[dh,sigma],Hb,Ht,'name',opt.name,'qlim',Qlim);
             obj.type = opt.type;
+            obj.height = mount(3);
         end
         
         function h = plot(varargin)  

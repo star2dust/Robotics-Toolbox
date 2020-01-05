@@ -1,3 +1,7 @@
+% generate obstacle environment with grid cell
+% - edge: edge length of grid
+% - smap: size of map matrix
+% - pct: percentage of obstacles (from 0 to 1) (0: no obs, 1: full obs)
 function [obs, qobs, map] = environment(edge,smap,pct)
 map = rand(smap)<pct;
 lx = edge(1); ly = edge(2); lz = edge(3);
