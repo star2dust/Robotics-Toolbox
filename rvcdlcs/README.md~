@@ -10,8 +10,7 @@ A extension package for [Robotics Toolbox](http://petercorke.com/wordpress/toolb
     1. Add some planning functions in the folder `src/planning`.
     	- `environment`: Generate an obstacles environment with grid cell.
         - `ind2loc`: Get real positions in a map matrix by index.
-        - `map2graph`: Generate graph for A* and Dijkstra searching methods by map matrix.
-    2. Add examples in the folder `example/planning_sim`.
+        - `map2graph`: Generate graph for A* and Dijkstra searching methods
 
 - Updates on Jan. 02, 2020
     1. Add class `MobilePlanarRevolute`, which supports mobile platform with m-dof planar revolute manipulator. (See `model/MobilePlanarRevolute.m`)

@@ -3,12 +3,12 @@
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
 % - name: str
-% - type: str (elbowup or elbowdown)
+% - type: str (elbowup* or elbowdown)
 % - base: Cuboid
 % - arm: SerialLink
 % - mount: SE3 (from base to first link)
 % Methods:
-% - MobilePlanarRevolute: construction (opt: name)
+% - MobilePlanarRevolute: construction (opt: name, type)
 % - plot (opt: workspace, [no]frame, framecolor)
 % - animate
 % - twist: calculate twists by link length and mounted base
@@ -21,10 +21,11 @@ classdef MobilePlanarRevolute < MobileRobot
         function obj = MobilePlanarRevolute(varargin)
             % MobileRevolute creates m-dof MobileRevolute robot object
             % opt statement
-            opt.type = '-';
+            opt.type = 'elbowup';
             opt.name = 'mpr';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin);
+            % check validity
             if length(arg)==3
                 edge = arg{1}(:)';
                 link = arg{2}(:)';
@@ -32,7 +33,10 @@ classdef MobilePlanarRevolute < MobileRobot
             else
                error('unknown argument') 
             end
-            % mounted place
+            % mounted place (translation only)
+            if ~length(mount)==3||abs(mount(1))>edge(1)/2||abs(mount(2))>edge(2)/2
+               error('invalid mounted place'); 
+            end
             cub_surf= [mount(1),mount(2),edge(3)/2];
             hb_d = mount-cub_surf; hb_T = transl(hb_d);
             % choose q according to type of joints
@@ -86,7 +90,7 @@ classdef MobilePlanarRevolute < MobileRobot
             end
             % q (3+m) => (6+m)
             if length(q)==obj.arm.n+3
-                q = [q(1:2),obj.base.edges(3)/2,0,0,q(3:end)];
+                q = q(:)'; q = [q(1:2),obj.base.edges(3)/2,0,0,q(3:end)];
             end
             if opt.frame
                 h = obj.plot@MobileRobot(q,'workspace',opt.workspace,'frame','framecolor',opt.framecolor);
@@ -106,8 +110,8 @@ classdef MobilePlanarRevolute < MobileRobot
     methods (Static)
         % calculate POE twist (6 x m+1) by l for mR manipulator
         function xi_mat = twist(link,base)
-            % choose q according to type of joints
-            gs0 = transl(base);
+            % calculate twist (link: 1xm, base: 4x4 from origin)
+            gs0 = base;
             l0 = [0;link(:)];
             for i=1:length(l0)
                 q(:,i) = [sum(l0(1:i)),0,0]';
@@ -122,6 +126,15 @@ classdef MobilePlanarRevolute < MobileRobot
             % tool twist
             g_st0 = transl(q(:,end));
             xi_mat(:,i+1) = vee(logm(g_st0));
+        end
+        
+        function q = ikine(tool, base)
+            
+        end
+        
+        % calculate POE twist (6 x m+1) by l for mR manipulator
+        function [tool, base] = fkine(q)
+            
         end
     end
     

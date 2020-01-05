@@ -5,6 +5,7 @@ srcpath = fileparts(mfilename('fullpath'));
 addpath(srcpath); % add src folder to the matlab path
 addpath([srcpath '/common']); % add common
 addpath([srcpath '/model']); % add model
+addpath([srcpath '/planning']); % add planning
 
 % import third party toolboxes
 thirdpartypath = [srcpath '/thirdparty'];
