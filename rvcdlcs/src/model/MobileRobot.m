@@ -2,10 +2,10 @@
 % (last mod.: 01-01-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
-% - name: str
+% - name: str (robot*)
 % - base: Cuboid
 % - arm: SerialLink
-% - mount: SE3 (from base to first link)
+% - mount: SE3 (on the upper surface of mobile base)
 % Methods:
 % - MobileRobot: construction (opt: name)
 % - plot (opt: workspace, [no]frame, framecolor)

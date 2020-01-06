@@ -1,8 +1,8 @@
 close all
 clear
 
-m = 3; link = ones(m,1)*0.8; edge = [1,.8,.5]; mount = [0.2,0.2,edge(3)/2+1];
-r = MobilePlanarRevolute(edge,link,mount,'name','rob1','type','elbowup');
+m = 3; link = ones(m,1)*0.8; edge = [1,.8,.5]; mh = [0.2,0.2,1];
+r = MobilePlanarRevolute(edge,link,mh,'name','rob1','type','elbowup');
 r.plot([0,0,0,.3,.5,.2],'workspace',[-1 3 -1 3 0 4],'frame');
 q0 = [0,0,0,0,0,0];
 q1 = [1,0,0,-1,1,2];

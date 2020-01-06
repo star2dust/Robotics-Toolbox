@@ -7,12 +7,13 @@ for i=1:n-1
         if map(i)==0&&map(j)==0
             [ix,iy,iz] = ind2sub(size(map),i);
             [jx,jy,jz] = ind2sub(size(map),j);
-            % three cases: face, edge or vertex contact
-            if norm([ix,iy,iz]-[jx,jy,jz])==1||norm([ix,iy,iz]-[jx,jy,jz])==sqrt(2)||norm([ix,iy,iz]-[jx,jy,jz])==sqrt(3)
-                if sum(sum(map([ix,jx],[iy,jy],[iz,jz])))==0
-                    bigraph(i,j) = 1;
-                    bigraph(j,i) = 1;
-                end
+            % any vertice pair inside an obstacle free district has an edge
+            ijx = min(ix,jx):max(ix,jx);
+            ijy = min(iy,jy):max(iy,jy);
+            ijz = min(iz,jz):max(iz,jz);
+            if sum(sum(map(ijx,ijy,ijz)))==0
+                bigraph(i,j) = 1;
+                bigraph(j,i) = 1;
             end
         end
     end

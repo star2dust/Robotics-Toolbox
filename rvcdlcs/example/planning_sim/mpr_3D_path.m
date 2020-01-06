@@ -1,7 +1,7 @@
 close all
 clear
 
-load('path_example.mat');
+load('path_gap_example2.mat');
 test_rloc = 1;
 if test_rloc==1
     [qt,~,~,tqt] = calctraj(rloc1,0.5*ones(size(rloc1(1,:))),0.1,2);
@@ -13,7 +13,7 @@ qrot1 = [1,1,2,1];
 dqrot = (qrot1-qrot0)/(length(tqt)-1);
 qr = zeros(length(tqt),length(qrot0));
 for i=1:length(qrot0)
-    qr(:,i) = [qrot0(i):dqrot(i):qrot1(i)]';
+    qr(:,i) = (qrot0(i):dqrot(i):qrot1(i))';
 end
 m = 3; link = ones(m,1)*0.8; edge = [1,.8,.5]; mount = [0.2,0.2,edge(3)/2+1];
 mpr = MobilePlanarRevolute(edge,link,mount,'name','rob1','type','elbowup');

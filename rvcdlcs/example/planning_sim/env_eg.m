@@ -2,7 +2,7 @@ close all
 clear
 
 tile = 2; edge = [ones(1,2)*tile,0.5]; smap = [ones(1,2)*10,1]; pct = 0.2;
-[obs, qobs, map] = environment(edge,smap,pct);
+[obs, qobs, map] = environment_cm(edge,smap,pct);
 [bigraph,biloc] = map2graph(map);
 n = smap(1)*smap(2)*smap(3);
 %% test astar
