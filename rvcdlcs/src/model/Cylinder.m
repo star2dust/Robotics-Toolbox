@@ -20,14 +20,16 @@ classdef Cylinder < handle
         % how to calculate? => I = diag([Ixx Iyy Izz])+skew([-Iyz Ixz -Ixy])
         inerMat % [M,0;0,I]
         % a list of verts and edges
-        bverts % (body frame)
-        faces %
+        bvert % (body frame)
+        face %
         radius 
         height
     end
     
     methods
         function obj = Cylinder(varargin)
+            % C.Cylinder  Create Cylinder object
+            
             % opt statement
             opt.name = 'cyl';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
@@ -45,19 +47,22 @@ classdef Cylinder < handle
             if isscalar(radius)&&isscalar(height)
                 % verts list in body frame (format: [x y z])
                 obj.radius = radius; obj.height = height;
-                [obj.bverts,obj.faces] = obj.tobvert(radius,height);
+                [obj.bvert,obj.face] = obj.tobvert(radius,height);
             else
                 error('improper input dimension')
             end
         end
         
         function obj = addDym(obj,m)
+            % C.addDym  Add dynamic parameters for Cylinder object
             r = obj.radius; h = obj.height; obj.mass = m;
             obj.inertia = 1/12*m*[3*r^2+h^2 3*r^2+h^2 6*r^2 0 0 0];
             obj.inerMat = [obj.mass*eye(3),zeros(3);zeros(3),diag(obj.inertia(1:3))+skew(obj.inertia(4:end))];
         end
         
-        function h = plot(varargin)  
+        function h = plot(obj,varargin)  
+            % C.plot  Plot Cylinder object
+            
             % opt statement
             opt.facecolor = 'y';
             opt.facealpha = 0.8;
@@ -65,10 +70,16 @@ classdef Cylinder < handle
             opt.workspace = [];
             opt.frame = false;
             opt.framecolor = 'b';
+            opt.framelength = obj.radius/3;
+            opt.framethick = 1;
+            opt.framestyle = '-';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin); 
-            obj = arg{1};
-            q = arg{2}(:)';
+            if length(arg)==1
+                q = arg{1}(:)';
+            else
+                error('unknown argument');
+            end
             % logic to handle where the plot is drawn, are old figures updated or
             % replaced?
             %  calls create_floor() and create_robot() as required.
@@ -106,6 +117,7 @@ classdef Cylinder < handle
         end 
         
         function animate(obj,q)
+            % C.animate  Animate Cylinder object
             if nargin < 3
                 handles = findobj('Tag', obj.name);
             end
@@ -114,34 +126,37 @@ classdef Cylinder < handle
                     frame = SE3.qrpy(q);
                     set(handles.Children(i),'matrix',frame.T);
                 elseif strcmp(get(handles.Children(i),'Tag'), [obj.name '-cylinder'])
-                    set(handles.Children(i),'vertices',obj.verts(q),'faces',obj.faces);
+                    set(handles.Children(i),'vertices',obj.vert(q),'faces',obj.face);
                 else
-                    verts = reshape(obj.verts(q)',6,21)';
+                    vert = reshape(obj.vert(q)',6,21)';
                     if strcmp(get(handles.Children(i),'Tag'), [obj.name '-lower-surface'])
                         % plot lower surface
-                        set(handles.Children(i),'vertices',verts(:,1:3), 'faces', 1:21);
+                        set(handles.Children(i),'vertices',vert(:,1:3), 'faces', 1:21);
                     else
                         % plot upper surface
-                        set(handles.Children(i),'vertices',verts(:,4:6), 'faces', 1:21);
+                        set(handles.Children(i),'vertices',vert(:,4:6), 'faces', 1:21);
                     end
                 end
             end
         end
         
-        function verts = verts(obj,pose)
+        function vert = vert(obj,pose)
+            % C.vert  Get vertices relative to inertia frame
+            
             % frame update
             frame = SE3(pose(1:3))*SE3.rpy(pose(4:6));
             % verts position   
-            verts = h2e(frame.T*e2h(obj.bverts'))';
+            vert = h2e(frame.T*e2h(obj.bvert'))';
         end
     end
     
     methods (Static)
-        function [bverts,faces] = tobvert(r,h)
+        function [bvert,face] = tobvert(r,h)
+            % C.tobvert  Get vertices relative to body frame from radius and height
             [X,Y,Z] = cylinder(r,20);
             [TRI,V]= surf2patch(X,Y,Z);
-            bverts = [V(:,1:2),V(:,3)*h-h/2];
-            faces = TRI;
+            bvert = [V(:,1:2),V(:,3)*h-h/2];
+            face = TRI;
         end
     end
     
@@ -160,19 +175,19 @@ classdef Cylinder < handle
             group = hggroup('Tag', obj.name);
             h.group = group;
             % plot cylinder
-            h.cyl = patch('vertices',obj.verts(q), 'faces', obj.faces, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.facecolor, 'parent', group);
+            h.cyl = patch('vertices',obj.vert(q), 'faces', obj.face, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.facecolor, 'parent', group);
             set(h.cyl,'Tag', [obj.name '-cylinder']);
             % plot lower surface
-            verts = reshape(obj.verts(q)',6,21)';
-            h.surl = patch('vertices',verts(:,1:3), 'faces', 1:21, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor, 'parent', group);
+            vert = reshape(obj.vert(q)',6,21)';
+            h.surl = patch('vertices',vert(:,1:3), 'faces', 1:21, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor, 'parent', group);
             set(h.surl,'Tag', [obj.name '-lower-surface']);
             % plot upper surface
-            h.suru = patch('vertices',verts(:,4:6), 'faces', 1:21, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor, 'parent', group);
+            h.suru = patch('vertices',vert(:,4:6), 'faces', 1:21, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor, 'parent', group);
             set(h.suru,'Tag', [obj.name '-upper-surface']);
             
             if opt.frame
                 frame = SE3.qrpy(q);
-                h.frame = frame.plot('color', opt.framecolor);
+                h.frame = frame.plot('color', opt.framecolor, 'length', opt.framelength, 'thick', opt.framethick, 'style', opt.framestyle);
                 set(h.frame,'parent',group);
                 set(h.frame,'Tag', [obj.name '-frame']);
             end

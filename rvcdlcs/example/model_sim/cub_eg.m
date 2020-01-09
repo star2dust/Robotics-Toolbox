@@ -19,10 +19,10 @@ q2 = [3,0,0.5,0,0,0];
 
 figure; 
 for i=1:2
-   obs(i).plot(q_obs(i,:),'workspace',[-1,5,-1,5,0,6]); 
+   obs(i).plot(q_obs(i,:),'workspace',[-1,5,-1,5,0,6],'facecolor','b'); 
    hold on
 end
-rob.plot(q_rob,'facecolor','b'); 
+rob.plot(q_rob,'frame'); 
 plot3(qq(:,1),qq(:,2),qq(:,3),'r-');
 rotate3d on
 hold off

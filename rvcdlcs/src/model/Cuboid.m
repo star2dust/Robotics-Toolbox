@@ -4,7 +4,7 @@
 % Properties:
 % - name: str
 % - dynamics: mass(1x1), inertia(1x6), inerMat(6x6)
-% - shapes: faces(6x4), edges(1x3), bverts(body)(8x3)
+% - shapes: face(6x4), bvert(body)(8x3), edge(1x3)
 % Methods:
 % - Cuboid: construction (opt: name)
 % - addDym: add dynamics
@@ -22,25 +22,27 @@ classdef Cuboid < handle
         % how to calculate? => I = diag([Ixx Iyy Izz])+skew([-Iyz Ixz -Ixy])
         inerMat % [M,0;0,I]
         % a list of verts and edges
-        bverts % (8x3) (body frame)
+        bvert % (8x3) (body frame)
         % verts % (8x3) (inertia frame)
-        faces % (6x4)
-        edges % (1x3) depth(x) width(y) height(z)
+        face % (6x4)
+        edge % (1x3) depth(x) width(y) height(z)
     end
     
-    properties (Constant, Access = private)
-        templateVerts = [0,0,0;0,1,0;1,1,0;1,0,0;0,0,1;0,1,1;1,1,1;1,0,1];
-        templateFaces = [1,2,3,4;5,6,7,8;1,2,6,5;3,4,8,7;1,4,8,5;2,3,7,6];
-        % ^ y axis
-        % | 6 % % 7 -> top
-        % | % 2 3 % -> bottom
-        % | % 1 4 % -> bottom
-        % | 5 % % 8 -> top
-        % -------> x axis
-    end
+%     properties (Constant, Access = private)
+%         templateVerts = [0,0,0;0,1,0;1,1,0;1,0,0;0,0,1;0,1,1;1,1,1;1,0,1];
+%         templateFaces = [1,2,3,4;5,6,7,8;1,2,6,5;3,4,8,7;1,4,8,5;2,3,7,6];
+%         % ^ y axis
+%         % | 6 % % 7 -> top
+%         % | % 2 3 % -> bottom
+%         % | % 1 4 % -> bottom
+%         % | 5 % % 8 -> top
+%         % -------> x axis
+%     end
     
     methods
         function obj = Cuboid(varargin)
+            % C.Cuboid  Create Cuboid object
+            
             % opt statement
             opt.name = 'cub';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
@@ -48,32 +50,35 @@ classdef Cuboid < handle
             obj.name = opt.name;
             % argument parse
             if isempty(arg)
-                edges = ones(1,3);
+                edge = ones(1,3);
             elseif length(arg)==1
-                edges = arg{1}(:)';
+                edge = arg{1}(:)';
             else
                 error('unknown arguments');
             end           
             % basic configuration
-            if isvector(edges)&&length(edges)==3
+            if isvector(edge)&&length(edge)==3
                 % weighted average (sum(weighList.*variableList,2)/sum(weighList))
                 % parallel axis theorem (sum(weighList.*diag(variableList'*variableList)'))
                 % verts list in body frame (format: [x y z])
-                obj.edges = edges(:)';
-                [obj.bverts,obj.faces] = obj.tobverts(obj.edges);
+                obj.edge = edge(:)';
+                [obj.bvert,obj.face] = obj.tobvert(obj.edge);
             else
                 error('improper input dimension')
             end
         end
         
         function obj = addDym(obj,mass)
-            edge = obj.edges;
+            % C.addDym  Add dynamic parameters for Cuboid object
+            ed = obj.edge;
             obj.mass = mass;
-            obj.inertia = 1/12*mass*[edge(2)^2+edge(3)^2 edge(1)^2+edge(3)^2 edge(2)^2+edge(1)^2 0 0 0];
+            obj.inertia = 1/12*mass*[ed(2)^2+ed(3)^2 ed(1)^2+ed(3)^2 ed(2)^2+ed(1)^2 0 0 0];
             obj.inerMat = [obj.mass*eye(3),zeros(3);zeros(3),diag(obj.inertia(1:3))+skew(obj.inertia(4:end))];
         end
         
-        function h = plot(varargin)  
+        function h = plot(obj,varargin)  
+            % C.plot  Plot Cuboid object
+            
             % opt statement
             opt.facecolor = 'y';
             opt.facealpha = 0.8;
@@ -81,10 +86,16 @@ classdef Cuboid < handle
             opt.workspace = [];
             opt.frame = false;
             opt.framecolor = 'b';
+            opt.framelength = sum(obj.edge)/length(obj.edge)/3;
+            opt.framethick = 1;
+            opt.framestyle = '-';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin); 
-            obj = arg{1};
-            q = arg{2}(:)';
+            if length(arg)==1
+                q = arg{1}(:)';
+            else
+                error('unknown argument')
+            end
             % update pose
             % obj.update(q);
             % logic to handle where the plot is drawn, are old figures updated or
@@ -124,12 +135,13 @@ classdef Cuboid < handle
         end 
         
         function animate(obj,q)
+            % C.animate  Animate Cuboid object
             if nargin < 3
                 handles = findobj('Tag', obj.name);
             end
             for i=1:length(handles.Children)
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-cuboid'])
-                    set(handles.Children(i),'vertices',obj.verts(q),'faces',obj.faces);
+                    set(handles.Children(i),'vertices',obj.vert(q),'faces',obj.face);
                 else
                     frame = SE3.qrpy(q);
                     set(handles.Children(i),'matrix',frame.T);
@@ -137,16 +149,19 @@ classdef Cuboid < handle
             end
         end
         
-        function verts = verts(obj,pose)
+        function vert = vert(obj,pose)
+            % C.vert  Get vertices relative to inertia frame
+            
             % frame update
             frame = SE3(pose(1:3))*SE3.rpy(pose(4:6));
             % verts position   
-            verts = h2e(frame.T*e2h(obj.bverts'))';
+            vert = h2e(frame.T*e2h(obj.bvert'))';
         end
     end
     
     methods (Static)
-        function [bverts,faces] = tobverts(edges)
+        function [bvert,face] = tobvert(edge)
+            % C.tobvert  Get vertices relative to body frame from edge
             templateVerts = [0,0,0;0,1,0;1,1,0;1,0,0;0,0,1;0,1,1;1,1,1;1,0,1];
             templateFaces = [1,2,3,4;5,6,7,8;1,2,6,5;3,4,8,7;1,4,8,5;2,3,7,6];
             % ^ y axis
@@ -155,8 +170,8 @@ classdef Cuboid < handle
             % | % 1 4 % -> bottom
             % | 5 % % 8 -> top
             % -------> x axis
-            faces = templateFaces;
-            bverts = [templateVerts(:,1)*edges(1)-edges(1)/2,templateVerts(:,2)*edges(2)-edges(2)/2,templateVerts(:,3)*edges(3)-edges(3)/2];
+            face = templateFaces;
+            bvert = [templateVerts(:,1)*edge(1)-edge(1)/2,templateVerts(:,2)*edge(2)-edge(2)/2,templateVerts(:,3)*edge(3)-edge(3)/2];
         end
     end
     
@@ -174,12 +189,12 @@ classdef Cuboid < handle
             
             group = hggroup('Tag', obj.name);
             h.group = group;
-            h.cub = patch('vertices',obj.verts(q), 'faces', obj.faces, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor, 'parent', group);
+            h.cub = patch('vertices',obj.vert(q), 'faces', obj.face, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor, 'parent', group);
             set(h.cub,'Tag', [obj.name '-cuboid']);
             
             if opt.frame
                 frame = SE3.qrpy(q);
-                h.frame = frame.plot('color', opt.framecolor);
+                h.frame = frame.plot('color', opt.framecolor,'length',opt.framelength, 'thick', opt.framethick, 'style', opt.framestyle);
                 set(h.frame,'parent',group);
                 set(h.frame,'Tag', [obj.name '-frame']);
             end

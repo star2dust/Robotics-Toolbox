@@ -308,14 +308,49 @@ classdef SE3 < SO3
             end
         end
         
-        function q = toqeul(obj)
-            % SE3.qeul Get translation and eular angle in a column vector
-            q = [obj.t;obj.toeul'];
+        function q = toqeul(obj, varargin)
+            % SE3.toqeul  Get translation and eular angle in a row vector
+            %
+            % QEUL = P.toqeul(OPTIONS) are the tanslation t (1x3) and the ZYZ Euler angles (1x3) 
+            % corresponding to the rotational part of the SE3 object P. The 3 angles EUL=[PHI,THETA,PSI]
+            % correspond to sequential rotations about the Z, Y and Z axes respectively.
+            %
+            % If P is a vector (1xN) then each row of EUL corresponds to an element of
+            % the vector.
+            %
+            % Options::
+            %  'deg'      Compute angles in degrees (radians default)
+            %  'flip'     Choose first Euler angle to be in quadrant 2 or 3.
+            %
+            % Notes::
+            % - There is a singularity for the case where THETA=0 in which case PHI is arbitrarily
+            %   set to zero and PSI is the sum (PHI+PSI).
+            %
+            % See also SE3.toqrpy, SO3.toeul, SE3.torpy, EUL2TR, TR2RPY.
+            q = [obj.t;obj.toeul(varargin{:})']';
         end
         
-        function q = toqrpy(obj)
-            % SE3.qrpy Get translation and rpy angle in a column vector
-            q = [obj.t;obj.torpy'];
+        function q = toqrpy(obj, varargin)
+            % SE3.toqrpy  Get translation and rpy angle in a row vector
+            %
+            % QRPY = P.toqrpy(options) are the tanslation t (1x3) and the roll-pitch-yaw angles (1x3) 
+            % corresponding to the rotational part of the SE3 object P. The 3 angles RPY=[R,P,Y]
+            % correspond to sequential rotations about the Z, Y and X axes respectively.
+            %
+            % If P is a vector (1xN) then each row of RPY corresponds to an element of
+            % the vector.
+            %
+            % Options::
+            %  'deg'   Compute angles in degrees (radians default)
+            %  'xyz'   Return solution for sequential rotations about X, Y, Z axes
+            %  'yxz'   Return solution for sequential rotations about Y, X, Z axes
+            %
+            % Notes::
+            % - There is a singularity for the case where P=pi/2 in which case R is arbitrarily
+            %   set to zero and Y is the sum (R+Y).
+            %
+            % See also SE3.toqeul, SE3.torpy, SE3.toeul, rpy2tr, tr2eul.
+            q = [obj.t;obj.torpy(varargin{:})']';
         end
         
         function TT = T(obj)
@@ -833,16 +868,53 @@ classdef SE3 < SO3
             obj = SE3( SO3.eul(varargin{:}) );
         end
         
-        function obj = qrpy(q)
+        function obj = qrpy(varargin)
             %SE3.qrpy Construct an SE(3) object from translation and roll-pitch-yaw angles
-            pose = q(:);
-            obj = SE3(q(1:3))*SE3( SO3.rpy(pose(4:end)') );
+            %
+            % P = SE3.qrpy(QRPY, OPTIONS) is an SE3 object equivalent to the specified 
+            % translation and roll, pitch, yaw angles angles. These correspond to rotations
+            % about the Z, Y, X axes respectively. RPY = [X, Y, Z, ROLL, PITCH, YAW].  
+            % If RPY is a matrix (Nx6) then they are assumed to represent a trajectory 
+            % and P is a vector (1xN) of SE3 objects.
+            %
+            % Options::
+            %  'deg'   Compute angles in degrees (radians default)
+            %  'xyz'   Rotations about X, Y, Z axes (for a robot gripper)
+            %  'yxz'   Rotations about Y, X, Z axes (for a camera)
+            %
+            % See also SO3.rpy, SE3.qeul, TR2RPY, EUL2TR.
+            pose = varargin{1}; 
+            if length(varargin)>1
+                opt = varargin(2:end);
+                obj = SE3(pose(:,1:3))*SE3( SO3.rpy(pose(:,4:end),opt{:}) );
+            else
+                obj = SE3(pose(:,1:3))*SE3( SO3.rpy(pose(:,4:end)));
+            end  
         end
         
-        function obj = qeul(q)
+        function obj = qeul(varargin)
             %SE3.qeul Construct an SE(3) object from translation and Euler angles
-            pose = q(:);
-            obj = SE3(q(1:3))*SE3( SO3.eul(pose(4:end)') );
+            %
+            % P = SE3.qeul(QEUL, OPTIONS) is an SE3 object equivalent to the
+            % specified translation and Euler angles.  These correspond to rotations about 
+            % the Z, Y, Z axes respectively. QEUL = [X Y Z PHI THETA PSI]. If QEUL
+            % is a matrix (Nx6) then they are assumed to represent a trajectory then P
+            % is a vector (1xN) of SE3 objects.
+            %
+            % Options::
+            %  'deg'      Compute angles in degrees (radians default)
+            %
+            % Note::
+            % - The vectors PHI, THETA, PSI must be of the same length.
+            %
+            % See also SO3.eul, SE3.qrpy, EUL2TR, RPY2TR, TR2EUL.
+            pose = varargin{1};
+            if length(varargin)>1
+                opt = varargin(2:end);
+                obj = SE3(pose(:,1:3))*SE3( SO3.eul(pose(:,4:end),opt{:}) );
+            else
+                obj = SE3(pose(:,1:3))*SE3( SO3.eul(pose(:,4:end)));
+            end  
         end
         
         function T = rand()

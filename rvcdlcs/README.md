@@ -4,7 +4,12 @@
 
 A expansion package for [Robotics Toolbox](http://petercorke.com/wordpress/toolboxes/robotics-toolbox) by Peter Corke. I add some new features for personal usage in my research works. I also integrated some useful third party scripts in this toolbox. 
 
-## Features
+## Update log
+
+- Updates on Jan. 09, 2020
+    1. Add class `CooperativeManipulation`, which supports simulation for mobile planar revolute manipulators.
+    2. Add demos in the folder `example/manipulation_demo`.
+    3. Add function `environment_gap` and examples in `example/planning_sim`.
 
 - Updates on Jan. 05, 2020
     1. Add some planning functions in the folder `src/planning`.
@@ -45,6 +50,7 @@ A expansion package for [Robotics Toolbox](http://petercorke.com/wordpress/toolb
        - `bracket`: Lie bracket.
        - `wedge` and `vee`: `w^` and `Wˇ` calculation for twists.
     2. Add velocity and acceleration support for `calctraj`.
+    
 
 ## Third Party Scripts
 
@@ -70,8 +76,3 @@ A expansion package for [Robotics Toolbox](http://petercorke.com/wordpress/toolb
 
 - See [here](https://github.com/star2dust/Robotics-Toolbox).
 - To use `iris`, the [MOSEK-MATLAB](https://github.com/star2dust/MOSEK-MATLAB) toolbox is needed.
-
-## References
-
-1. [Murray, R. M. (1994). A mathematical introduction to robotic manipulation. CRC press.](https://www.crcpress.com/A-Mathematical-Introduction-to-Robotic-Manipulation/Murray/p/book/9780849379819)
-2. [Deits, R., & Tedrake, R. (2015). Computing large convex regions of obstacle-free space through semidefinite programming. *Springer Tracts in Advanced Robotics*, *107*, 109–124.](http://groups.csail.mit.edu/robotics-center/public_papers/Deits14.pdf)

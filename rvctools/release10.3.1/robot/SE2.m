@@ -287,8 +287,16 @@ classdef SE2 < SO2
         end
         
         function q = q(obj)
-            % SE2.q Get translation and angle in a column vector
-            q = [obj.t;obj.angle];
+            % SE2.q Get translation and angle in a row vector
+            %
+            % q = P.q() is is a row vector (1x3) representing the translational and rotation
+            % component of the rigid-body motion described by the SE2 object P.  If P is a 
+            % vector of objects (1xN) then q (Nx3) will have one row per object element.
+            %
+            % See also SO2.angle.
+            for i=1:length(obj)
+                q(i,:) = [obj(i).t;obj(i).angle]';
+            end
         end
         
         function T = T(obj)

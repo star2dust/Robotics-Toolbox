@@ -20,7 +20,8 @@ classdef MobileRobot < handle
     
     methods
         function obj = MobileRobot(varargin)
-            % MobileRevolute creates m-dof MobileRevolute robot object
+            % MR.MobileRobot   Create MobileRobot robot object
+            
             % opt statement
             opt.name = 'robot';
             opt.qlim = [];
@@ -55,19 +56,22 @@ classdef MobileRobot < handle
             end
         end
         
-        function h = plot(varargin)  
+        function h = plot(obj,varargin) 
+            % MR.plot   Plot MobileRobot robot object
+            
             % opt statement
             opt.workspace = [];
             opt.frame = false;
             opt.framecolor = 'b';
+            opt.framelength = sum(obj.base.edge)/length(obj.base.edge)/3;
+            opt.framethick = 1;
+            opt.framestyle = '-';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin); 
             % argument parse
-            if length(arg)==2
-                % get object
-                obj = arg{1};
+            if length(arg)==1
                 % get pose
-                q = arg{2}(:)';
+                q = arg{1}(:)';
             else
                 error('unknown arguments');
             end
@@ -106,6 +110,7 @@ classdef MobileRobot < handle
         end 
         
         function animate(obj,q)
+            % MR.animate  Animate MobileRobot robot object
             if nargin < 3
                 handles = findobj('Tag', obj.name);
             end
@@ -142,8 +147,8 @@ classdef MobileRobot < handle
             h.group = group;
             h.arm = obj.arm.plot(qa);
             if opt.frame
-                h.base = obj.base.plot(qb,'frame','framecolor', opt.framecolor);
-                h.tool = SE3(obj.arm.fkine(qa)).plot('color', opt.framecolor);
+                h.base = obj.base.plot(qb,'frame','framecolor', opt.framecolor,'framelength',opt.framelength, 'framethick', opt.framethick, 'framestyle', opt.framestyle);
+                h.tool = SE3(obj.arm.fkine(qa)).plot('color', opt.framecolor,'length',opt.framelength, 'width', opt.framethick, 'style', opt.framestyle);
                 set(h.tool,'parent',group);
                 set(h.tool,'Tag', [obj.name '-tool']);
             else
