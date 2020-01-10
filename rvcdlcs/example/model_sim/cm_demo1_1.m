@@ -38,11 +38,11 @@ if video_on
 end
 for t=0:0.05:3
     if t<=1
-        psi = pi/4*t; scale = 1-0.3*t;
+        g_r2c = SE2(rot2(-pi/4*t)); psi = pi/4*t; scale = 1-0.3*t;
     elseif t>1&&t<=2
-        psi = pi/4-pi/4*(t-1); scale = 1-0.3+0.6*(t-1);
+        g_r2c = SE2(rot2(pi/2*(t-1)-pi/4)); psi = pi/4-pi/4*(t-1); scale = 1-0.3+0.6*(t-1);
     else
-        psi = 0; scale = 1+0.3-0.3*(t-2);
+        g_r2c = SE2(rot2(pi/4-pi/4*(t-2))); psi = 0; scale = 1+0.3-0.3*(t-2);
     end
     if t<=1.5
         g_r = SE2([2.5,2.5,0]+ones(1,3)/2*t);

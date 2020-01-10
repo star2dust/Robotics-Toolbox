@@ -22,7 +22,7 @@ classdef CooperativeManipulation < handle
     
     methods
         function obj = CooperativeManipulation(varargin)
-            % CM.CooperativeManipulation   Creates planar CooperativeManipulation object
+            % CM.CooperativeManipulation   Creates planar cooperative manipulation object
             % opt statement
             opt.name = 'cm';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
@@ -48,8 +48,6 @@ classdef CooperativeManipulation < handle
         end
         
         function h = plot(obj,varargin)
-            % CM.plot  Plot planar CooperativeManipulation object
-            
             % opt statement
             opt.workspace = [];
             opt.frame = false;
@@ -102,7 +100,6 @@ classdef CooperativeManipulation < handle
         end
         
         function animate(obj,g_r2c,psi,th_tilde)
-            % CM.animate  Animate planar CooperativeManipulation object
             if nargin < 4
                 handles = findobj('Tag', obj.name);
             end
@@ -115,7 +112,7 @@ classdef CooperativeManipulation < handle
         end
         
         function obj = initialization(obj)
-            % CM.initialization  Initialize CM.g_c2e_bar (1xn SE2) and CM.p_e2m_bar (2xn)
+            % CM.initialization  Initialize CM.g_c2e_bar (SE2) and CM.p_e2m_bar (2xn)
             % - g_c2e is uniformly distributed around the payload 
             % - p_e2m is determined by maximum manipulability index
             n = length(obj.robot);
@@ -172,7 +169,7 @@ classdef CooperativeManipulation < handle
         end
         
         function th_r = formationIkine(obj,g_r2c,psi,scale)
-            % CM.formationIkine  Inverse kinematics of robots in formation 
+            % CM.formationIkine  Inverse kinematics in formation 
             % return th_r (nxm) relative to r frame
             n = length(obj.robot);
             % g_r2e
@@ -191,7 +188,7 @@ classdef CooperativeManipulation < handle
     
     methods (Access = protected)
         function h = createCM(obj,g_r2c,psi,th_tilde,opt)
-            % CM.createCM  Create handles for planar CooperativeManipulation object plot
+            % CM.createCM  Create handles for object plot
             
             % create an axis
             ish = ishold();

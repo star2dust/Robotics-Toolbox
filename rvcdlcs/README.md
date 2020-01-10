@@ -65,15 +65,15 @@ A expansion package for [Robotics Toolbox](http://petercorke.com/wordpress/toolb
     - `dijkstra`: Dijkstra planning algorithm.
     - `astar`: A* planning algorithm.
 	- `dynamicpathplanning`: Dynamic path planning algorithm.
-4. Iterative regional inflation by SDP (iris-distro) (c) [Robin Deits](https://github.com/rdeits)
+4. Iterative Regional Inflation by SDP (iris-distro) (c) [Robin Deits](https://github.com/rdeits)
     - `+iris`: Package for generating maximum convex region.
 5. Input Scripts (hebinput) (c) [HebiRobotics](https://github.com/HebiRobotics/MatlabInput)
 	- `HebiJoystick`: Creates a joystick object. 
 	- `HebiKeyboard`: Creates a keyboard object.
-6. Bidirectional Conversion between D-H parameters and POE parameters (dh2poe) (c) [Liao Wu](https://www.researchgate.net/profile/Liao_Wu4)
+6. Bidirectional Conversion between D-H Parameters and POE Parameters (dh2poe) (c) [Liao Wu](https://www.researchgate.net/profile/Liao_Wu4)
 	- `POE2DH_Joint`: Demonstrate Lemma 1 and 2.
 	- `POE2DH_Tool`: Demonstrate Lemma 3.
-	- Detail see [Wu, L., Crawford, R., & Roberts, J. (2017)](https://ieeexplore.ieee.org/document/7968294/).
+	- Details see [Wu, L., Crawford, R., & Roberts, J. (2017)](https://ieeexplore.ieee.org/document/7968294/).
 
 
 ## Installation

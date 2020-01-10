@@ -22,6 +22,16 @@ plot3(quav(:,1),quav(:,2),quav(:,3),'r-','linewidth',2);
 view(3); xlabel('x');ylabel('y');zlabel('z'); rotate3d on;
 hold off
 
+
+% write video
+video_on = true;
+if video_on
+    respath = '/home/chu/Documents/MATLAB/Results/';
+    videoname = [respath 'uav_3d_demo_v1.0'];
+    writerObj = VideoWriter(videoname);
+    open(writerObj);
+end
+
 tic;
 playspeed = 2;
 while toc<tq(end)/playspeed
@@ -31,4 +41,12 @@ while toc<tq(end)/playspeed
     % update object
     qranimate(h,q,qrsize,quadrotor);
     drawnow
+    if video_on
+        frame = getframe;
+        frame.cdata = imresize(frame.cdata,[480,640]);
+        writeVideo(writerObj,frame);
+    end
+end
+if video_on
+    close(writerObj);
 end
