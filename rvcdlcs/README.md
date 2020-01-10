@@ -55,24 +55,28 @@ A expansion package for [Robotics Toolbox](http://petercorke.com/wordpress/toolb
 ## Third Party Scripts
 
 1. Convex Hull Scripts (cvxhull)
-	- [inhull](https://nl.mathworks.com/matlabcentral/fileexchange/10226-inhull ): Tests if a set of points are inside a convex hull (c) 2009 John D'Errico 
-	- [inpoly](https://github.com/dengwirda/inpoly ): Fast point-in-polygon queries in MATLAB (c) Darren Engwirda 
-
+	- [`inhull`](https://nl.mathworks.com/matlabcentral/fileexchange/10226-inhull ): Tests if a set of points are inside a convex hull (c) 2009 John D'Errico 
+	- [`inpoly`](https://github.com/dengwirda/inpoly ): Fast point-in-polygon queries in MATLAB (c) Darren Engwirda 
 2. STL Read & Write Scripts (stlreader) (c) 2011 [Eric Johnson](https://nl.mathworks.com/matlabcentral/profile/authors/2990507-eric-johnson)
-	- [stlread](https://nl.mathworks.com/matlabcentral/fileexchange/22409-stl-file-reader): Imports geometry from an STL file into MATLAB.
-	- stlwrite: Write STL file from patch or surface data.
-	- surf2stl: Write STL file from surface data.
+	- [`stlread`](https://nl.mathworks.com/matlabcentral/fileexchange/22409-stl-file-reader): Imports geometry from an STL file into MATLAB.
+	- `stlwrite`: Write STL file from patch or surface data.
+	- `surf2stl`: Write STL file from surface data.
+3. Searching Algorithm on Undirected Graph (graphsearch)  (c) [muhammet balcilar](https://nl.mathworks.com/matlabcentral/profile/authors/7269297-muhammet-balcilar)
+    - `dijkstra`: Dijkstra planning algorithm.
+    - `astar`: A* planning algorithm.
+	- `dynamicpathplanning`: Dynamic path planning algorithm.
+4. Iterative regional inflation by SDP (iris-distro) (c) [Robin Deits](https://github.com/rdeits)
+    - `+iris`: Package for generating maximum convex region.
+5. Input Scripts (hebinput) (c) [HebiRobotics](https://github.com/HebiRobotics/MatlabInput)
+	- `HebiJoystick`: Creates a joystick object. 
+	- `HebiKeyboard`: Creates a keyboard object.
+6. Bidirectional Conversion between D-H parameters and POE parameters (dh2poe) (c) [Liao Wu](https://www.researchgate.net/profile/Liao_Wu4)
+	- `POE2DH_Joint`: Demonstrate Lemma 1 and 2.
+	- `POE2DH_Tool`: Demonstrate Lemma 3.
+	- Detail see [Wu, L., Crawford, R., & Roberts, J. (2017)](https://ieeexplore.ieee.org/document/7968294/).
 
-3. Planning Scripts 
-    - [graphsearch](https://nl.mathworks.com/matlabcentral/fileexchange/68871-robotpathplanning): Dijkstra, A star and dynamic planning on undirected graph (c) [muhammet balcilar](https://nl.mathworks.com/matlabcentral/profile/authors/7269297-muhammet-balcilar).  
-    - [iris-distro](https://github.com/rdeits/iris-distro): Iterative regional inflation by SDP. 
-
-4. Input Scripts (hebinput) (c) [HebiRobotics](https://github.com/HebiRobotics/MatlabInput)
-	-  `HebiJoystick` creates a joystick object. 
-	-  `HebiKeyboard` creates a keyboard object.
-	-  Library for getting keyboard and joystick input into MATLAB.
 
 ## Installation
 
 - See [here](https://github.com/star2dust/Robotics-Toolbox).
-- To use `iris`, the [MOSEK-MATLAB](https://github.com/star2dust/MOSEK-MATLAB) toolbox is needed.
+- To use `+iris`, the [MOSEK-MATLAB](https://github.com/star2dust/MOSEK-MATLAB) toolbox is needed.

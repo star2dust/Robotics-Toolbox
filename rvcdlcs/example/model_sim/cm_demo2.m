@@ -15,9 +15,10 @@ h = plot(p_m_hat(1,[1:end,1]),p_m_hat(2,[1:end,1]));
 view(-30,70)
 
 % write video
-video_on = 0;
+video_on = false;
 if video_on
-    videoname = 'cooperative_manipulation_demo_v1.1';
+    respath = '/home/chu/Documents/MATLAB/Toolboxes/Robotics-Toolbox/rvcdlcs/result/';
+    videoname = [respath 'cooperative_manipulation_demo_v1.2'];
     writerObj = VideoWriter(videoname);
     open(writerObj);
 end

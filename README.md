@@ -4,9 +4,20 @@
 A robotics toolbox and expansion package for MATLAB.
 
 1. Robotics, Vision &amp; Control (rvctools) (c) [Peter Corke](http://www.petercorke.com) 1992-2017 
-2. Robotics Toolbox Expansion Package  (rvcdlcs)  (c) star2dust 2019 ([what is new?](https://github.com/star2dust/Robotics-Toolbox/tree/master/rvcdlcs))
+2. Robotics Toolbox Expansion Package  (rvcdlcs)  (c) [star2dust](https://github.com/star2dust) 2019-2020
 
 ## Features
+
+### Robotics, Vision &amp; Control (rvctools)
+
+- The book [Robotics, Vision & Control, second edition](http://www.petercorke.com/RVC) (Corke, 2017) is a detailed introduction to mobile robotics, navigation, localization; and arm robot kinematics, Jacobians and dynamics illustrated using the Robotics Toolbox for MATLAB.
+- The manual [robot.pdf (3.8 MB)](http://petercorke.com/wordpress/?ddownload=343) is a PDF file is a printable document (over 400 pages). It is auto-generated from the comments in the MATLAB code and is fully: to external web sites, the table of content to functions, and the “See also” functions to each other. You can find this in the Toolbox as rvctools/robot/robot.pdf.
+
+Details see http://petercorke.com/wordpress/toolboxes/robotics-toolbox. 
+
+### Robotics Toolbox Expansion Package  (rvcdlcs)
+
+A expansion package for Robotics, Vision &amp; Control. I add some new features for personal usage in my research works. I also integrated some useful third party scripts in this toolbox. ([what is new?](https://github.com/star2dust/Robotics-Toolbox/tree/master/rvcdlcs))
 
 - New function for `SE2`, `SE3`.
 
