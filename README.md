@@ -2,28 +2,40 @@
 ## Introduction
 
 A robotics toolbox and expansion package for MATLAB.
+
 1. Robotics, Vision &amp; Control (rvctools) (c) [Peter Corke](http://www.petercorke.com) 1992-2017 
 2. Robotics Toolbox Expansion Package  (rvcdlcs)  (c) star2dust 2019 ([what is new?](https://github.com/star2dust/Robotics-Toolbox/tree/master/rvcdlcs))
 
 ## Features
 
 - New function for `SE2`, `SE3`.
+
     1. `SE2.q`: Get translation and angle in a row vector. 
     2. `SE3.qrpy`/`SE3.qeul`: Construct an SE(3) object from translation and rpy/eul angles
     3. `SE3.toqrpy`/`SE3.toqeul`: Get translation and rpy/eul angle in a row vector.
+    
 - New `LineStyle` option for `SE2.plot` and `SE3.plot`.
+
 	-  Example:  `SE3.plot('style','-.')`. (4 styles: -. / : / .. / --)
+	
 - New calculation functions for  4 x 4 double matrix. (See folder `src/common`)
+
 	1. `Adg`: adjoint transformation.
 	2. `invg`:  inverse transformation.
 	3. `bracket`: Lie bracket.
 	4. `wedge` and `vee`: `w^` and `Wˇ` calculation for twists.
+	
 - New functions for DH parameters and POE parameters. (See folder `src/common`)
+
     1. `poe2dh`: Transfer POE parameters to DH parameters.
     2. `dh2poe`: Transfer DH parameters to POE parameters.
+    
 - New `qlim` option for `SerialLink` object construction by DH parameters. (`Qlim`: m x 2 matrix)
+
     - Example: `SerialLink([dh,sigma], 'base', Hb, 'tool', Ht, 'qlim', Qlim)`.
+    
 - New classes for robotics. (See folder `src/model` and `example/model_sim`)
+
     1. `Cuboid`: Rigid Cuboid 3D Model class (rpy).
     2. `Cylinder`: Rigid Cylinder 3D Model class (rpy).
     3. `MobileRobot`: Mobile Robot 3D Model class (rpy).
@@ -33,11 +45,14 @@ A robotics toolbox and expansion package for MATLAB.
     
     5. `CooperativeManipulation`: Cooperative Manipulation 3D Model class (rpy, stdDH). 
     
-    <img src="https://github.com/star2dust/Robotics-Toolbox/blob/master/rvcdlcs/result/cm_demo.jpg" alt="Example." width="375" />
+    <img src="https://github.com/star2dust/Robotics-Toolbox/blob/master/rvcdlcs/result/cm_demo_v1.0.gif" alt="Example." width="350" /> <img src="https://github.com/star2dust/Robotics-Toolbox/blob/master/rvcdlcs/result/cm_demo_v1.1.gif" alt="Example." width="350" />
+    
 - New functions for path planning. (See folder `src/planning` and `example/planning_sim`).
+
     1. `environment`: Generate obstacle environment with grid cell. 
     
     <img src="https://github.com/star2dust/Robotics-Toolbox/blob/master/rvcdlcs/result/env_eg.jpg" alt="2d" width="350" /><img src="https://github.com/star2dust/Robotics-Toolbox/blob/master/rvcdlcs/result/env_3D_eg.jpg" alt="3d" width="350" />
+    
     2. `ind2loc`: Get real coordinate from map index.
     3. `map2graph`: Transfer map matrix to graph.
     4. `dijkstra`: Dijkstra algorithm for graph searching.
