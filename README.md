@@ -28,11 +28,14 @@ A robotics toolbox and expansion package for MATLAB.
     2. `Cylinder`: Rigid Cylinder 3D Model class (rpy).
     3. `MobileRobot`: Mobile Robot 3D Model class (rpy).
     4. `MobilePlanarRevolute`: Mobile Planar Revolute Robot 3D Model class (rpy, stdDH). 
+    
     <img src="https://github.com/star2dust/Robotics-Toolbox/blob/master/rvcdlcs/result/mpr_eg.jpg" alt="Example." width="375" />
     5. `CooperativeManipulation`: Cooperative Manipulation 3D Model class (rpy, stdDH). 
+    
     <img src="https://github.com/star2dust/Robotics-Toolbox/blob/master/rvcdlcs/result/cm_demo.jpg" alt="Example." width="375" />
 - New functions for path planning. (See folder `src/planning` and `example/planning_sim`).
     1. `environment`: Generate obstacle environment with grid cell. 
+    
     <img src="https://github.com/star2dust/Robotics-Toolbox/blob/master/rvcdlcs/result/env_eg.jpg" alt="2d" width="350" /><img src="https://github.com/star2dust/Robotics-Toolbox/blob/master/rvcdlcs/result/env_3D_eg.jpg" alt="3d" width="350" />
     2. `ind2loc`: Get real coordinate from map index.
     3. `map2graph`: Transfer map matrix to graph.
