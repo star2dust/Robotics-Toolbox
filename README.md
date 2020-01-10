@@ -30,6 +30,7 @@ A robotics toolbox and expansion package for MATLAB.
     4. `MobilePlanarRevolute`: Mobile Planar Revolute Robot 3D Model class (rpy, stdDH). 
     
     <img src="https://github.com/star2dust/Robotics-Toolbox/blob/master/rvcdlcs/result/mpr_eg.jpg" alt="Example." width="375" />
+    
     5. `CooperativeManipulation`: Cooperative Manipulation 3D Model class (rpy, stdDH). 
     
     <img src="https://github.com/star2dust/Robotics-Toolbox/blob/master/rvcdlcs/result/cm_demo.jpg" alt="Example." width="375" />
