@@ -4,7 +4,7 @@
 
 A expansion package for [Robotics Toolbox](http://petercorke.com/wordpress/toolboxes/robotics-toolbox) by Peter Corke. I add some new features for personal usage in my research works. I also integrated some useful third party scripts in this toolbox. 
 
-## Update log
+## Update Log
 
 - Updates on Jan. 09, 2020
     1. Add class `CooperativeManipulation`, which supports simulation for mobile planar revolute manipulators.

@@ -49,13 +49,15 @@ classdef CooperativeManipulation < handle
         
         function h = plot(obj,varargin)
             % CM.plot  Plot planar CooperativeManipulation object
-            
+            for i=1:length(obj.robot)
+                edge(i,:) = obj.robot(i).base.edge;
+            end
             % opt statement
             opt.workspace = [];
             opt.frame = false;
             opt.framecolor = 'br';
-            opt.framelength = obj.payload.radius/3;
-            opt.framethick = 1;
+            opt.framelength = [sum(sum(edge))/size(edge,1)/size(edge,2)/3,obj.payload.radius/3];
+            opt.framethick = [1 1];
             opt.framestyle = '-';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin);
@@ -138,7 +140,7 @@ classdef CooperativeManipulation < handle
             for i=1:n  
                 % g_r2e
                 p_r2e(:,i) = h2e(g_r2c.T*e2h(obj.g_c2e_bar(i).t));
-                phi_r2e(i) = obj.g_c2e_bar(i).angle+psi;
+                phi_r2e(i) = g_r2c.angle+obj.g_c2e_bar(i).angle+psi;
                 g_r2e(i) = SE2(p_r2e(:,i),phi_r2e(i));
             end
         end
@@ -208,13 +210,9 @@ classdef CooperativeManipulation < handle
             group = hggroup('Tag', obj.name);
             h.group = group;
             if opt.frame
-                if length(opt.framecolor)>1
-                    h.payload = obj.payload.plot(qc,'facecolor','g','frame','framecolor', opt.framecolor(2),'framelength', opt.framelength, 'framethick', 2);
-                else
-                    h.payload = obj.payload.plot(qc,'facecolor','g','frame','framecolor', opt.framecolor(1),'framelength', opt.framelength, 'framethick', 2);
-                end   
+                h.payload = obj.payload.plot(qc,'facecolor','g','frame','framecolor', opt.framecolor(2),'framelength', opt.framelength(2), 'framethick', opt.framethick(2));
                 for i=1:length(obj.robot)
-                    h.robot(i) = obj.robot(i).plot(qr(i,:),'frame','framecolor', opt.framecolor(1),'framelength',opt.framelength, 'framethick', opt.framethick, 'framestyle', opt.framestyle);
+                    h.robot(i) = obj.robot(i).plot(qr(i,:),'frame','framecolor', opt.framecolor(1),'framelength',opt.framelength(1), 'framethick', opt.framethick(1), 'framestyle', opt.framestyle);
                 end
             else
                 h.payload = obj.payload.plot(qc,'facecolor','g');
@@ -234,13 +232,15 @@ classdef CooperativeManipulation < handle
         function [payload_config,robot_config] = min2config(obj,g_r2c,psi,th_tilde)
             % CM.min2config  Return payload_config (1x6) and rob_config (1x(3+m))  
             payload_config = [g_r2c.t',obj.height,0,0,g_r2c.angle];
+            % g_r2e
+            g_r2e = obj.graspPose(g_r2c,psi);
             for i=1:length(obj.robot)
                 % phi_r2e
-                phi_r2e(i) = obj.g_c2e_bar(i).angle+psi;
+                phi_r2e(i) = g_r2e(i).angle;
                 th(i,:) = [phi_r2e(i)-sum(th_tilde(i,:)),th_tilde(i,:)]; % m-dof arm
                 p_r2em(:,i) = -obj.robot(i).mrfkine(obj.robot(i).link,th(i,:));
                 % p_r2e
-                p_r2e(:,i) = h2e(g_r2c.T*e2h(obj.g_c2e_bar(i).t));
+                p_r2e(:,i) = g_r2e(i).t;
                 robot_config(i,:) = [p_r2e(:,i)'+p_r2em(:,i)',0,th(i,:)];
             end
         end

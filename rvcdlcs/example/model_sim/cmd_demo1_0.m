@@ -16,17 +16,30 @@ clear
 % - g_r2em: g_em relative to r frame
 
 nrob = 4; nlink = 3; radius = .5;
-cm = CooperativeManipulation(nrob,nlink,radius,'name','cm');
+cm = DistributedManipulation(nrob,nlink,radius,'name','cm');
 
-g_r = SE2([2.5,2.5,0]);
-g_r2c = SE2; psi = 0; scale = 1;
-th_r = cm.formationIkine(g_r2c,psi,scale);
-p_m_hat = cm.formationTransl(g_r*g_r2c,scale);
+g_r = SE2(kron(ones(nrob,1),[2.5,2.5,0])); psi = 0; scale = 1;
+g_tilde = SE2(rot2(psi));
+th_r = cm.formationIkine(g_tilde,scale);
+p_r2m_hat = cm.formationTransl(scale);
+for i=1:nrob
+   p_m_hat(:,i) = h2e(g_r(i).T*e2h(p_r2m_hat(:,i)));    
+end
+
+% for i=1:nrob
+%    p_e2c_bar(:,i) = -cm.g_c2e_bar(i).R'*cm.g_c2e_bar(i).t;    
+% end
+
+
 
 figure
-cm.plot(g_r*g_r2c,psi,th_r(:,2:end),'workspace',[0 10 0 10 0 10]/2,'frame'); hold on
+cm.plot(g_r,g_tilde,th_r(:,2:end),'workspace',[0 10 0 10 0 10]/2,'frame'); hold on
 h = plot(p_m_hat(1,[1:end,1]),p_m_hat(2,[1:end,1]));
 view(-30,70)
+
+
+
+
 
 % write video
 video_on = false;
@@ -44,14 +57,18 @@ for t=0:0.05:3
     else
         psi = 0; scale = 1+0.3-0.3*(t-2);
     end
-    if t<=1.5
-        g_r = SE2([2.5,2.5,0]+ones(1,3)/2*t);
-    else
-        g_r = SE2([2.5,2.5,0]+ones(1,3)/2*(3-t));
+%     if t<=1.5
+%         g_r = SE2(kron(ones(nrob,1),[2.5,2.5,0]+ones(1,3)/2*t));
+%     else
+%         g_r = SE2(kron(ones(nrob,1),[2.5,2.5,0]+ones(1,3)/2*(3-t)));
+%     end
+    g_tilde = SE2(rot2(psi));
+    th_r = cm.formationIkine(g_tilde,scale);
+    p_r2m_hat = cm.formationTransl(scale);
+    for i=1:nrob
+        p_m_hat(:,i) = h2e(g_r(i).T*e2h(p_r2m_hat(:,i)));
     end
-    th_r = cm.formationIkine(g_r2c,psi,scale);
-    p_m_hat = cm.formationTransl(g_r*g_r2c,scale);
-    cm.animate(g_r*g_r2c,psi,th_r(:,2:end));
+    cm.animate(g_r,g_tilde,th_r(:,2:end));
     set(h,'xdata',p_m_hat(1,[1:end,1]),'ydata',p_m_hat(2,[1:end,1]));
     if video_on
         frame = getframe;

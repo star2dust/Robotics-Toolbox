@@ -148,7 +148,7 @@ classdef MobileRobot < handle
             h.arm = obj.arm.plot(qa);
             if opt.frame
                 h.base = obj.base.plot(qb,'frame','framecolor', opt.framecolor,'framelength',opt.framelength, 'framethick', opt.framethick, 'framestyle', opt.framestyle);
-                h.tool = SE3(obj.arm.fkine(qa)).plot('color', opt.framecolor,'length',opt.framelength, 'width', opt.framethick, 'style', opt.framestyle);
+                h.tool = SE3(obj.arm.fkine(qa)).plot('color', opt.framecolor,'length',opt.framelength, 'thick', opt.framethick, 'style', opt.framestyle);
                 set(h.tool,'parent',group);
                 set(h.tool,'Tag', [obj.name '-tool']);
             else
