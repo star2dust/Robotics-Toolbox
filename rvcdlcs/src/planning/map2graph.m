@@ -1,5 +1,8 @@
-% transfer map matrix to graph
 function [bigraph,bilocation] = map2graph(map)
+% transfer map matrix to obstacle-free graph
+% - map: map matrix with elements 0 or 1
+% - bigraph: A of obstacle-free graph
+% - bilocation: V of obstacle-free graph (index in map matrix)
 nx = size(map,1); ny = size(map,2); nz = size(map,3); n = nx*ny*nz;
 bigraph = zeros(n);
 for i=1:n-1

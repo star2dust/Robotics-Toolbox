@@ -1,4 +1,4 @@
-function Vh = hatwedge(V)
+function Vh = wedge(V)
 % transfer local representation V to twist Vh
 v = V(1:3);
 w = V(4:6);

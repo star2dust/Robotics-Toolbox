@@ -1,8 +1,11 @@
+function [obs, qobs, map] = environment(edge,smap,pct)
 % generate obstacle environment with grid cell
 % - edge: edge length of grid
 % - smap: size of map matrix
 % - pct: percentage of obstacles (from 0 to 1) (0: no obs, 1: full obs)
-function [obs, qobs, map] = environment(edge,smap,pct)
+% - obs: list of Cuboid object (1xN)
+% - qobs: pose of Cuboid (Nx6)
+% - map: map matrix with elements 0 or 1
 map = rand(smap)<pct;
 lx = edge(1); ly = edge(2); lz = edge(3);
 qobs = []; nrow = smap(1); ncol = smap(2); nlay = smap(3);

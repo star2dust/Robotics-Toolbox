@@ -160,7 +160,11 @@ classdef MobilePlanarRevolute < MobileRobot
         
         
         function varargout = manipulability(obj,th)
-            % MPR.manipulability  Calculate manipulability and its derivative for m-dof planar revolute manipulator
+            % MPR.manipulability   Calculate manipulability and its derivative 
+            % for m-dof planar revolute manipulator. If there is no input argument, 
+            % then calculate the maximum manipulability and the joint angles that
+            % perserve the corresponding manipulability.
+            
             m = obj.arm.n; l = obj.link;
             % maximun manipulability and joints
             if nargin<2              

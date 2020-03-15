@@ -1,0 +1,8 @@
+mu =
+ 
+(cos(th2) - cos(2*th2 + th3) - cos(2*th2)/2 - cos(2*th3) - cos(2*th2 + 2*th3) - cos(th2 + 2*th3) + cos(th3) + 5/2)^(1/2)
+ 
+ 
+mu =
+ 
+(cos(th2 - th4) - cos(th2 + 2*th3) - cos(2*th2 + th3) - 2*cos(th3 + 2*th4) - 2*cos(2*th3 + th4) - cos(2*th2)/2 - cos(2*th3) - (3*cos(2*th4))/2 - (3*cos(2*th2 + 2*th3 + 2*th4))/2 - cos(2*th2 + 2*th3) - 2*cos(2*th3 + 2*th4) - cos(th2 + th3 + 2*th4) - 2*cos(th2 + 2*th3 + th4) - cos(2*th2 + th3 + th4) + cos(th2 + th3) + cos(th2 + th4) + cos(th3 + th4) + 3*cos(th2) + 3*cos(th3) + 4*cos(th4) - 2*cos(th2 + 2*th3 + 2*th4) - 2*cos(2*th2 + 2*th3 + th4) + 15/2)^(1/2)
