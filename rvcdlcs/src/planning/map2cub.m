@@ -1,5 +1,5 @@
 function [pose, ind] = map2cub(map,edge)
-% generate obstacle environment with Cuboid/Cuboid2 grid cell from map matrix
+% generate obstacle data with Cuboid/Cuboid2 grid cell from map matrix
 % - map: map matrix with elements 0 or 1
 % - edge: edge length of grid
 % - pose: pose of Cuboid (Nx6)/ Cuboid2 (Nx3)

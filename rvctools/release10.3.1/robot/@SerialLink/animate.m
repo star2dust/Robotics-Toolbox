@@ -29,7 +29,7 @@
 %
 % http://www.petercorke.com
 
-function animate(robot, qq)
+function animate(robot, qq, handles)
 
     if nargin < 3
         handles = findobj('Tag', robot.name);
@@ -40,7 +40,7 @@ function animate(robot, qq)
     
     % get handle of any existing graphical robots of same name
     %  one may have just been created above
-    handles = findobj('Tag', robot.name);
+%     handles = findobj('Tag', robot.name);
     
     % MAIN DISPLAY/ANIMATION LOOP
     while true

@@ -1,7 +1,7 @@
+function h = plot(ge,th,xi,link,color)
 % plot a template mobile mR manipulator
-function h = plot(ge,th,xi,l,C)
 import SE3.*
-lm = l(1); la = l(2:end-1); le = l(end); 
+lm = link(1); la = link(2:end-1); le = link(end); 
 % reference config for each joint
 for i=1:length(ge)
     g_sl0{i} = transl(0,0,0);
@@ -16,7 +16,7 @@ g_st0 = transl(sum(la),0,0);
 rod = [[0,0,0]',[1,0,0]']-[0.5,0,0]';
 cub = ([0,1.5,1.5,0,0;0,0,1,1,0;0,0,0,0,0]-[.75,.5,0]')/1.5;
 grp = ([0,-2,-2,0;0,0,1,1;0,0,0,0]-[-2,.5,0]')/2;
-link_dat{1} = cub*lm; link_dat{length(l)} = grp*le;
+link_dat{1} = cub*lm; link_dat{length(link)} = grp*le;
 for i=1:length(th)
 link_dat{i+1} = rod*la(1);
 end
@@ -25,7 +25,7 @@ mFm = zeros(3,1);
 q = [mFm;th];
 mTe = g_st0;
 for k=length(q):-1:1
-    mTe = expm(hatwedge(xi{k}).*q(k))*mTe;
+    mTe = expm(wedge(xi{k}).*q(k))*mTe;
 end
 eTm = invg(mTe);
 Te = rt2tr(rotz(ge(3)),[ge(1:2);0]);
@@ -54,9 +54,9 @@ end
 % convas
 subplot(1,1,1);
 hold on
-h(1) = patch(link{1}(1,:),link{1}(2,:),link{1}(3,:),C(1));
+h(1) = patch(link{1}(1,:),link{1}(2,:),link{1}(3,:),color(1));
 for i=2:length(link)-1  
-    h(i) = plot3(link{i}(1,:),link{i}(2,:),link{i}(3,:),C(i),'linewidth',2,'marker','.','markersize',16);
+    h(i) = plot3(link{i}(1,:),link{i}(2,:),link{i}(3,:),color(i),'linewidth',2,'marker','.','markersize',16);
 end
-h(end+1) = plot3(link{end}(1,:),link{end}(2,:),link{end}(3,:),C(end),'linewidth',2);
+h(end+1) = plot3(link{end}(1,:),link{end}(2,:),link{end}(3,:),color(end),'linewidth',2);
 end

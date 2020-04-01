@@ -113,10 +113,10 @@ classdef Cylinder < handle
                 %         end
             end
             view(3); grid on;
-            obj.animate(q);
+            obj.animate(q,h.group);
         end 
         
-        function animate(obj,q)
+        function animate(obj,q,handles)
             % C.animate  Animate Cylinder object
             if nargin < 3
                 handles = findobj('Tag', obj.name);

@@ -129,10 +129,10 @@ classdef Cuboid2 < handle
                 %         end
             end
             view(2); grid on;
-            obj.animate(q);
+            obj.animate(q,h.group);
         end 
         
-        function animate(obj,q)
+        function animate(obj,q,handles)
             % C.animate  Animate Cuboid object
             if nargin < 3
                 handles = findobj('Tag', obj.name);

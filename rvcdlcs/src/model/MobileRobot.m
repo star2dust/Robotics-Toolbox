@@ -1,4 +1,4 @@
-% Mobile Robot 3D Model class (rpy)
+% Mobile Robot 3D Model class (SE3, rpy, stdDH)
 % (last mod.: 01-01-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
@@ -106,10 +106,10 @@ classdef MobileRobot < handle
                 %         end
             end
             view(3); grid on;
-            obj.animate(q);
+            obj.animate(q,h.group);
         end 
         
-        function animate(obj,q)
+        function animate(obj,q,handles)
             % MR.animate  Animate MobileRobot robot object
             if nargin < 3
                 handles = findobj('Tag', obj.name);
@@ -122,9 +122,13 @@ classdef MobileRobot < handle
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-tool'])
                     set(handles.Children(i),'matrix',obj.arm.fkine(qa).T);
                 end
-            end
-            obj.base.animate(qb);
-            obj.arm.animate(qa);        
+                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-base'])
+                    obj.base.animate(qb,handles.Children(i));
+                end
+                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-arm'])
+                    obj.arm.animate(qa,handles.Children(i));
+                end
+            end 
         end
     end
     

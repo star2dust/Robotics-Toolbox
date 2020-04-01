@@ -1,5 +1,5 @@
 function sub = loc2sub(loc,lgrid)
-% get [irow,icol,ilay] in map matrix from real coordinate
+% get row, column and layer subscripts in map matrix from real coordinate
 % - loc: real coordinate of grid center at first quadrant
 % - lgrid: edge length of grid
 % - sub:  row and column subscripts of map matrix

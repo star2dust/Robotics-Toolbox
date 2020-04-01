@@ -96,8 +96,6 @@ classdef Cuboid < handle
             else
                 error('unknown argument')
             end
-            % update pose
-            % obj.update(q);
             % logic to handle where the plot is drawn, are old figures updated or
             % replaced?
             %  calls create_floor() and create_robot() as required.
@@ -131,10 +129,10 @@ classdef Cuboid < handle
                 %         end
             end
             view(3); grid on;
-            obj.animate(q);
+            obj.animate(q,h.group);
         end 
         
-        function animate(obj,q)
+        function animate(obj,q,handles)
             % C.animate  Animate Cuboid object
             if nargin < 3
                 handles = findobj('Tag', obj.name);

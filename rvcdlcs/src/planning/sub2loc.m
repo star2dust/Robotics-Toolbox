@@ -1,6 +1,6 @@
 function loc = sub2loc(sub,lgrid)
-% get real coordinate from map index
-% - sub:  row and column subscripts of map matrix
+% get real coordinate from row, column and layer subscripts of map matrix
+% - sub:  row, column and layer subscripts of map matrix
 % - lgrid: edge length of grid
 % - loc: real coordinate of grid center at first quadrant
 % |---------y  
