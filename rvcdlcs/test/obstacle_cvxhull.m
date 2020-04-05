@@ -63,8 +63,8 @@ plot([0 d(1)], [0 d(2)], 'r');
 var = [1,-3];
 val = [-3,1];
 
-[Ar,br] = ploy2lincon(obsr);
-[Al,bl] = ploy2lincon(obsl);
+[Ar,br] = ploycons(obsr);
+[Al,bl] = ploycons(obsl);
 
 slb = 0.9;
 sub = 1.5;

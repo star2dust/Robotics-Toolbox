@@ -1,12 +1,12 @@
-function [A, b] = convlincon(V)
-% generate a linear constraint A*x<=b from the vertices of a polygon
+function [A, b] = polycons(V)
+% generate a linear constraint A*x<=b inside a polygon
 
 % counterclockwise
-p_conv = V(convhull(V),:); 
-v_conv = diff(p_conv);
-for i=1:size(v_conv,1)
-    A(i,:) = -skew2(v_conv(i,:));
-    b(i,:) = -skew2(v_conv(i,:))*p_conv(i,:)';
+Vconv = V(convhull(V),:); 
+vec = diff(Vconv);
+for i=1:size(vec,1)
+    A(i,:) = -skew2(vec(i,:));
+    b(i,:) = -skew2(vec(i,:))*Vconv(i,:)';
 end
 % Remove duplicates
 Ab = unique([A,b],'rows');

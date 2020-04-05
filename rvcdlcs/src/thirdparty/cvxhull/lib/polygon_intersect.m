@@ -1,5 +1,6 @@
 function [ints_x, ints_y] = polygon_intersect(poly1_x, poly1_y, poly2_x, poly2_y)
-% 求两个个凸多边形的交集
+% 求两个个凸多边形的交集 
+% https://ridiqulous.com/find-the-intersection-of-convex-hull-using-matlab/
 % poly1_x,poly1_y 分别为第一个多边形的各个顶点的x,y坐标，均为列向量
 % poly2_x,poly2_y 分别为第二个多边形的各个顶点的x,y坐标，均为列向量
 % ********************************************************** %

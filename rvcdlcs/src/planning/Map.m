@@ -355,21 +355,5 @@ classdef Map < handle
                 ind(i) = sub2ind_(siz,sub);
             end
         end
-        
-        function sub = ind2sub_(siz,ind)
-            ind = ind(:);
-            if length(siz)==2
-                [ix,iy] = ind2sub(siz,ind);
-                sub = [ix,iy];
-            else
-                [ix,iy,iz] = ind2sub(siz,ind);
-                sub = [ix,iy,iz];
-            end
-        end
-        
-        function ind = sub2ind_(siz,sub)
-            subsplit = num2cell(sub,1);
-            ind = sub2ind(siz,subsplit{:});
-        end
     end
 end
