@@ -11,32 +11,32 @@ A robotics toolbox and expansion package for MATLAB.
 ### Robotics, Vision &amp; Control (rvctools)
 
 - The book [Robotics, Vision & Control, second edition](http://www.petercorke.com/RVC) (Corke, 2017) is a detailed introduction to mobile robotics, navigation, localization; and arm robot kinematics, Jacobians and dynamics illustrated using the Robotics Toolbox for MATLAB.
-- The manual [robot.pdf (3.8 MB)](http://petercorke.com/wordpress/?ddownload=343) is a PDF file is a printable document (over 400 pages). It is auto-generated from the comments in the MATLAB code and is fully: to external web sites, the table of content to functions, and the “See also” functions to each other. You can find this in the Toolbox as rvctools/robot/robot.pdf.
+- The manual [robot.pdf (3.8 MB)](http://petercorke.com/wordpress/?ddownload=343) is a PDF file is a printable document (over 400 pages). It is auto-generated from the comments in the MATLAB code and is fully: to external web sites, the table of content to functions, and the “See also�? functions to each other. You can find this in the Toolbox as rvctools/robot/robot.pdf.
 
 Details see http://petercorke.com/wordpress/toolboxes/robotics-toolbox. 
 
 ### Robotics Toolbox Expansion Package  (rvcdlcs)
 
-A expansion package for Robotics, Vision &amp; Control. I add some new features for personal usage in my research works. I also integrated some useful third party scripts in this toolbox. ([what is new?](https://github.com/star2dust/Robotics-Toolbox/tree/master/rvcdlcs))
+A expansion package for Robotics, Vision &amp; Control. New features and integrated useful thirdparty scripts for research works. ([what is new?](https://github.com/star2dust/Robotics-Toolbox/tree/master/rvcdlcs))
 
 - New function for `SE2`, `SE3`.
 
     1. `SE2.q`: Get translation and angle in a row vector. 
     2. `SE3.qrpy`/`SE3.qeul`: Construct an SE(3) object from translation and rpy/eul angles
     3. `SE3.toqrpy`/`SE3.toqeul`: Get translation and rpy/eul angle in a row vector.
+    4. `SE2.q`, `SE3.qrpy`, `SE3.qeul` support both 1x3 and 1x6 vectors.
     
-- New `LineStyle` option for `SE2.plot` and `SE3.plot`.
-
-	-  Example:  `SE3.plot('style','-.')`. (4 styles: -. / : / .. / --)
+- New `LineStyle` option for `SE2.plot` and `SE3.plot`. Example:  `SE3.plot('style','-.')`. (4 styles: -. / : / .. / --)
 	
+
 - New calculation functions for  4 x 4 double matrix. (See folder `src/common`)
 
 	1. `Adg`: adjoint transformation.
 	2. `invg`:  inverse transformation.
 	3. `bracket`: Lie bracket.
-	4. `wedge` and `vee`: `w^` and `Wˇ` calculation for twists.
+	4. `wedge` and `vee`: calculation for twists.
 	
-- New functions for DH parameters and POE parameters. (See folder `src/common`)
+- New functions for DH parameters and POE parameters. (See folder `src/robotics`)
 
     1. `poe2dh`: Transfer POE parameters to DH parameters.
     2. `dh2poe`: Transfer DH parameters to POE parameters.
@@ -45,7 +45,7 @@ A expansion package for Robotics, Vision &amp; Control. I add some new features 
 
     - Example: `SerialLink([dh,sigma], 'base', Hb, 'tool', Ht, 'qlim', Qlim)`.
     
-- New classes for robotics. (See folder `src/model` and `example/model_sim`)
+- New classes for robotics. (See folder `src/robotics` and `example/model_tutorials`)
 
     1. `Cuboid`: Rigid Cuboid 3D Model class (rpy).
     2. `Cylinder`: Rigid Cylinder 3D Model class (rpy).
@@ -58,11 +58,11 @@ A expansion package for Robotics, Vision &amp; Control. I add some new features 
     
     <img src="https://s2.ax1x.com/2020/01/10/l4p3Z9.gif" alt="l4p3Z9.gif" border="0" width="350" /><img src="https://s2.ax1x.com/2020/01/10/l4plqJ.gif" alt="l4plqJ.gif" border="0" width="350" />
     
-- New functions for path planning. (See folder `src/planning` and `example/planning_sim`).
+- New functions for path planning. (See folder `src/planning` and `example/path_planning`).
 
-    1. `environment`: Generate obstacle environment with grid cell. 
+    1. `environment`: Generate 3D obstacle environment with grid cell. 
     2. `ind2loc`: Get real coordinate from map index.
-    3. `map2graph`: Transfer map matrix to graph.
+    3. `map2gphA`: Transfer map matrix to adjancent matrix A of graph.
     4. `dijkstra`: Dijkstra algorithm for graph searching.
     5. `astar`: A* algorithm for graph searching.
 
@@ -91,7 +91,7 @@ For RVC, you can install it by following the procedures below.
 
 1. [P.I. Corke. (2017). Robotics, Vision & Control. Springer. ISBN 978-3-319-54413-7.](http://petercorke.com/wordpress/toolboxes/robotics-toolbox)
 2. [Murray, R. M. (1994). A mathematical introduction to robotic manipulation. CRC press.](https://www.crcpress.com/A-Mathematical-Introduction-to-Robotic-Manipulation/Murray/p/book/9780849379819)
-3. [Deits, R., & Tedrake, R. (2015). Computing large convex regions of obstacle-free space through semidefinite programming. *Springer Tracts in Advanced Robotics*, *107*, 109–124.](http://groups.csail.mit.edu/robotics-center/public_papers/Deits14.pdf)
+3. [Deits, R., & Tedrake, R. (2015). Computing large convex regions of obstacle-free space through semidefinite programming. *Springer Tracts in Advanced Robotics*, *107*, 109�?124.](http://groups.csail.mit.edu/robotics-center/public_papers/Deits14.pdf)
 4. [Wu, L., Crawford, R., & Roberts, J. (2017). An analytic approach to converting POE parameters into D–H parameters for serial-link robots. IEEE Robotics and Automation Letters, 2(4), 2174-2179.](https://ieeexplore.ieee.org/document/7968294/)
 
 

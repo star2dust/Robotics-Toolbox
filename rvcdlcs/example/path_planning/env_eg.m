@@ -1,30 +1,32 @@
 close all
 clear
 
-tile = 2; edge = [ones(1,2)*tile,0.5]; smap = [ones(1,2)*10,1]; pct = 0.2;
-[obs, qobs, map] = environment(edge,smap,pct);
-[bigraph,biloc] = map2graph(map);
-n = smap(1)*smap(2)*smap(3);
+import Map.*
+
+tile = 2; range = ones(1,2)*10; pct = 0.2;
+map = randMap(range,pct);
+n = length(map(:)); d = length(size(map)); s = size(map);
+bigraph = map2gphA(map,0);
+bisub = ind2sub_(size(map),1:n);
+
 %% test astar
-route1 = astar(bigraph,biloc,1,n);
+route1 = astar(bigraph,bisub,1,n);
 for i=1:length(route1)
-    rloc1(i,:) = ind2loc(smap,route1(i),edge);
+    rloc1(i,:) = ind2loc(s,tile,route1(i));
 end
 %% test dijkstra
-route2 = dijkstra(bigraph,biloc,1);
+route2 = dijkstra(bigraph,bisub,1);
 for i=1:length(route2{n})
-    rloc2(i,:) = ind2loc(smap,route2{n}(i),edge);
+    rloc2(i,:) = ind2loc(s,tile,route2{n}(i));
 end
 %% save path
 if ~exist('path_example.mat', 'file')
-    save('path_example.mat','rloc1','rloc2','obs','qobs');
+    save('path_example.mat','rloc1','rloc2','map','tile');
 end   
 %% plot
+m = Map(map,'name','map1','tile',tile);
 figure;
-for i=1:length(obs)
-   obs(i).plot(qobs(i,:),'workspace', [0 edge(1)*smap(1) 0 edge(2)*smap(2)],'facecolor','k','facealpha',0.5);
-   hold on; 
-end
+m.plot; hold on;
 if ~isempty(route1)
     plot(rloc1(:,1),rloc1(:,2),'ro-');
 end

@@ -1,4 +1,4 @@
-% Mobile Robot 3D Model class (SE3, rpy, stdDH)
+% - Mobile Robot 3D Model class (SE3, rpy, stdDH)
 % (last mod.: 01-01-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
@@ -7,7 +7,7 @@
 % - arm: SerialLink
 % - mount: SE3 (on the upper surface of mobile base)
 % Methods:
-% - MobileRobot: construction (opt: name)
+% - MobileRobot: construction (opt: name, qlim)
 % - plot (opt: workspace, [no]frame, framecolor)
 % - animate
 classdef MobileRobot < handle

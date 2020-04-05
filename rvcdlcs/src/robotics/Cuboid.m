@@ -1,67 +1,83 @@
-% Rigid Cylinder 3D Model class (rpy)
-% (last mod.: 06-01-2020, Author: Chu Wu)
+% - Rigid Cuboid 3D Model class (rpy)
+% (last mod.: 01-01-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
 % - name: str
 % - dynamics: mass(1x1), inertia(1x6), inerMat(6x6)
-% - shapes: faces, bverts(body), radius(1x1), height(1x1)
+% - shapes: face(6x4), bvert(body)(8x3), edge(1x3)
 % Methods:
-% - Cylinder: construction (opt: name)
+% - Cuboid: construction (opt: name)
 % - addDym: add dynamics
 % - verts: get vertices in inertia frame
 % - plot (opt: facecolor,facealpha, workspace, [no]frame, framecolor)
 % - animate
-classdef Cylinder < handle
+% Methods (Static):
+% - tobverts: get body vertices from edge
+classdef Cuboid < handle
     properties (SetAccess = protected) % all display variables are row vectors
         name
-        % params
+        % dynamics
         mass % center of body frame (1 dim)
         inertia % [Ixx Iyy Izz -Iyz Ixz -Ixy] vector relative to the body frame (6 dim)
         % how to calculate? => I = diag([Ixx Iyy Izz])+skew([-Iyz Ixz -Ixy])
         inerMat % [M,0;0,I]
         % a list of verts and edges
-        bvert % (body frame)
-        face %
-        radius 
-        height
+        bvert % (8x3) (body frame)
+        % verts % (8x3) (inertia frame)
+        face % (6x4)
+        edge % (1x3) depth(x) width(y) height(z)
     end
     
+%     properties (Constant, Access = private)
+%         templateVerts = [0,0,0;0,1,0;1,1,0;1,0,0;0,0,1;0,1,1;1,1,1;1,0,1];
+%         templateFaces = [1,2,3,4;5,6,7,8;1,2,6,5;3,4,8,7;1,4,8,5;2,3,7,6];
+%         % ^ y axis
+%         % | 6 % % 7 -> top
+%         % | % 2 3 % -> bottom
+%         % | % 1 4 % -> bottom
+%         % | 5 % % 8 -> top
+%         % -------> x axis
+%     end
+    
     methods
-        function obj = Cylinder(varargin)
-            % C.Cylinder  Create Cylinder object
+        function obj = Cuboid(varargin)
+            % C.Cuboid  Create Cuboid object
             
             % opt statement
-            opt.name = 'cyl';
+            opt.name = 'cub';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin); 
             obj.name = opt.name;
             % argument parse
             if isempty(arg)
-                radius = 1; height = 1;
-            elseif length(arg)==2
-                radius = arg{1}; height = arg{2};
+                edge = ones(1,3);
+            elseif length(arg)==1
+                edge = arg{1}(:)';
             else
                 error('unknown arguments');
             end           
             % basic configuration
-            if isscalar(radius)&&isscalar(height)
+            if isvector(edge)&&length(edge)==3
+                % weighted average (sum(weighList.*variableList,2)/sum(weighList))
+                % parallel axis theorem (sum(weighList.*diag(variableList'*variableList)'))
                 % verts list in body frame (format: [x y z])
-                obj.radius = radius; obj.height = height;
-                [obj.bvert,obj.face] = obj.tobvert(radius,height);
+                obj.edge = edge(:)';
+                [obj.bvert,obj.face] = obj.tobvert(obj.edge);
             else
                 error('improper input dimension')
             end
         end
         
-        function obj = addDym(obj,m)
-            % C.addDym  Add dynamic parameters for Cylinder object
-            r = obj.radius; h = obj.height; obj.mass = m;
-            obj.inertia = 1/12*m*[3*r^2+h^2 3*r^2+h^2 6*r^2 0 0 0];
+        function obj = addDym(obj,mass)
+            % C.addDym  Add dynamic parameters for Cuboid object
+            ed = obj.edge;
+            obj.mass = mass;
+            obj.inertia = 1/12*mass*[ed(2)^2+ed(3)^2 ed(1)^2+ed(3)^2 ed(2)^2+ed(1)^2 0 0 0];
             obj.inerMat = [obj.mass*eye(3),zeros(3);zeros(3),diag(obj.inertia(1:3))+skew(obj.inertia(4:end))];
         end
         
         function h = plot(obj,varargin)  
-            % C.plot  Plot Cylinder object
+            % C.plot  Plot Cuboid object
             
             % opt statement
             opt.facecolor = 'y';
@@ -70,7 +86,7 @@ classdef Cylinder < handle
             opt.workspace = [];
             opt.frame = false;
             opt.framecolor = 'b';
-            opt.framelength = obj.radius/3;
+            opt.framelength = sum(obj.edge)/length(obj.edge)/3;
             opt.framethick = 1;
             opt.framestyle = '-';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
@@ -78,7 +94,7 @@ classdef Cylinder < handle
             if length(arg)==1
                 q = arg{1}(:)';
             else
-                error('unknown argument');
+                error('unknown argument')
             end
             % logic to handle where the plot is drawn, are old figures updated or
             % replaced?
@@ -90,7 +106,7 @@ classdef Cylinder < handle
                     % this robot doesnt exist here, create it or add it  
                     if ishold
                         % hold is on, add the robot, don't change the floor
-                        h = createCylinder(obj, q, opt);
+                        h = createCuboid(obj, q, opt);
                         % tag one of the graphical handles with the robot name and hang
                         % the handle structure off it
                         %                 set(handle.joint(1), 'Tag', robot.name);
@@ -98,13 +114,13 @@ classdef Cylinder < handle
                     else
                         % create the robot 
                         newplot();
-                        h = createCylinder(obj, q, opt);
+                        h = createCuboid(obj, q, opt);
                         set(gca, 'Tag', 'RTB.plot');
                     end 
                 end      
             else
                 % this axis never had a robot drawn in it before, let's use it
-                h = createCylinder(obj, q, opt);
+                h = createCuboid(obj, q, opt);
                 set(gca, 'Tag', 'RTB.plot');
                 set(gcf, 'Units', 'Normalized');
                 pf = get(gcf, 'Position');
@@ -117,25 +133,16 @@ classdef Cylinder < handle
         end 
         
         function animate(obj,q,handles)
-            % C.animate  Animate Cylinder object
+            % C.animate  Animate Cuboid object
             if nargin < 3
                 handles = findobj('Tag', obj.name);
             end
             for i=1:length(handles.Children)
-                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-frame'])
-                    frame = SE3.qrpy(q);
-                    set(handles.Children(i),'matrix',frame.T);
-                elseif strcmp(get(handles.Children(i),'Tag'), [obj.name '-cylinder'])
+                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-cuboid'])
                     set(handles.Children(i),'vertices',obj.vert(q),'faces',obj.face);
                 else
-                    vert = reshape(obj.vert(q)',6,21)';
-                    if strcmp(get(handles.Children(i),'Tag'), [obj.name '-lower-surface'])
-                        % plot lower surface
-                        set(handles.Children(i),'vertices',vert(:,1:3), 'faces', 1:21);
-                    else
-                        % plot upper surface
-                        set(handles.Children(i),'vertices',vert(:,4:6), 'faces', 1:21);
-                    end
+                    frame = SE3.qrpy(q);
+                    set(handles.Children(i),'matrix',frame.T);
                 end
             end
         end
@@ -151,17 +158,23 @@ classdef Cylinder < handle
     end
     
     methods (Static)
-        function [bvert,face] = tobvert(r,h)
-            % C.tobvert  Get vertices relative to body frame from radius and height
-            [X,Y,Z] = cylinder(r,20);
-            [TRI,V]= surf2patch(X,Y,Z);
-            bvert = [V(:,1:2),V(:,3)*h-h/2];
-            face = TRI;
+        function [bvert,face] = tobvert(edge)
+            % C.tobvert  Get vertices relative to body frame from edge
+            templateVerts = [0,0,0;0,1,0;1,1,0;1,0,0;0,0,1;0,1,1;1,1,1;1,0,1];
+            templateFaces = [1,2,3,4;5,6,7,8;1,2,6,5;3,4,8,7;1,4,8,5;2,3,7,6];
+            % ^ y axis
+            % | 6 % % 7 -> top
+            % | % 2 3 % -> bottom
+            % | % 1 4 % -> bottom
+            % | 5 % % 8 -> top
+            % -------> x axis
+            face = templateFaces;
+            bvert = [templateVerts(:,1)*edge(1)-edge(1)/2,templateVerts(:,2)*edge(2)-edge(2)/2,templateVerts(:,3)*edge(3)-edge(3)/2];
         end
     end
     
     methods (Access = protected)   
-        function h = createCylinder(obj,q,opt)
+        function h = createCuboid(obj,q,opt)
             % create an axis
             ish = ishold();
             if ~ishold
@@ -174,20 +187,12 @@ classdef Cylinder < handle
             
             group = hggroup('Tag', obj.name);
             h.group = group;
-            % plot cylinder
-            h.cyl = patch('vertices',obj.vert(q), 'faces', obj.face, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.facecolor, 'parent', group);
-            set(h.cyl,'Tag', [obj.name '-cylinder']);
-            % plot lower surface
-            vert = reshape(obj.vert(q)',6,21)';
-            h.surl = patch('vertices',vert(:,1:3), 'faces', 1:21, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor, 'parent', group);
-            set(h.surl,'Tag', [obj.name '-lower-surface']);
-            % plot upper surface
-            h.suru = patch('vertices',vert(:,4:6), 'faces', 1:21, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor, 'parent', group);
-            set(h.suru,'Tag', [obj.name '-upper-surface']);
+            h.cub = patch('vertices',obj.vert(q), 'faces', obj.face, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor, 'parent', group);
+            set(h.cub,'Tag', [obj.name '-cuboid']);
             
             if opt.frame
                 frame = SE3.qrpy(q);
-                h.frame = frame.plot('color', opt.framecolor, 'length', opt.framelength, 'thick', opt.framethick, 'style', opt.framestyle);
+                h.frame = frame.plot('color', opt.framecolor,'length',opt.framelength, 'thick', opt.framethick, 'style', opt.framestyle);
                 set(h.frame,'parent',group);
                 set(h.frame,'Tag', [obj.name '-frame']);
             end

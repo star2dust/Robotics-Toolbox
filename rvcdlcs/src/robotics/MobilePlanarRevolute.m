@@ -1,5 +1,5 @@
 % Mobile Planar Revolute Robot 3D Model class (SE2, rpy, stdDH)
-% (last mod.: 05-01-2020, Author: Chu Wu)
+% (last mod.: 01-04-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
 % - name: str (mpr*)
@@ -14,12 +14,7 @@
 % - plot (opt: workspace, [no]frame, framecolor) (minConfig)
 % - animate
 % - fkine: forward kinematics
-% - manipulability: manipulability and its derivative
-% Methods (Static): (for mR manipulator)
-% - mrtwist: calculate twists by link length and mounted base
-% - mrfkine: forward kinematics
-% - mrjacob: Jacobian
-% - mrikine: inverse kinematics
+% - ikine: inverse kinematics
 classdef MobilePlanarRevolute < MobileRobot
     properties
         type
@@ -52,7 +47,7 @@ classdef MobilePlanarRevolute < MobileRobot
             cub_surf= [mh(1),mh(2),edge(3)/2]; hb_d = mh(3); 
             % choose q according to type of joints
             import PlanarRevolute.*
-            xi_mat = prTwist(link,hb_d,SE3);
+            xi_mat = getTwist(link,hb_d,SE3);
             % poe => dh modified
             [dh, Ht, sigma] = poe2dh(xi_mat,hb_d); % qb only for theta or d
             Hb = transl(cub_surf); % Hb can only be on the surface of mobile base

@@ -178,6 +178,12 @@ classdef SE2 < SO2
                         obj.data(1:2,1:2) = rot2(a(3)*scale);
                         obj.t = a(1:2);
                         
+                    elseif isvec(a, 6)
+                        % [x y z r p y]
+                        a = a([1:2,6]); a = a(:);
+                        obj.data(1:2,1:2) = rot2(a(3)*scale);
+                        obj.t = a(1:2);
+                        
                     elseif SO2.isa(a)
                         % (R)
                         obj.data(1:2,1:2) = a;

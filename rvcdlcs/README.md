@@ -6,17 +6,25 @@ A expansion package for [Robotics Toolbox](http://petercorke.com/wordpress/toolb
 
 ## Update Log
 
+- Updates on Apr. 04, 2020
+    1. Add support for `SE2` and `SE3` object. 
+       - Use `SE2.q` to get pose from a 1x6 vector. (discard some data)
+       - Use `SE3.qeul` and `SE3.qrpy` to get pose from a 1x3 vector. (set new dimension to zeros)
+    2. Update planning toolbox.
+       - Add `Lidar` and `Map` class. Some old features are integrated to the static methods of `Map` class.
+    3. Update robotics toolbox.
+       - Update `MobilePlanarRevolute` to `PlanarRevolute` class. Some old features are integrated to the static methods of `PlanarRevolute` class.
+    4. Add [`intersections`] to replace MATLAB's [`polyxpoly`] function in thirdparty scripts.
+
 - Updates on Jan. 09, 2020
     1. Add class `CooperativeManipulation`, which supports simulation for mobile planar revolute manipulators.
-    2. Add demos in the folder `example/manipulation_demo`.
-    3. Add function `environment_gap` and examples in `example/planning_sim`.
 
 - Updates on Jan. 05, 2020
     1. Add some planning functions in the folder `src/planning`.
     	- `environment`: Generate an obstacles environment with grid cell.
         - `ind2loc`: Get real coordinate from map index.
         - `map2graph`: Transfer map matrix to search graph for A* and Dijkstra.
-    2. Add examples in the folder `example/planning_sim`.
+    2. Add examples in the folder `example/path_planning`.
     3. Add edges for diagonal grid cells in `map2graph`. 
 
 - Updates on Jan. 02, 2020
@@ -55,22 +63,23 @@ A expansion package for [Robotics Toolbox](http://petercorke.com/wordpress/toolb
 ## Third Party Scripts
 
 1. Convex Hull Scripts (cvxhull)
-	- [`inhull`](https://nl.mathworks.com/matlabcentral/fileexchange/10226-inhull ): Tests if a set of points are inside a convex hull (c) 2009 John D'Errico 
-	- [`inpoly`](https://github.com/dengwirda/inpoly ): Fast point-in-polygon queries in MATLAB (c) Darren Engwirda 
-2. STL Read & Write Scripts (stlreader) (c) 2011 [Eric Johnson](https://nl.mathworks.com/matlabcentral/profile/authors/2990507-eric-johnson)
+	- [`inhull`](https://nl.mathworks.com/matlabcentral/fileexchange/10226-inhull ): Tests if a set of points are inside a convex hull by John D'Errico 
+	- [`inpoly`](https://github.com/dengwirda/inpoly ): Fast point-in-polygon queries in MATLAB by Darren Engwirda 
+    - [`intersections`](https://www.mathworks.com/matlabcentral/fileexchange/11837-fast-and-robust-curve-intersections): Fast and Robust Curve Intersections by Douglas Schwarz
+2. STL Read & Write Scripts (stlreader) by 2011 [Eric Johnson](https://nl.mathworks.com/matlabcentral/profile/authors/2990507-eric-johnson)
 	- [`stlread`](https://nl.mathworks.com/matlabcentral/fileexchange/22409-stl-file-reader): Imports geometry from an STL file into MATLAB.
 	- `stlwrite`: Write STL file from patch or surface data.
 	- `surf2stl`: Write STL file from surface data.
-3. Searching Algorithm on Undirected Graph (graphsearch)  (c) [muhammet balcilar](https://nl.mathworks.com/matlabcentral/profile/authors/7269297-muhammet-balcilar)
+3. Searching Algorithm on Undirected Graph (graphsearch)  by [muhammet balcilar](https://nl.mathworks.com/matlabcentral/profile/authors/7269297-muhammet-balcilar)
     - `dijkstra`: Dijkstra planning algorithm.
     - `astar`: A* planning algorithm.
 	- `dynamicpathplanning`: Dynamic path planning algorithm.
-4. Iterative Regional Inflation by SDP (iris-distro) (c) [Robin Deits](https://github.com/rdeits)
+4. Iterative Regional Inflation by SDP (iris-distro) by [Robin Deits](https://github.com/rdeits)
     - `+iris`: Package for generating maximum convex region.
-5. Input Scripts (hebinput) (c) [HebiRobotics](https://github.com/HebiRobotics/MatlabInput)
+5. Input Scripts (hebinput) by [HebiRobotics](https://github.com/HebiRobotics/MatlabInput)
 	- `HebiJoystick`: Creates a joystick object. 
 	- `HebiKeyboard`: Creates a keyboard object.
-6. Bidirectional Conversion between D-H Parameters and POE Parameters (dh2poe) (c) [Liao Wu](https://www.researchgate.net/profile/Liao_Wu4)
+6. Bidirectional Conversion between D-H Parameters and POE Parameters (dh2poe) by [Liao Wu](https://www.researchgate.net/profile/Liao_Wu4)
 	- `POE2DH_Joint`: Demonstrate Lemma 1 and 2.
 	- `POE2DH_Tool`: Demonstrate Lemma 3.
 	- Details see [Wu, L., Crawford, R., & Roberts, J. (2017)](https://ieeexplore.ieee.org/document/7968294/).

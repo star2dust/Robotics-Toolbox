@@ -4,7 +4,7 @@ disp('Robotics Toolbox Extensions: (c) star2dust 2019-2020')
 srcpath = fileparts(mfilename('fullpath'));
 addpath(srcpath); % add src folder to the matlab path
 addpath([srcpath '/common']); % add common
-addpath([srcpath '/model']); % add model
+addpath([srcpath '/robotics']); % add model
 addpath([srcpath '/planning']); % add planning
 
 % import third party toolboxes

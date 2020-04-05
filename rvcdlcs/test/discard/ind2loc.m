@@ -14,7 +14,7 @@ if length(lgrid)==3
 else
     sub = [irow,icol];
 end
-loc = sub2loc(sub,lgrid);
+loc = (diag(lgrid)*(sub(:)-ones(length(lgrid),1))+lgrid(:)/2)';
 % lx = lgrid(1); ly = lgrid(2); lz = lgrid(3);
 % x = (irow-1)*lx+lx/2;
 % y = (icol-1)*ly+ly/2;
