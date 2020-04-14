@@ -1,8 +1,8 @@
 close all
 clear
 
-import mpr.*
-mu = @(q) -manipulability(q,ones(size([0;q(:)])));
-m = 9;
-q = fmincon(mu,zeros(m,1),[],[],[],[],zeros(m,1),pi/2*ones(m,1));
-sum(q)
+n = 3;
+link = ones(1,n)*0.95;
+negmu = @(q) -PlanarRevolute.getMu(link,q);
+[q,f]= fmincon(negmu,zeros(n,1),[],[],[],[],zeros(n,1),pi/2*ones(n,1));
+-f

@@ -5,7 +5,7 @@ clear
 a = rand(5,2); 
 a = a(convhull_(a),:);
 plot(a(:,1),a(:,2),'g-'); hold on
-axis([0 2 0 2]);
+axis equal;
 
 c = rand(1,2)*2;
 [Aa,ba] = polycons(a);

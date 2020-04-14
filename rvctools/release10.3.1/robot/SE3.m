@@ -454,7 +454,9 @@ classdef SE3 < SO3
             % Notes::
             % - This is formed explicitly, no matrix inverse required.
             
-            it = SE3( obj.R', -obj.R'*obj.t);
+            for i=1:length(obj)
+                it(i) = SE3( obj(i).R', -obj(i).R'*obj(i).t);
+            end
         end
         
         function Ti = interp(obj1, varargin)

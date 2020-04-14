@@ -1,5 +1,5 @@
 % - Lidar 2D/3D Model class (SE3, rpy, stdDH)
-% (last mod.: 02-04-2020, Author: Chu Wu)
+% (last mod.: 07-04-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
 % - name: str (lidar*)
@@ -48,7 +48,7 @@ classdef Lidar < handle
             obj.hlim = opt.hlim;
             obj.dens = opt.dens;
             obj.radius = radius;
-            [obj.xdata,obj.ydata,obj.zdata] = Lidar.getData(obj.radius,obj.dens,obj.alim,obj.hlim);
+            [obj.xdata,obj.ydata,obj.zdata] = Lidar.cylinder_(obj.radius,obj.dens,obj.alim,obj.hlim);
         end
         
         function h = plot(obj,varargin)
@@ -112,7 +112,7 @@ classdef Lidar < handle
             end
             % animate
             if handles.UserData
-                Vdc = obj.detect(q);
+                Vdc = obj.detect(q,0);
             end
             for i=1:length(handles.Children) % draw frame first otherwise there will be delay
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-lidar'])
@@ -140,18 +140,23 @@ classdef Lidar < handle
             end
         end
         
-        function Vdc = detect(obj, q)
-            load('map.mat','map_original');
-            X = obj.xdata; Y = obj.ydata; Voc = map_original.Voc;
+        function Vdc = detect(obj, q, s)
+            load('map3.mat','map2','map3');
+            map_original = map2; map_dilated = map3;
+            X = obj.xdata; Y = obj.ydata; 
             Vd0 = [X(1,:);Y(1,:)]';
             Vd = [q(1:2);h2e(SE2(q).T*e2h(Vd0'))';q(1:2)];
-            Vdc = cell(size(Voc));
+            switch s
+                case 0  
+                    Voc = map_original.Voc;
+                case 1
+                    Voc = map_dilated.Voc;
+                otherwise
+                    error('unknown detect type')
+            end
+            Vdc = cell(size(Voc)); 
             for i=1:length(Voc)
-%                 plot(Voc{i}(:,1),Voc{i}(:,2),'b','LineWidth',5);
-                Vdc{i} = Lidar.polyintersect2(Vd,Voc{i});
-%                 if ~isempty(Vdc{i})
-%                     plot(Vdc{i}(:,1),Vdc{i}(:,2),'r','LineWidth',5);
-%                 end
+                Vdc{i} = polyxpoly_(Vd,Voc{i});
             end
         end
     end
@@ -190,7 +195,7 @@ classdef Lidar < handle
             set(h.lidar,'Tag', [obj.name '-lidar']);
             
             if opt.detect
-                Vdc = obj.detect(q);
+                Vdc = obj.detect(q,0);
                 for i=1:length(Vdc)
                     if isempty(Vdc{i})
                         h.detect(i) = line('Color', opt.decolor, 'LineWidth', opt.dethick, 'Visible', 'off', 'parent', group);
@@ -210,7 +215,7 @@ classdef Lidar < handle
     end
     
     methods (Static)
-        function [X,Y,Z] = getData(radius,num,alim,hlim)
+        function [X,Y,Z] = cylinder_(radius,num,alim,hlim)
             [X,Y,~] = cylinder(radius,num);
             X = X(:,[num/2+1:num,1:num/2,num/2+1]);
             Y = Y(:,[num/2+1:num,1:num/2,num/2+1]);
@@ -219,7 +224,7 @@ classdef Lidar < handle
             X = X(:,I); Y = Y(:,I); Z = Z(:,I);
         end
         
-        function V3 = polyintersect2(V1,V2)
+        function V3 = polyxpoly2(V1,V2)
             poly1_x = V1(:,1); poly1_y = V1(:,2);
             poly2_x = V2(:,1); poly2_y = V2(:,2);
             [ints_x, ints_y] = polygon_intersect(poly1_x, poly1_y, poly2_x, poly2_y);

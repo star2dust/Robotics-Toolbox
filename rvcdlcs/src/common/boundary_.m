@@ -1,11 +1,12 @@
-function I = convhull_(V)
-% convhull_ - Convex hull
-% 
-%     This function returns the 2-D convex hull of the points V = [X,Y], where X
-%     and Y are column vectors.
-% 
-%     I = convhull_(V)
-%     I = convhull_(...,'simplify', logicalvar)
+function [I,V] = boundary_(V,s)
+% boundary_ - Boundary of a set of points in 2-D or 3-D
+%
+%     This MATLAB function returns a vector of point indices representing a single
+%     conforming 2-D boundary around the points (x,y).
+%
+%     k = boundary(V)
+%     k = boundary(___,s) (s=0, convex hull; s=1, compact boundary)
+%     [k,v] = boundary(___)
 
 if iscolinear(V)
     if ~isempty(V)
@@ -17,12 +18,12 @@ if iscolinear(V)
         % 'rows'选项，则 C = A(ia,:) 且 A = C(ic,:)。 如果 A 是
         % 表或时间表，则 C = A(ia,:) 且 A = C(ic,:)。
         Vc = sum(V1)/size(V1,1);
-        V2 = round((V1-Vc)*100)/100; % V2只用来判断rank
+        V2 = round((V1-Vc)*100)/100;
     else
         V2 = V;
     end
     switch rank(V2)
-        case 0 
+        case 0
             % 判断为空
             I = V;
         case 1
@@ -38,18 +39,24 @@ if iscolinear(V)
                 I = [I(:);I(1)];
             end
         case 2
-            % 判断为共面(以下向量全部用列向量表示)
+            % 判断为共面
+            % 以下向量全部用列向量表示
             n = null(V1); % V*n==0说明向量n垂直于V中的每一个元素
             o = (sum(V1)/size(V1,1))'; % o为平面V的原点
             z = n+o; x = V1(1,:)'-o; y = skew(z)*x; % x,y,z为正交坐标系，平面V为xoy平面
             g0 = [eye(3),zeros(3,1)]; g1 = [x(:),y(:),z(:),o(:)];
             T = e2h(g1)*e2h(g0)^-1;
             V3 = h2e(T^-1*e2h(V'))';
-            I = convhull_(V3(:,1:2));          
+            I = boundary_(V3(:,1:2));          
         otherwise
             error('unknown size');
     end
 else
     % MATLAB function
-    I = convhull(V);
+    if nargin<2
+        I = boundary(V);
+    else
+        I = boundary(V,s);
+    end
+end
 end

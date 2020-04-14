@@ -199,7 +199,7 @@ classdef SE2 < SO2
                             obj(i).data = a(i).data;
                         end
                         
-                    elseif any( numcols(a) == [2 3] )
+                    elseif any( numcols(a) == [2 3 6] )
                         for i=1:numrows(a)
                             obj(i) = SE2(a(i,:));
                         end
@@ -358,7 +358,9 @@ classdef SE2 < SO2
             %
             % Notes::
             % - This is formed explicitly, no matrix inverse required.   
-            it = SE2( obj.R', -obj.R'*obj.t);
+            for i=1:length(obj)
+                it(i) = SE2( obj(i).R', -obj(i).R'*obj(i).t);
+            end
         end
  
         

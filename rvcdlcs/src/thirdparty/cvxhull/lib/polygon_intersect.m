@@ -33,24 +33,16 @@ S(IN == 0, :) = []; % 剔除掉不位于多边形 A 中的顶点坐标
 IN = inpolygon(S(:,1), S(:,2), poly2_x, poly2_y);
 S(IN == 0, :) = []; % 剔除掉不位于多边形 B 中的顶点坐标
 S = unique(S,'rows');
-if isempty(S)||size(S,1)==1 
-    % 判断是否为同一点
+if iscolinear(S)
+    % 判断是否为同一点或全部共线
     ints_x = S(:, 1); % 得到交集多边形的各个顶点坐标
     ints_y = S(:, 2);
 else
-    % 判断是否全部共线
-    th = cart2pol(S(:,1)-S(1,1),S(:,2)-S(1,2));
-    if length(unique(th))==1
-        % 如果全部共线
-        ints_x = S(:, 1); % 得到交集多边形的各个顶点坐标
-        ints_y = S(:, 2);
-    else
-        % 如果非全部共线也非同一点，则取凸包
-        X = S(:, 1); 
-        Y = S(:, 2);
-        k = convhull(X, Y);
-        ints_x = X(k);
-        ints_y = Y(k);
-    end
+    % 如果非全部共线也非同一点，则取凸包
+    X = S(:, 1);
+    Y = S(:, 2);
+    k = convhull(X, Y);
+    ints_x = X(k);
+    ints_y = Y(k);
 end
 % plot(poly1_x, poly1_y, 'r', poly2_x, poly2_y, 'b', ints_x, ints_y, 'k')
