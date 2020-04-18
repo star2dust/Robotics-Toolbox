@@ -24,28 +24,26 @@ robot_height = tile_w;
 robot_link = ones(1,link_num)*robot_height;
 robot_lkthick = 2;
 robot_hgsize = 2;
-% random map
-% map_matrix = randMap(ceil([room_w/tile_w,room_w/tile_w]),0.2);
 % read map
-% map_matrix = readMap('map.png');
-% map_dilated = dilateMap(map_matrix,'sphere',dilate_rad);
-% tic
-% map_original = Map(map_matrix,'name','map0','tile',tile_w);
-% map_object = Map(map_dilated,'name','map1','tile',tile_w);
-% toc
-% if ~exist('map.mat', 'file')
-%     save('map.mat','map_object','map_original');
-% end   
-load('map.mat','map_object','map_original');
+if ~exist('map.mat', 'file')
+map_matrix = readMap('map_input.png');
+map_dilated = dilateMap(map_matrix,'sphere',dilate_rad);
+tic
+map2 = Map(map_matrix,'name','map0','tile',tile_w);
+map3 = Map(map_dilated,'name','map1','tile',tile_w);
+toc
+    save('map.mat','map2','map3');
+end   
+load('map.mat','map2','map3');
 % lidar and robot
 lidar_object = Lidar(lidar_radius,'name','lidar1','hlim',lidar_hlim);
 robot_object = PlanarRevolute(robot_link,'name','rob1', 'height', robot_height,...
     'radius', robot_radius, 'altitude', robot_altitude);
 
 % astar
-siz = size(map_object.map);
-n = length(map_object.map(:));
-bigraph = map_object.Af;
+siz = size(map3.matrix);
+n = length(map3.matrix(:));
+bigraph = map3.Af;
 bisub = ind2sub_(siz,1:n);
 route = astar(bigraph,bisub,1,n);
 rloc = ind2loc(siz,tile_w,route);
@@ -64,8 +62,8 @@ qazel = [(cazel(1,1):(cazel(2,1)-cazel(1,1))/160:cazel(2,1))',(cazel(1,2):(cazel
 
 
 figure
-map_original.plot('workspace', ws_range, 'dim', ws_dim, 'obheight', obs_height); hold on
-map_object.plot('workspace', ws_range, 'dim', ws_dim, 'obheight', obs_height, 'obthick', obs_thick); 
+map2.plot('workspace', ws_range, 'dim', ws_dim, 'obheight', obs_height); hold on
+map3.plot('workspace', ws_range, 'dim', ws_dim, 'obheight', obs_height, 'obthick', obs_thick); 
 hr = robot_object.plot(qavia(1,:), qbvia(1,:), 'plat', 'dim', ws_dim,...
     'hgsize', robot_hgsize, 'lkthick', robot_lkthick);
 hl = lidar_object.plot(qbvia(1,:), 'dim', ws_dim, 'detect',...

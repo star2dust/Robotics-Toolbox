@@ -219,7 +219,7 @@ classdef SE3 < SO3
                         
                     elseif numcols(a) == 3
                         % SE3( xyz )
-                        for i=1:length(a)
+                        for i=1:size(a,1)%i=1:length(a)
                             %obj(i).data = SE3(a(i,:));
                             obj(i).data(1:3,4) = a(i,:)';
                         end

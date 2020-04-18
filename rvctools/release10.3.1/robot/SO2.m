@@ -308,7 +308,6 @@ classdef SO2 < RTBPose
             R = obj.interp(varargin{:});
         end
         
-
         
         function n = new(obj, varargin)
             %SE2.new  Construct a new object of the same type

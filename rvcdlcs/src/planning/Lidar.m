@@ -23,6 +23,7 @@ classdef Lidar < handle
         xdata
         ydata
         zdata
+        mapind
     end
     
     methods
@@ -34,6 +35,7 @@ classdef Lidar < handle
             opt.alim = [-pi/2,pi/2];
             opt.hlim = [0,0.5];
             opt.dens = 30;
+            opt.mapind = [];
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin);
             % check validity
@@ -48,6 +50,7 @@ classdef Lidar < handle
             obj.hlim = opt.hlim;
             obj.dens = opt.dens;
             obj.radius = radius;
+            obj.mapind = opt.mapind;
             [obj.xdata,obj.ydata,obj.zdata] = Lidar.cylinder_(obj.radius,obj.dens,obj.alim,obj.hlim);
         end
         
@@ -57,6 +60,7 @@ classdef Lidar < handle
             % opt statement
             opt.workspace = [];
             opt.dim = 3;
+            opt.lidar = true;
             opt.detect = true;
             opt.licolor = 'g';
             opt.lithick = 0.5;
@@ -141,11 +145,12 @@ classdef Lidar < handle
         end
         
         function Vdc = detect(obj, q, s)
-            load('map3.mat','map2','map3');
+            load(['map' num2str(obj.mapind) '.mat'],'map2','map3');
             map_original = map2; map_dilated = map3;
             X = obj.xdata; Y = obj.ydata; 
             Vd0 = [X(1,:);Y(1,:)]';
-            Vd = [q(1:2);h2e(SE2(q).T*e2h(Vd0'))';q(1:2)];
+            Vd = [q(1:2);(SE2(q)*Vd0')';q(1:2)];
+%             Vd = [q(1:2);h2e(SE2(q).T*e2h(Vd0'))';q(1:2)];
             switch s
                 case 0  
                     Voc = map_original.Voc;
@@ -156,7 +161,10 @@ classdef Lidar < handle
             end
             Vdc = cell(size(Voc)); 
             for i=1:length(Voc)
+%                 ioc = convhull_(Voc{i});
+%                 plot(Voc{i}(ioc,1),Voc{i}(ioc,2),'r');
                 Vdc{i} = polyxpoly_(Vd,Voc{i});
+%                 plot(Vdc{i}(:,1),Vdc{i}(:,2),'r:');
             end
         end
     end
@@ -176,23 +184,27 @@ classdef Lidar < handle
             group.UserData = opt.detect;
             h.group = group;
             
-            % get X,Y,Z data
+            % get q
             q = SE3.qrpy(q).toqrpy;
-            X = obj.xdata; Y = obj.ydata; Z = obj.zdata;
-            if opt.dim == 2
-                V0 = [X(1,:);Y(1,:);Z(1,:)]';
-                p_fv = h2e(SE3.qrpy(q).T*e2h(V0'));
-                h.lidar = line(p_fv(1,:),p_fv(2,:),p_fv(3,:),'Color',opt.licolor, 'LineWidth', opt.lithick, 'parent', group);
-                h.lidar.UserData = {V0};
-            else
-                [F0,V0]= surf2patch(X,Y,Z);
-                V = h2e(SE3.qrpy(q).T*e2h(V0'))';
-                h.lidar = patch('vertices',V, 'faces', F0, 'facecolor',...
-                    opt.licolor, 'facealpha', opt.lithick, 'edgecolor',...
-                    opt.licolor, 'edgealpha', opt.lithick, 'parent', group);
-                h.lidar.UserData = {V0,F0};
+            
+            if opt.lidar
+                % get X,Y,Z data
+                X = obj.xdata; Y = obj.ydata; Z = obj.zdata;
+                if opt.dim == 2
+                    V0 = [X(1,:);Y(1,:);Z(1,:)]';
+                    p_fv = h2e(SE3.qrpy(q).T*e2h(V0'));
+                    h.lidar = line(p_fv(1,:),p_fv(2,:),p_fv(3,:),'Color',opt.licolor, 'LineWidth', opt.lithick, 'parent', group);
+                    h.lidar.UserData = {V0};
+                else
+                    [F0,V0]= surf2patch(X,Y,Z);
+                    V = h2e(SE3.qrpy(q).T*e2h(V0'))';
+                    h.lidar = patch('vertices',V, 'faces', F0, 'facecolor',...
+                        opt.licolor, 'facealpha', opt.lithick, 'edgecolor',...
+                        opt.licolor, 'edgealpha', opt.lithick, 'parent', group);
+                    h.lidar.UserData = {V0,F0};
+                end
+                set(h.lidar,'Tag', [obj.name '-lidar']);
             end
-            set(h.lidar,'Tag', [obj.name '-lidar']);
             
             if opt.detect
                 Vdc = obj.detect(q,0);

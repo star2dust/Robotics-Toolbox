@@ -235,7 +235,8 @@ classdef PlanarRevolute < handle
                 gfk = SE3.qrpy(gfk);
             end
             for i=1:length(obj)
-                rfk = obj(i).base^-1*SE3([0,0,obj(i).altitude])^-1*SE3.qrpy(qb(i,:))^-1*gfk(i)*obj(i).tool^-1;
+                rfk = obj(i).base^-1*SE3([0,0,obj(i).altitude])^-1*...
+                    SE3.qrpy(qb(i,:))^-1*gfk(i)*obj(i).tool^-1;
                 qtool = rfk.toqrpy;
                 qtool = qtool([1:2,6]);
                 m = length(obj(i).link);
@@ -243,14 +244,17 @@ classdef PlanarRevolute < handle
                     qa(i,:) = getIkine3(obj(i).link,qtool,obj(i).type);
                 else
                     negmup2 = @(th) -getMu(obj(i).link,th);
+                    qa0 = sum(obj(i).qlim)/2;
                     if nargin<5
-                        qa(i,:) = fmincon(negmup2,obj(i).qlim(2,:),[],[],[],[],...
-                            obj(i).qlim(1,:),obj(i).qlim(2,:),@(th) fkcon(obj(i).link,th,qtool(1:2)));
+                        qa(i,:) = fmincon(negmup2,qa0',[],[],[],[],...
+                            obj(i).qlim(1,:),obj(i).qlim(2,:),@(th) ...
+                            fkcon(obj(i).link,th,qtool(1:2)));
                     else
                         % NOTE: A and b only works for column vector
                         if isa(A,'cell')&&isa(b,'cell')
-                            qa(i,:) = fmincon(negmup2,obj(i).qlim(2,:)',A{i},b{i},[],[],...
-                                obj(i).qlim(1,:)',obj(i).qlim(2,:)',@(th) fkcon(obj(i).link,th,qtool(1:2)))';
+                            qa(i,:) = fmincon(negmup2,qa0',A{i},b{i},[],[],...
+                                obj(i).qlim(1,:)',obj(i).qlim(2,:)',@(th) ...
+                                fkcon(obj(i).link,th,qtool(1:2)))';
                         else
                             error('unknown constraint');
                         end
@@ -286,6 +290,14 @@ classdef PlanarRevolute < handle
             end
             qb3d = gb.toqrpy;
             qb = qb3d(:,[1,2,6]);
+        end
+        
+        function l = lk(obj)
+            
+            l = [];
+            for i=1:length(obj)
+                l = [l;obj(i).link];
+            end
         end
     end
     
@@ -393,17 +405,23 @@ classdef PlanarRevolute < handle
             % - th: joint angles (1xm)
             % - pfk: position of end-effector (1x2)
             
-            m = length(th);
-            ls = zeros(m,1);
-            lc = ls;
-            % lsin and lcos
-            pfk = [0;0];
-            for i=1:m
-                ls(i) = link(i)*sin(sum(th(1:i)));
-                lc(i) = link(i)*cos(sum(th(1:i)));
-                pfk = pfk+[lc(i);ls(i)];
+            pfk = zeros(size(link,1),2);
+            for j=1:size(link,1)
+                if isvec(th)
+                    m = length(th);
+                    th = th(:)';
+                else
+                    m = size(th,2);
+                end
+                % lsin and lcos
+                pfkj = [0;0];
+                for i=1:m
+                    ls = link(j,i)*sin(sum(th(j,1:i)));
+                    lc = link(j,i)*cos(sum(th(j,1:i)));
+                    pfkj = pfkj+[lc;ls];
+                end
+                pfk(j,:) = pfkj(:)';
             end
-            pfk = pfk(:)';
         end
         
         function th = getIkine3(link,qfk,type)

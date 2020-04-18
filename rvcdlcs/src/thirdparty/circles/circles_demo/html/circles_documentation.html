@@ -1,0 +1,236 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>circles</title><meta name="generator" content="MATLAB 8.0"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2014-08-09"><meta name="DC.source" content="circles_documentation.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, tt, code { font-size:12px; }
+pre { margin:0px 0px 20px; }
+pre.error { color:red; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>circles</h1><!--introduction--><p>This function plots circles.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Syntax</a></li><li><a href="#2">Description</a></li><li><a href="#3">Example: One circle</a></li><li><a href="#4">Example: A line of equally-sized circles</a></li><li><a href="#5">Example: Hollow or empty circles</a></li><li><a href="#6">Example: Green circles of multiple radii</a></li><li><a href="#7">Example: Declare edge color and width</a></li><li><a href="#8">Example: A grid of circles</a></li><li><a href="#10">Example: Circles have corners</a></li><li><a href="#12">Example: Rotation can be scalar or matrix</a></li><li><a href="#13">Author Info</a></li></ul></div><h2>Syntax<a name="1"></a></h2><pre>circles(x,y,r)
+circles(...,'vertices',numberOfPoints)
+circles(...,'rotation',degreesRotation)
+circles(...,'ColorProperty',ColorValue)
+circles(...,'LineProperty',LineValue)
+h = circles(...)</pre><h2>Description<a name="2"></a></h2><p><tt>circles(x,y,r)</tt> plots circle(s) of radius or radii <tt>r</tt> centered at points given by <tt>x</tt> and <tt>y</tt>.  Inputs <tt>x</tt>, <tt>y</tt>, and <tt>r</tt> may be any combination of scalar, vector, or 2D matrix, but dimensions of all nonscalar inputs must agree.</p><p><tt>circles(...,'vertices',numberOfPoints)</tt> allows specification of how many points to use for the outline of each circle. Default value is 1000, but this may be increased to increase plotting resolution.  Or you may specify a small number (e.g. 4 to plot a square, 5 to plot a pentagon, etc.).</p><p><tt>circles(...,'rotation',degreesRotation)</tt> rotates the shape by a given degreesRotation, which can be a scalar or a matrix. This is useless for circles, but may be desired for polygons with a discernible number of corner points.</p><p><tt>circles(...,'ColorProperty',ColorValue)</tt> allows declaration of <tt>'facecolor'</tt> or <tt>'facealpha'</tt> as name-value pairs. Try declaring any fill property as name-value pairs.</p><p><tt>circles(...,'LineProperty',LineValue)</tt> allows declaration of <tt>'edgecolor'</tt>, <tt>'linewidth'</tt>, etc.</p><p><tt>h = circles(...)</tt> returns the handle(s) <tt>h</tt> of the plotted object(s).</p><h2>Example: One circle<a name="3"></a></h2><p>Here we draw one circle of radius 3, centered at the location (5,10). Note that Matlab doesn't set axes equal by default, so circles may not look like circles until you declare <tt>axis equal</tt>.</p><pre class="codeinput">circles(5,10,3)
+axis <span class="string">equal</span>
+</pre><img vspace="5" hspace="5" src="circles_documentation_01.png" alt=""> <h2>Example: A line of equally-sized circles<a name="4"></a></h2><p>Draw ten circles of radius 2 at <i>y = 5</i>:</p><pre class="codeinput">cla <span class="comment">% clears away the circles drawn in the first example</span>
+circles(1:10,5,2)
+</pre><img vspace="5" hspace="5" src="circles_documentation_02.png" alt=""> <h2>Example: Hollow or empty circles<a name="5"></a></h2><p>Let's make them concentric, too:</p><pre class="codeinput">cla
+circles(5,15,1:5,<span class="string">'facecolor'</span>,<span class="string">'none'</span>)
+</pre><img vspace="5" hspace="5" src="circles_documentation_03.png" alt=""> <h2>Example: Green circles of multiple radii<a name="6"></a></h2><p>Here we declare multiple radii of circles</p><pre class="codeinput">x = 22:27;
+y = [5,15,12,25,3,18];
+r = [3 4 5 5 7 3];
+
+cla
+circles(x,y,r,<span class="string">'facecolor'</span>,<span class="string">'green'</span>)
+</pre><img vspace="5" hspace="5" src="circles_documentation_04.png" alt=""> <h2>Example: Declare edge color and width<a name="7"></a></h2><p>Use patch or fill properties to format your circle(s):</p><pre class="codeinput">cla
+circles(5,10,3,<span class="string">'edgecolor'</span>,[.5 .2 .9],<span class="string">'linewidth'</span>,4)
+</pre><img vspace="5" hspace="5" src="circles_documentation_05.png" alt=""> <h2>Example: A grid of circles<a name="8"></a></h2><p>Perhaps your circles correspond to some gridded data set such as latitudes and longitudes:</p><pre class="codeinput">cla
+lat = repmat((10:-1:1)',1,10);
+lon = repmat(1:10,10,1);
+r = rand(size(lat));
+
+circles(lon,lat,r,<span class="string">'edgecolor'</span>,<span class="string">'b'</span>,<span class="string">'facecolor'</span>,[0.7255 0.6353 0.5059]);
+</pre><img vspace="5" hspace="5" src="circles_documentation_06.png" alt=""> <p>Overlay a parabolic line of semitransparent circles:</p><pre class="codeinput">x = 1:.5:10;
+y = (x/4).^2;
+
+circles(x,y,.3,<span class="string">'edgecolor'</span>,<span class="string">'k'</span>,<span class="string">'facecolor'</span>,[0.0078 0.5765 0.5255],<span class="keyword">...</span>
+    <span class="string">'facealpha'</span>,.4);
+</pre><img vspace="5" hspace="5" src="circles_documentation_07.png" alt=""> <h2>Example: Circles have corners<a name="10"></a></h2><p>This script approximates circles as polygons with 1000 vertices. If all those corners are too complex for your Pentium-II, you can reduce the number of points used to make each circle.  If 1000 points is not high enough resolution, you can increase the number of points.  Or if you'd like to draw triangles or squares, or pentagons, you can significantly reduce the number of points. Let's try drawing a stop sign:</p><pre class="codeinput">cla
+h = circles(1,1,10,<span class="string">'vertices'</span>,8,<span class="string">'color'</span>,<span class="string">'red'</span>);
+</pre><img vspace="5" hspace="5" src="circles_documentation_08.png" alt=""> <p>We see that our stop sign needs to be rotated a little bit, so we'll delete the one we drew and try again:</p><pre class="codeinput">delete(h)
+h = circles(1,1,10,<span class="string">'vertices'</span>,8,<span class="string">'color'</span>,<span class="string">'red'</span>,<span class="string">'rot'</span>,45/2);
+text(1,1,<span class="string">'STOP'</span>,<span class="string">'fontname'</span>,<span class="string">'helvetica CY'</span>,<span class="keyword">...</span>
+    <span class="string">'horizontalalignment'</span>,<span class="string">'center'</span>,<span class="string">'fontsize'</span>,140,<span class="keyword">...</span>
+    <span class="string">'color'</span>,<span class="string">'w'</span>,<span class="string">'fontweight'</span>,<span class="string">'bold'</span>)
+</pre><img vspace="5" hspace="5" src="circles_documentation_09.png" alt=""> <h2>Example: Rotation can be scalar or matrix<a name="12"></a></h2><p>Plot some squares declaring arbitrary rotation corresponding to each square:</p><pre class="codeinput">cla
+circles([1 3 5 7],2,1,<span class="string">'vertices'</span>,4,<span class="string">'rot'</span>,[0 45 35 23.1])
+</pre><img vspace="5" hspace="5" src="circles_documentation_10.png" alt=""> <h2>Author Info<a name="13"></a></h2><p>These functions were written by Chad A. Greene of the University of Texas at Austin's Institute for Geophysics (<a href="http://www.ig.utexas.edu/research/cryosphere/">UTIG</a>) in March of 2014 and updated in August 2014.  All previous functionality is still supported with the updates, but the code is nominally more efficient now and the rotation feature has been added.</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2012b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% circles
+% This function plots circles.  
+% 
+%% Syntax 
+%  circles(x,y,r)
+%  circles(...,'vertices',numberOfPoints)
+%  circles(...,'rotation',degreesRotation)
+%  circles(...,'ColorProperty',ColorValue)
+%  circles(...,'LineProperty',LineValue)
+%  h = circles(...)
+% 
+%% Description
+% 
+% |circles(x,y,r)| plots circle(s) of radius or radii |r| centered at points given by 
+% |x| and |y|.  Inputs |x|, |y|, and |r| may be any combination of scalar,
+% vector, or 2D matrix, but dimensions of all nonscalar inputs must agree. 
+% 
+% |circles(...,'vertices',numberOfPoints)| allows specification of how many points to use 
+% for the outline of each circle. Default value is 1000, but this may be
+% increased to increase plotting resolution.  Or you may specify a small
+% number (e.g. 4 to plot a square, 5 to plot a pentagon, etc.). 
+% 
+% |circles(...,'rotation',degreesRotation)| rotates the shape by a given
+% degreesRotation, which can be a scalar or a matrix. This is useless for
+% circles, but may be desired for polygons with a discernible number of corner points. 
+% 
+% |circles(...,'ColorProperty',ColorValue)| allows declaration of
+% |'facecolor'| or |'facealpha'|
+% as name-value pairs. Try declaring any fill property as name-value pairs. 
+%
+% |circles(...,'LineProperty',LineValue)| allows declaration of |'edgecolor'|, 
+% |'linewidth'|, etc.
+%
+% |h = circles(...)| returns the handle(s) |h| of the plotted object(s). 
+% 
+%
+%% Example: One circle
+% Here we draw one circle of radius 3, centered at the location (5,10).
+% Note that Matlab doesn't set axes equal by default, so circles may not
+% look like circles until you declare |axis equal|. 
+
+circles(5,10,3)
+axis equal
+
+%% Example: A line of equally-sized circles 
+% Draw ten circles of radius 2 at _y = 5_:
+
+cla % clears away the circles drawn in the first example
+circles(1:10,5,2)
+
+%% Example: Hollow or empty circles 
+% Let's make them concentric, too: 
+
+cla
+circles(5,15,1:5,'facecolor','none')
+
+%% Example: Green circles of multiple radii
+% Here we declare multiple radii of circles
+
+x = 22:27;
+y = [5,15,12,25,3,18]; 
+r = [3 4 5 5 7 3]; 
+
+cla
+circles(x,y,r,'facecolor','green')
+
+%% Example: Declare edge color and width
+% Use patch or fill properties to format your circle(s): 
+
+cla
+circles(5,10,3,'edgecolor',[.5 .2 .9],'linewidth',4)
+
+%% Example: A grid of circles
+% Perhaps your circles correspond to some gridded data set such as
+% latitudes and longitudes: 
+
+cla 
+lat = repmat((10:-1:1)',1,10); 
+lon = repmat(1:10,10,1); 
+r = rand(size(lat)); 
+
+circles(lon,lat,r,'edgecolor','b','facecolor',[0.7255 0.6353 0.5059]);
+
+%% 
+% Overlay a parabolic line of semitransparent circles:
+
+x = 1:.5:10; 
+y = (x/4).^2; 
+
+circles(x,y,.3,'edgecolor','k','facecolor',[0.0078 0.5765 0.5255],...
+    'facealpha',.4);
+
+%% Example: Circles have corners
+% This script approximates circles as polygons with 1000 vertices. If all
+% those corners are too complex for your Pentium-II, you can reduce the number of points
+% used to make each circle.  If 1000 points is not high enough resolution,
+% you can increase the number of points.  Or if you'd like to draw
+% triangles or squares, or pentagons, you can significantly reduce the
+% number of points. Let's try drawing a stop sign: 
+
+cla
+h = circles(1,1,10,'vertices',8,'color','red'); 
+
+%%
+% We see that our stop sign needs to be rotated a little bit, so we'll
+% delete the one we drew and try again: 
+
+delete(h)
+h = circles(1,1,10,'vertices',8,'color','red','rot',45/2); 
+text(1,1,'STOP','fontname','helvetica CY',...
+    'horizontalalignment','center','fontsize',140,...
+    'color','w','fontweight','bold')
+
+%% Example: Rotation can be scalar or matrix
+% Plot some squares declaring arbitrary rotation corresponding to each square: 
+
+cla
+circles([1 3 5 7],2,1,'vertices',4,'rot',[0 45 35 23.1])
+
+%% Author Info
+% These functions were written by Chad A. Greene of the University of Texas
+% at Austin's Institute for Geophysics
+% (<http://www.ig.utexas.edu/research/cryosphere/ UTIG>) in March of 2014 and updated 
+% in August 2014.  All previous functionality is still supported with the updates, but 
+% the code is nominally more efficient now and the rotation feature has been added. 
+
+##### SOURCE END #####
+--></body></html>

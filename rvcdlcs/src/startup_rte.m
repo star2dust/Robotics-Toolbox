@@ -15,7 +15,6 @@ addpath([thirdpartypath '/graphsearch/lib']); % add graphsearch
 addpath([thirdpartypath '/stlreader/lib']); % add stlreader
 addpath([thirdpartypath '/iris-distro/src/matlab']); % add iris
 addpath([thirdpartypath '/hebinput/hebi']); % add hebi input
-
-
+%addpath([thirdpartypath '/circles']); % add circles
 
 
