@@ -9,12 +9,27 @@ addpath([srcpath '/planning']); % add planning
 
 % import third party toolboxes
 thirdpartypath = [srcpath '/thirdparty'];
-addpath([thirdpartypath '/cvxhull/lib']); % add cvxhull
-addpath([thirdpartypath '/dh2poe/lib']); % add dh2poe
-addpath([thirdpartypath '/graphsearch/lib']); % add graphsearch
-addpath([thirdpartypath '/stlreader/lib']); % add stlreader
-addpath([thirdpartypath '/iris-distro/src/matlab']); % add iris
-addpath([thirdpartypath '/hebinput/hebi']); % add hebi input
-%addpath([thirdpartypath '/circles']); % add circles
+
+% add cvxhull  
+addpath([thirdpartypath '/cvxhull/circles']);
+addpath([thirdpartypath '/cvxhull/inhull']); 
+addpath([thirdpartypath '/cvxhull/inpoly']); 
+addpath([thirdpartypath '/cvxhull/intersections']); 
+addpath([thirdpartypath '/cvxhull/polytopes']); 
+
+% add dh2poe 
+addpath([thirdpartypath '/dh2poe/lib']); 
+
+% add graphsearch
+addpath([thirdpartypath '/graphsearch/lib']); 
+
+% add hebi input
+addpath([thirdpartypath '/hebinput/hebi']);
+
+% add stlreader
+addpath([thirdpartypath '/stlreader/lib']); 
+
+% add iris
+addpath([thirdpartypath '/iris-distro/src/matlab']); 
 
 

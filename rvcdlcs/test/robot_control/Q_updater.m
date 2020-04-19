@@ -35,6 +35,8 @@ for j=1:length(robot)
         Vfdcl = [Vfdcl;polyxpoly_(Vfdc,Vfdl)];
         Vfdcr = [Vfdcr;polyxpoly_(Vfdc,Vfdr)];    
     end
+    S{1} = Vfdcl; S{2} = Vfdcr;
+    save('debug/Stest.mat','S');
     Vdcl = (SE2(qf(j,:))*Vfdcl(convhull_(Vfdcl),:)')';
     Vdcr = (SE2(qf(j,:))*Vfdcr(convhull_(Vfdcr),:)')';
 %     plot(Vdcl(:,1),Vdcl(:,2),'b','linewidth',2);

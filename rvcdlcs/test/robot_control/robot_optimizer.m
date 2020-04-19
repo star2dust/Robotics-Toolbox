@@ -1,31 +1,41 @@
 function [dqrob,dlambda] = robot_optimizer(robot,Qnow,D,T,pfd,qrob,lambda)
 
-import PlanarRevolute.*
 % qrob lambda split
 s = qrob(:,1); pfe = qrob(:,2:3); 
 thfe = qrob(:,7); qae = qrob(:,8:end);
 qrob_min = [s,pfe,thfe,qae];
 qae_opt = Qnow.qa_opt(:,2:end);
 lam = lambda(:,1); eta = lambda(:,2:end);
-link_num = size(qae,2)+1;
 dqrob = zeros(size(qrob));
 % primal-dual algorithm - primal
-wp = 1; wth = 1; alpha = 1; beta = 2; L = D*D';
-Gamma = [-ones(1,link_num-1);eye(link_num-1)];
-nablapfm = nabla_pfm(robot,T,pfd,thfe,qae);
+wp = 1; wth = 1; alpha = 5; beta = 2; L = D*D';
+nabla_epfm_now = nabla_epfm(robot,T,pfd,qrob_min);
+epfm_now = epfm(robot,T,pfd,qrob_min);
 for i=1:length(robot)
-    upfm(i,:) = wp*(pfe(i,:)-getFkine(robot(i).link,qae(i,:)*Gamma')...
-        *rot2(thfe(i))'-s(i)*pfd(i,:))*nablapfm{i}';
+    upfm(i,:) = wp*epfm_now(i,:)*nabla_epfm_now{i}';
+%     upfm(i,:) = wp*(pfe(i,:)-getFkine(robot(i).link,qae(i,:)*Gamma')...
+%         *rot2(thfe(i))'-s(i)*pfd(i,:))*T{i}'*nabla_epfm_now{i}';
 end
 uq = upfm+[L*lam,eta,zeros(size(lam)),wth*(qae-qae_opt)];
 % projection
 for i=1:length(robot)
-    qrob_uq(i,:)= convproj(qrob_min(i,:)-uq(i,:),Qnow.A{i},Qnow.b{i},Qnow.qlim{i});
-    qrob_Qnow(i,:) = convproj(qrob_min(i,:),Qnow.A{i},Qnow.b{i},Qnow.qlim{i});
-%     qrob_uq(i,:) = lsqlin(eye(size(qrob_min,2)),qrob_min(i,:)'-uq(i,:)',...
-%         Qnow.A{i},Qnow.b{i},[],[],Qnow.qlim{i}(1,:)',Qnow.qlim{i}(2,:)')';
-%     qrob_Qnow(i,:) = lsqlin(eye(size(qrob_min,2)),qrob_min(i,:)',Qnow.A{i},...
-%         Qnow.b{i},[],[],Qnow.qlim{i}(1,:)',Qnow.qlim{i}(2,:)')';
+    % calculate constraint set
+    A = Qnow.A{i};%[Qnow.Athfae{i};Qnow.Apfe{i}];
+    b = Qnow.b{i};%[Qnow.bthfae{i};Qnow.bpfe{i}];
+    qlim = Qnow.qlim{i};
+    % calculate projectiojn
+    if sum(~(A*qrob_min(i,:)'-b<0))
+        disp('outside the constraint set')
+    else
+        disp('inside the constraint set')
+    end
+    if sum(normby(epfm(robot,T,pfd,qrob),1)<=0)
+        disp('outside the sector');
+    else
+        disp('inside the sector');
+    end
+    qrob_uq(i,:)= convproj(qrob_min(i,:)-uq(i,:),A,b,qlim);
+    qrob_Qnow(i,:) = convproj(qrob_min(i,:),A,b,qlim);
     if norm(qrob_min(i,:)-qrob_Qnow(i,:))<=10^-4
         qrob_dist(i,:) = zeros(size(qrob_min(i,:)));
     else

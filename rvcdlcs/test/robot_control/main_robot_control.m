@@ -108,6 +108,8 @@ fk = robot_object.fkine(qa,qb);
 qe = fk(:,end).toqrpy;
 % (qf,qa,qb) => qfe
 qfe = toqrpy(SE3.qrpy(qf).inv*SE3.qrpy(qe));
+% range qfe(:,end) within [qa1_min,qa1_max]
+[~,qfe(:,end)] = circinterval(qa1_min,qfe(:,end));
 qc = sum(qe)/robot_num;
 
 % primal variables
@@ -145,7 +147,7 @@ qb = robot_object.bkine(qa,qe);
 
 % figure
 fig = robot_plotter(robot_object,lidar_object,qa,qb,qc,qrh,qf,pfd,Qmax,...
-    val_max,var_max,val_min,var_min);
+    val_min,var_min,val_max,var_max);
 
 
 % write video
@@ -174,7 +176,7 @@ dqr = zeros(size(qr));
 
 % simulation loop
 tic; t0 = 0;
-playspeed = 1;
+playspeed = 1/100;
 while toc<fig.tqr(end)/playspeed
     tnow = toc*playspeed;
     dt = tnow - t0;
@@ -193,7 +195,7 @@ while toc<fig.tqr(end)/playspeed
     Qnow = Q_updater(robot_object,lidar_object,Qmax,qf,qf_next,pfd,qrob,...
         val_max,var_max);
     % robot controller - optimization
-%     [dqrob,dlambda] = robot_optimizer(robot_object,Qnow,D,T_min,pfd,qrob,lambda);
+    [dqrob,dlambda] = robot_optimizer(robot_object,Qnow,D,T_min,pfd,qrob,lambda);
     % update pose
     qrh = qrh + dqrh*dt;
     qf = qf + dqf*dt;
@@ -207,7 +209,7 @@ while toc<fig.tqr(end)/playspeed
     qc = sum(qe)/robot_num;
     % update figure
     fig = robot_animator(fig,robot_object,lidar_object,qa,qb,qc,qrh,qf,...
-        Qnow,val_max,var_max,val_min,var_min);
+        Qnow,val_min,var_min,val_max,var_max);
     % video
     if video_on
         f = getframe(gcf);

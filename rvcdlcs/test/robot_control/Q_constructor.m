@@ -15,6 +15,7 @@ end
 % Qmax - pfe circle constraint
 for i=1:robot_num
     Vfe{i} = circle(pfe_opt(i,:),rfe,'n',6)';
+    Vfe{i} = Vfe{i}(convhull_(Vfe{i}),:);
     [Apfe{i}, bpfe{i}] = polycons(Vfe{i});
     nApfe = size(Apfe{i},1);
     Apfe{i} = [zeros(nApfe,1),Apfe{i},zeros(nApfe,3)];
@@ -39,10 +40,15 @@ end
 % Qmax - pfm in sector
 thfe_opt = sum(qa_opt,2);
 qae_opt = qa_opt(:,2:end);
-nablapfm = nabla_pfm(robot,T_min,pfd,thfe_opt,qae_opt);
+pfe_opt_eps = pfe_opt-rfe/10*normalize(pfe_opt','norm')';
+qrob_min_opt = [kron(ones(robot_num,1),s_opt),pfe_opt_eps,thfe_opt,qae_opt];
+if sum(normby(epfm(robot,T_min,pfd,qrob_min_opt),1)<=0)
+    disp('qrob_opt is not proper');
+end
+nabla_epfm_opt = nabla_epfm(robot,T_min,pfd,qrob_min_opt);
 for i=1:robot_num
-    Apfm{i} = -nablapfm{i}';
-    bpfm{i} = Apfm{i}*[s_opt;pfe_opt(i,:)';thfe_opt(i,:);qae_opt(i,:)'];
+    Apfm{i} = -nabla_epfm_opt{i}';
+    bpfm{i} = Apfm{i}*qrob_min_opt(i,:)';
 end
 % save Qmax
 for i=1:robot_num

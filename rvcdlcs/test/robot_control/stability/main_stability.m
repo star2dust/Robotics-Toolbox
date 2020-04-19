@@ -108,6 +108,8 @@ fk = robot_object.fkine(qa,qb);
 qe = fk(:,end).toqrpy;
 % (qf,qa,qb) => qfe
 qfe = toqrpy(SE3.qrpy(qf).inv*SE3.qrpy(qe));
+% range qfe(:,end) within [qa1_min,qa1_max]
+[~,qfe(:,end)] = circinterval(qa1_min,qfe(:,end));
 qc = sum(qe)/robot_num;
 
 % primal variables
@@ -115,25 +117,6 @@ qrob = [s,qfe,qae];
 
 % Lagrangian multipliers
 lambda = zeros(robot_num,3);
-
-
-% plot(qf(:,1),qf(:,2),'rd'); hold on
-% plot(qb(:,1),qb(:,2),'bo'); 
-% plot(pe(:,1),pe(:,2),'b*');
-% 
-% 
-% 
-% robot_lkthick = 2;
-% robot_hgsize = 2;
-% ws = [0 8 0 8];
-% vbal_min = (SO2(thf)*val_min')';
-% vbar_min = (SO2(thf)*var_min')';
-% for i=1:length(robot_object)
-%     hrob(i) = robot_object(i).plot(qa(i,:), qb(i,:), 'workspace', ws, 'dim', length(ws)/2, 'plat',...
-%         'hgsize', robot_hgsize, 'lkthick', robot_lkthick);
-%     quiver(qb(i,1),qb(i,2),vbal_min(i,1),vbal_min(i,2),'color','g');
-%     quiver(qb(i,1),qb(i,2),vbar_min(i,1),vbar_min(i,2),'color','g');
-% end
 
 
 %% plotter and video
@@ -145,8 +128,9 @@ qa = [qe(:,end)-sum(qae,2),qae];
 qb = robot_object.bkine(qa,qe);
 
 % figure
-fig = Q_plotter(robot_object,lidar_object,qf,pfd,Qmax,...
+fig = robot_plotter(robot_object,3,qa,qb,qc,qrh,qf,pfd,Qmax,...
     val_min,var_min,val_max,var_max);
+axis([0 8 0 8]);
 
 
 % write video
@@ -157,7 +141,7 @@ if video_on
     if ~exist(respath,'dir')
         mkdir(respath);
     end
-    videoname = [respath 'constraint_demo_05'];
+    videoname = [respath 'story_demo'];
     writerObj = VideoWriter(videoname);
     open(writerObj);
 end
@@ -170,33 +154,21 @@ dqrh = zeros(size(qrh));
 dqf = zeros(size(qf));
 dqrob = zeros(size(qrob));
 dlambda = zeros(size(lambda));
-qr = fig.qqr(1,:);
-dqr = zeros(size(qr));
 
 % simulation loop
-tic; t0 = 0;
-playspeed = 1;
-while toc<fig.tqr(end)/playspeed
+tic; t0 = 0; tf = 40;
+playspeed = 1/10;
+while toc<tf/playspeed
     tnow = toc*playspeed;
     dt = tnow - t0;
     t0 = tnow;
-    % choose via point in time 'tnow'
-    qr = interp1(fig.tqr,fig.qqr,tnow);
-    dqr = interp1(fig.tqr,fig.dqr,tnow);
-    % robot controller - estimation
-    gamma = 1;
-    dqrh = kron(ones(robot_num,1),dqr)-gamma*(qrh-kron(ones(robot_num,1),qr));
-    % robot controller - tracking 
-    kappa = 2;
-    dqf = dqrh-gamma*(qf-qrh)-kappa*D*(D'*qf);
     % robot controller - constraint set and detector
     qf_next = qf + dqf*dt;
     Qnow = Q_updater(robot_object,lidar_object,Qmax,qf,qf_next,pfd,qrob,...
         val_max,var_max);
     % robot controller - optimization
-%     [dqrob,dlambda] = robot_optimizer(robot_object,Qnow,D,T_min,pfd,qrob,lambda);
+    [dqrob,dlambda] = robot_optimizer(robot_object,Qnow,D,T_min,pfd,qrob,lambda);
     % update pose
-    qrh = qrh + dqrh*dt;
     qf = qf + dqf*dt;
     qrob = qrob + dqrob*dt;
     lambda = lambda + dlambda*dt;
@@ -207,7 +179,8 @@ while toc<fig.tqr(end)/playspeed
     qb = robot_object.bkine(qa,qe);
     qc = sum(qe)/robot_num;
     % update figure
-    fig = Q_animator(fig,qf,Qnow,val_min,var_min,val_max,var_max);
+    fig = robot_animator(fig,robot_object,[],qa,qb,qc,qrh,qf,...
+        Qnow,val_min,var_min,val_max,var_max);
     % video
     if video_on
         f = getframe(gcf);

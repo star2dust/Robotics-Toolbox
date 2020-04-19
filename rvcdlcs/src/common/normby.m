@@ -9,15 +9,15 @@ function n = normby(V,s,p)
 for i=1:size(V,s)
     if s==1
         if nargin<3
-            n(i,:) = norm(V(s,:));
+            n(i,:) = norm(V(i,:));
         else
-            n(i,:) = norm(V(s,:),p);
+            n(i,:) = norm(V(i,:),p);
         end
     elseif s==2
         if nargin<3
-            n(:,i) = norm(V(:,s));
+            n(:,i) = norm(V(:,i));
         else
-            n(:,i) = norm(V(:,s),p);
+            n(:,i) = norm(V(:,i),p);
         end
     else
         error('unknown argument');

@@ -1,7 +1,7 @@
 close all 
 clear
 
-i = 3;
+i = 1;
 load(['Copy_of_map' num2str(i) '.mat'],'map_min', 'Af_min', 'route_min', 'tile_max');
 % map to indoc/Voc
 map_siz = size(map_min);
