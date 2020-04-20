@@ -21,6 +21,7 @@ for i=1:robot_num
     Apfe{i} = [zeros(nApfe,1),Apfe{i},zeros(nApfe,3)];
 end
 % Qmax - joint 1 limitation
+% (also to make sure T_min*pme concave)
 for i=1:robot_num
     link_num = length(robot(i).link);
     Athfae{i} = [-1, ones(1,link_num-1);1, -ones(1,link_num-1)]; 
@@ -38,17 +39,30 @@ for i=1:robot_num
         qa_lim(2,:)',@(qa) fkcon(robot_link,qa,pfe_opt(i,:)-s_opt*pfd(i,:)))';
 end
 % Qmax - pfm in sector
+% (err_pfm means T_min*(pfe-pme-s*pfd))
+% conditions to make err_pfm^2 convex:
+% 1: T_min*pme is concave (o)
+% 2: T_min*(pfe-pme-s*pfd)>=0 (x)
 thfe_opt = sum(qa_opt,2);
 qae_opt = qa_opt(:,2:end);
-pfe_opt_eps = pfe_opt-rfe/10*normalize(pfe_opt','norm')';
+pfe_opt_eps = pfe_opt;
 qrob_min_opt = [kron(ones(robot_num,1),s_opt),pfe_opt_eps,thfe_opt,qae_opt];
-if sum(normby(epfm(robot,T_min,pfd,qrob_min_opt),1)<=0)
-    disp('qrob_opt is not proper');
+qth_opt = [thfe_opt,qae_opt];
+% let pfe_opt_eps = pfe_opt-rfe/10*normalize(pfe_opt','norm')' to 
+% make sure normby(err_pfm(robot,T_min,pfd,qrob_min_opt),1) strictly positive
+if sum(normby(err_pfm(robot,T_min,pfd,qrob_min_opt),1)<=0)
+    disp('err_pfm should be non-negative component wise');
 end
-nabla_epfm_opt = nabla_epfm(robot,T_min,pfd,qrob_min_opt);
+% -T_min*pme(qth)>=-T_min*pme(qth_opt)-T_min*Jacob_pme*(qth-qth_opt) because it is convex
+% T_min*(pfe-pme-s*pfd)>=T_min*(pfe-s*pfd)-T_min*pme(qth_opt)-T_min*Jacob_pme_opt*(qth-qth_opt)
+% = nabla_err_pfm_opt*q_rob-T_min*pme(qth_opt)+T_min*Jacob_pme*qth_opt>=0
+nabla_err_pfm_opt = nabla_err_pfm(robot,T_min,pfd,qrob_min_opt);
+pme_opt = fkine_pme(robot,thfe_opt,qae_opt);
+Jme_opt = Jacob_pme(robot,thfe_opt,qae_opt);
 for i=1:robot_num
-    Apfm{i} = -nabla_epfm_opt{i}';
-    bpfm{i} = Apfm{i}*qrob_min_opt(i,:)';
+    Apfm{i} = -nabla_err_pfm_opt{i}';
+    bpfm{i} = -T_min{i}*pme_opt(i,:)'+T_min{i}*Jme_opt{i}*[thfe_opt(i,:),qae_opt(i,:)]';
+%     bpfm{i} = Apfm{i}*qrob_min_opt(i,:)';
 end
 % save Qmax
 for i=1:robot_num
@@ -60,7 +74,7 @@ end
 Qmax.Apfm = Apfm; Qmax.bpfm = bpfm; 
 Qmax.Athfae = Athfae; Qmax.bthfae = bthfae; 
 Qmax.Apfe = Apfe; Qmax.bpfe = bpfe; Qmax.Vfe = Vfe;
-Qmax.qrob_opt = [kron(ones(size(thfe_opt)),s_opt),pfe_opt,thfe_opt,qae_opt];
+Qmax.qrob_opt = qrob_min_opt;
 Qmax.qa_opt = qa_opt;
 Qmax.qfb_opt = [pfe_opt-getFkine(robot.lk,qa_opt),zeros(size(thfe_opt))];
 Qmax.s_lim = s_lim;

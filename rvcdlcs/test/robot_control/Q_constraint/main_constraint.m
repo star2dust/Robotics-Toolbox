@@ -174,7 +174,7 @@ qr = fig.qqr(1,:);
 dqr = zeros(size(qr));
 
 % simulation loop
-tic; t0 = 0;
+tic; t0 = 0; dt_next = 0.5;
 playspeed = 1;
 while toc<fig.tqr(end)/playspeed
     tnow = toc*playspeed;
@@ -190,8 +190,8 @@ while toc<fig.tqr(end)/playspeed
     kappa = 2;
     dqf = dqrh-gamma*(qf-qrh)-kappa*D*(D'*qf);
     % robot controller - constraint set and detector
-    qf_next = qf + dqf*dt;
-    Qnow = Q_updater(robot_object,lidar_object,Qmax,qf,qf_next,pfd,qrob,...
+    qf_next = qf + dqf*dt_next;
+    Qnow = Q_updater(robot_object,lidar_object,qrob,qf,qf_next,pfd,Qmax,...
         val_max,var_max);
     % robot controller - optimization
 %     [dqrob,dlambda] = robot_optimizer(robot_object,Qnow,D,T_min,pfd,qrob,lambda);

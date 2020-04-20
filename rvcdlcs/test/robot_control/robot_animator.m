@@ -1,4 +1,11 @@
-function fig = robot_animator(fig,robot,lidar,qa,qb,qc,qrh,qf,Qnow,val_min,var_min,val_max,var_max)
+function fig = robot_animator(fig,robot,lidar,qrob,qrh,qf,Qnow,val_min,var_min,val_max,var_max)
+
+% qrob split
+if ~(isempty(qrob)||isempty(robot))
+    [s,pfe,thfe,qae,qa,qb,qe,qc] = qrob_split(robot,qrob,qf);
+else
+    s = cell2mat_(Qnow.qlim,2,1); qa = []; qb = []; qc = [];
+end
 
 % formation
 pfd = fig.pfd; thfd = cart2pol(pfd(:,1),pfd(:,2));
@@ -40,21 +47,23 @@ vsdal_min = (SO2(thf)*val_min')'/s_max;
 vsdar_min = (SO2(thf)*var_min')'/s_max;
 vsdal_max = (SO2(thf)*val_max')'/s_max;
 vsdar_max = (SO2(thf)*var_max')'/s_max;
-s_max_now = cell2mat_(Qnow.qlim,2,1);
-psfd_max_now = s_max_now.*pfd;
-psd_max_now = (SE2(qf)*psfd_max_now')';
-set(fig.hval_min,'XData',psd_max_now(:,1),'YData',psd_max_now(:,2),'UData',s_max_now.*vsdal_min(:,1),...
-    'VData',s_max_now.*vsdal_min(:,2));
-set(fig.hvar_min,'XData',psd_max_now(:,1),'YData',psd_max_now(:,2),'UData',s_max_now.*vsdar_min(:,1),...
-    'VData',s_max_now.*vsdar_min(:,2));
+psfd = s.*pfd;
+psd = (SE2(qf)*psfd')';
+set(fig.hval_min,'XData',psd(:,1),'YData',psd(:,2),'UData',s.*vsdal_min(:,1),...
+    'VData',s.*vsdal_min(:,2));
+set(fig.hvar_min,'XData',psd(:,1),'YData',psd(:,2),'UData',s.*vsdar_min(:,1),...
+    'VData',s.*vsdar_min(:,2));
 
 
 % Vda for all robots
+s_max_now = cell2mat_(Qnow.qlim,2,1);
+psfd_max = s_max_now.*pfd;
+psd_max = (SE2(qf)*psfd_max')';
 if nargin<13||~(isempty(val_max)||isempty(val_max))
     Vda_max = [];
     for i=1:fig.nrob
-        Vda = [qf(i,1:2);psd_max_now(i,:);psd_max_now(i,:)+s_max_now(i,:)*vsdal_max(i,:);
-            psd_max_now(i,:)+s_max_now(i,:)*vsdar_max(i,:)];
+        Vda = [qf(i,1:2);psd_max(i,:);psd_max(i,:)+s_max_now(i,:)*vsdal_max(i,:);
+            psd_max(i,:)+s_max_now(i,:)*vsdar_max(i,:)];
         ida = convhull_(Vda);
         Vda_max = [Vda_max;Vda(ida,:)];
     end
@@ -62,6 +71,6 @@ if nargin<13||~(isempty(val_max)||isempty(val_max))
 end
 
 % psd convhull
-isd = convhull_(psd_max_now);
-set(fig.hpsd,'XData',psd_max_now(isd,1),'YData',psd_max_now(isd,2));
+isd = convhull_(psd_max);
+set(fig.hpsd,'XData',psd_max(isd,1),'YData',psd_max(isd,2));
 end

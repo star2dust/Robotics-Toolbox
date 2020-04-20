@@ -1,9 +1,15 @@
-function Qnow = Q_updater(robot,lidar,Qmax,qf,qf_next,pfd,qrob,val_max,var_max)
+function Qnow = Q_updater(robot,lidar,qrob,qf,qf_next,pfd,Qmax,val_max,var_max)
+
+
 % qrob split
-s = qrob(:,1); qfe = qrob(:,2:7); qae = qrob(:,8:end);
-qe = toqrpy(SE3.qrpy(qf).*SE3.qrpy(qfe));
-qa = [qe(:,end)-sum(qae,2),qae];
-qb = robot.bkine(qa,qe);
+[s,pfe,thfe,qae,qa,qb,qe,qc] = qrob_split(robot,qrob,qf);
+
+% s = qrob(:,1); qfe = qrob(:,2:7); qae = qrob(:,8:end);
+% qe = toqrpy(SE3.qrpy(qf).*SE3.qrpy(qfe));
+% qa = [qe(:,end)-sum(qae,2),qae];
+% qb = robot.bkine(qa,qe);
+
+% formation
 thfd = cart2pol(pfd(:,1),pfd(:,2));
 thd = qf(:,3)+thfd;
 % lidar detect
@@ -35,8 +41,6 @@ for j=1:length(robot)
         Vfdcl = [Vfdcl;polyxpoly_(Vfdc,Vfdl)];
         Vfdcr = [Vfdcr;polyxpoly_(Vfdc,Vfdr)];    
     end
-    S{1} = Vfdcl; S{2} = Vfdcr;
-    save('debug/Stest.mat','S');
     Vdcl = (SE2(qf(j,:))*Vfdcl(convhull_(Vfdcl),:)')';
     Vdcr = (SE2(qf(j,:))*Vfdcr(convhull_(Vfdcr),:)')';
 %     plot(Vdcl(:,1),Vdcl(:,2),'b','linewidth',2);

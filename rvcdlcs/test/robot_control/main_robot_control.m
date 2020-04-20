@@ -39,8 +39,8 @@ for i=2:robot_num+1
     var_max(j,:) = s_max*pfd(I(i+1),:)-s_max*pfd(I(i),:);
     val_min(j,:) = s_min*pfd(I(i-1),:)-s_max*pfd(I(i),:);
     var_min(j,:) = s_min*pfd(I(i+1),:)-s_max*pfd(I(i),:);
-    T_min{j} = [skew_(val_min(j,:))/norm(skew_(val_min(j,:)));
-        skew_(var_min(j,:))/norm(skew_(var_min(j,:)))];
+    T_min{j} = [skew_(var_min(j,:))/norm(skew_(var_min(j,:)));
+        -skew_(val_min(j,:))/norm(skew_(val_min(j,:)))];
     thTr_min = atan2(var_min(j,2),var_min(j,1));
     thTl_min = atan2(val_min(j,2),val_min(j,1));
     [qa1_min(j,:),qa1_max(j,:)] = circinterval(thTr_min,thTl_min);
@@ -110,7 +110,6 @@ qe = fk(:,end).toqrpy;
 qfe = toqrpy(SE3.qrpy(qf).inv*SE3.qrpy(qe));
 % range qfe(:,end) within [qa1_min,qa1_max]
 [~,qfe(:,end)] = circinterval(qa1_min,qfe(:,end));
-qc = sum(qe)/robot_num;
 
 % primal variables
 qrob = [s,qfe,qae];
@@ -122,7 +121,6 @@ lambda = zeros(robot_num,3);
 % plot(qf(:,1),qf(:,2),'rd'); hold on
 % plot(qb(:,1),qb(:,2),'bo'); 
 % plot(pe(:,1),pe(:,2),'b*');
-% 
 % 
 % 
 % robot_lkthick = 2;
@@ -139,16 +137,9 @@ lambda = zeros(robot_num,3);
 
 %% plotter and video
 
-% qrob split
-s = qrob(:,1); qfe = qrob(:,2:7); qae = qrob(:,8:end);
-qe = toqrpy(SE3.qrpy(qf).*SE3.qrpy(qfe));
-qa = [qe(:,end)-sum(qae,2),qae];
-qb = robot_object.bkine(qa,qe);
-
 % figure
-fig = robot_plotter(robot_object,lidar_object,qa,qb,qc,qrh,qf,pfd,Qmax,...
+fig = robot_plotter(robot_object,lidar_object,qrob,qrh,qf,pfd,Qmax,...
     val_min,var_min,val_max,var_max);
-
 
 % write video
 video_on = false;
@@ -158,7 +149,7 @@ if video_on
     if ~exist(respath,'dir')
         mkdir(respath);
     end
-    videoname = [respath 'story_demo'];
+    videoname = [respath 'robot_manipulation_demo_01'];
     writerObj = VideoWriter(videoname);
     open(writerObj);
 end
@@ -175,8 +166,8 @@ qr = fig.qqr(1,:);
 dqr = zeros(size(qr));
 
 % simulation loop
-tic; t0 = 0;
-playspeed = 1/100;
+tic; t0 = 0; dt_next = 0.5;
+playspeed = 1/10;
 while toc<fig.tqr(end)/playspeed
     tnow = toc*playspeed;
     dt = tnow - t0;
@@ -191,8 +182,8 @@ while toc<fig.tqr(end)/playspeed
     kappa = 2;
     dqf = dqrh-gamma*(qf-qrh)-kappa*D*(D'*qf);
     % robot controller - constraint set and detector
-    qf_next = qf + dqf*dt;
-    Qnow = Q_updater(robot_object,lidar_object,Qmax,qf,qf_next,pfd,qrob,...
+    qf_next = qf + dqf*dt_next;
+    Qnow = Q_updater(robot_object,lidar_object,qrob,qf,qf_next,pfd,Qmax,...
         val_max,var_max);
     % robot controller - optimization
     [dqrob,dlambda] = robot_optimizer(robot_object,Qnow,D,T_min,pfd,qrob,lambda);
@@ -208,7 +199,7 @@ while toc<fig.tqr(end)/playspeed
     qb = robot_object.bkine(qa,qe);
     qc = sum(qe)/robot_num;
     % update figure
-    fig = robot_animator(fig,robot_object,lidar_object,qa,qb,qc,qrh,qf,...
+    fig = robot_animator(fig,robot_object,lidar_object,qrob,qrh,qf,...
         Qnow,val_min,var_min,val_max,var_max);
     % video
     if video_on
