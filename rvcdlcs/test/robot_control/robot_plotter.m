@@ -117,7 +117,7 @@ hvar_min = quiver(psd(:,1),psd(:,2),s.*vsdar_min(:,1),...
     s.*vsdar_min(:,2),'color','g','ShowArrowHead','off');
 
 % Vda for all robots
-s_max_now = cell2mat_(Qnow.qlim,2,1);
+s_max_now = cell2mat_(Qnow.qlim,2,1,1);
 psfd_max = s_max_now.*pfd;
 psd_max = (SE2(qf)*psfd_max')';
 if nargin<13||~(isempty(val_max)||isempty(val_max))

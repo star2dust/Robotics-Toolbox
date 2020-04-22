@@ -1,4 +1,4 @@
-function Qnow = Q_updater(robot,lidar,qrob,qf,qf_next,pfd,Qmax,val_max,var_max)
+function Qnow = Q_updater(robot,lidar,qrob,qf,qflid,pfd,Qmax,val_max,var_max)
 
 
 % qrob split
@@ -30,7 +30,7 @@ for j=1:length(robot)
     Vfdcl = []; Vfdcr = [];
     for i=1:length(Vdc)
         Vfdcdt = [(SE2(qf(j,:)).inv*Vdc{i}')';
-            (SE2(qf_next(j,:)).inv*Vdc{i}')'];
+            (SE2(qflid(j,:)).inv*Vdc{i}')'];
 %         Vdcdt = [h2e(SE2(qf(j,:)).inv.T*e2h(Vdc{i}'))';
 %             h2e(SE2(qf_next(j,:)).inv.T*e2h(Vdc{i}'))'];
         Vfdc = Vfdcdt(convhull_(Vfdcdt),:);

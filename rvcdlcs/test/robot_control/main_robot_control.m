@@ -113,6 +113,7 @@ qfe = toqrpy(SE3.qrpy(qf).inv*SE3.qrpy(qe));
 
 % primal variables
 qrob = [s,qfe,qae];
+qrob_min = [s,qfe(:,[1,2,end]),qae];
 
 % Lagrangian multipliers
 lambda = zeros(robot_num,3);
@@ -142,7 +143,7 @@ fig = robot_plotter(robot_object,lidar_object,qrob,qrh,qf,pfd,Qmax,...
     val_min,var_min,val_max,var_max);
 
 % write video
-video_on = false;
+video_on = true;
 if video_on
     initpath = which('startup.m');
     respath = [initpath(1:end-length('startup.m')) 'Results/'];
@@ -157,6 +158,20 @@ end
 
 %% simulation and animator
 
+% qrob split
+[s,pfe,thfe,qae,qa,qb,qe,qc] = qrob_split(robot_object,qrob,qf);
+
+% save intials
+qqr = fig.qqr(1,:);
+qqc = qc;
+qqrh = {qrh};
+qqf = {qf};
+qqrob = {qrob};
+llambda = {lambda};
+qqa = {qa};
+qqb = {qb};
+qqe = {qe};
+
 % zero velocities
 dqrh = zeros(size(qrh));
 dqf = zeros(size(qf));
@@ -164,17 +179,43 @@ dqrob = zeros(size(qrob));
 dlambda = zeros(size(lambda));
 qr = fig.qqr(1,:);
 dqr = zeros(size(qr));
+ctr = 0;
 
-% simulation loop
-tic; t0 = 0; dt_next = 0.5;
-playspeed = 1/10;
-while toc<fig.tqr(end)/playspeed
-    tnow = toc*playspeed;
-    dt = tnow - t0;
-    t0 = tnow;
+% bound and finite-time setting
+tnow = 0; Qnow = Qmax;
+tlid = 0; dtlid = 1; 
+% Qmin constructor
+Qmin = Qmax;
+for i=1:robot_num
+    Qmin.qlim{i}(2,1) = Qmin.qlim{i}(1,1);
+end
+% rho
+for i=1:robot_num
+negproj = @(q) -norm(q'-convproj(q',Qmin.A{i},Qmin.b{i},Qmin.qlim{i}));
+[~,negrho(i)] = fmincon(negproj,qrob_min(i,:)',Qmax.A{i},Qmax.b{i},[],[],...
+    Qmax.qlim{i}(1,:)',Qmax.qlim{i}(2,:)');
+end
+rho = max(abs(negrho));
+% xi
+for i=1:robot_num
+    m = size(qrob_min,2);
+    negdis = @(x) -norm([eye(m) -eye(m)]*x);
+    [~,negxi(i)] = fmincon(negdis,[qrob_min(i,:)';qrob_min(i,:)'],...
+        kron(eye(2),Qmax.A{i}),[Qmax.b{i};Qmax.b{i}],[],[],...
+        [Qmax.qlim{i}(1,:)';Qmax.qlim{i}(1,:)'],...
+        [Qmax.qlim{i}(2,:)';Qmax.qlim{i}(2,:)']);
+end
+xi = max(abs(negxi));
+alpha2 = rho/(2*dtlid)+sqrt((1+1/(4*dtlid^2))*rho^2+xi*rho);
+
+% simulation loop - fixed dt
+dt = 0.01;
+for t = 0:dt:fig.tqr(end)
+    ctr = ctr+1;
+    tnow(ctr) = t;
     % choose via point in time 'tnow'
-    qr = interp1(fig.tqr,fig.qqr,tnow);
-    dqr = interp1(fig.tqr,fig.dqr,tnow);
+    qr = interp1(fig.tqr,fig.qqr,tnow(ctr));
+    dqr = interp1(fig.tqr,fig.dqr,tnow(ctr));
     % robot controller - estimation
     gamma = 1;
     dqrh = kron(ones(robot_num,1),dqr)-gamma*(qrh-kron(ones(robot_num,1),qr));
@@ -182,22 +223,31 @@ while toc<fig.tqr(end)/playspeed
     kappa = 2;
     dqf = dqrh-gamma*(qf-qrh)-kappa*D*(D'*qf);
     % robot controller - constraint set and detector
-    qf_next = qf + dqf*dt_next;
-    Qnow = Q_updater(robot_object,lidar_object,qrob,qf,qf_next,pfd,Qmax,...
-        val_max,var_max);
+    if tnow(ctr)-tlid(end)>dtlid
+        qflid = qf + dqf*dtlid;
+        Qnow = Q_updater(robot_object,lidar_object,qrob,qf,qflid,pfd,Qmax,...
+            val_max,var_max);
+        tlid(end+1) = tnow(ctr);
+    end
     % robot controller - optimization
-    [dqrob,dlambda] = robot_optimizer(robot_object,Qnow,D,T_min,pfd,qrob,lambda);
+    [dqrob,dlambda] = robot_optimizer(robot_object,qrob,lambda,D,T_min,pfd,Qnow,alpha2);
     % update pose
     qrh = qrh + dqrh*dt;
     qf = qf + dqf*dt;
     qrob = qrob + dqrob*dt;
     lambda = lambda + dlambda*dt;
     % qrob split
-    s = qrob(:,1); qfe = qrob(:,2:7); qae = qrob(:,8:end);
-    qe = toqrpy(SE3.qrpy(qf).*SE3.qrpy(qfe));
-    qa = [qe(:,end)-sum(qae,2),qae];
-    qb = robot_object.bkine(qa,qe);
-    qc = sum(qe)/robot_num;
+    [s,pfe,thfe,qae,qa,qb,qe,qc] = qrob_split(robot_object,qrob,qf);
+    % save data
+    qqr(ctr+1,:) = qr;
+    qqc(ctr+1,:) = qc;
+    qqrh{ctr+1} = qrh;
+    qqf{ctr+1} = qf;
+    qqrob{ctr+1} = qrob;
+    llambda{ctr+1} = lambda;
+    qqa{ctr+1} = qa;
+    qqb{ctr+1} = qb;  
+    qqe{ctr+1} = qe;
     % update figure
     fig = robot_animator(fig,robot_object,lidar_object,qrob,qrh,qf,...
         Qnow,val_min,var_min,val_max,var_max);
@@ -207,9 +257,69 @@ while toc<fig.tqr(end)/playspeed
         f.cdata = imresize(f.cdata,[480,640]);
         writeVideo(writerObj,f);
     end
+    % next loop
     drawnow
 end
-toc
+
+% % simulation loop
+% playspeed = 1/10; tic; 
+% while toc<fig.tqr(end)/playspeed
+%     ctr = ctr+1;
+%     % choose via point in time 'tnow'
+%     qr = interp1(fig.tqr,fig.qqr,tnow(ctr));
+%     dqr = interp1(fig.tqr,fig.dqr,tnow(ctr));
+%     % robot controller - estimation
+%     gamma = 1;
+%     dqrh = kron(ones(robot_num,1),dqr)-gamma*(qrh-kron(ones(robot_num,1),qr));
+%     % robot controller - tracking 
+%     kappa = 2;
+%     dqf = dqrh-gamma*(qf-qrh)-kappa*D*(D'*qf);
+%     % robot controller - constraint set and detector
+%     if tnow(ctr)-tlid(end)>dtlid
+%         qflid = qf + dqf*dtlid;
+%         Qnow = Q_updater(robot_object,lidar_object,qrob,qf,qflid,pfd,Qmax,...
+%             val_max,var_max);
+%         tlid(end+1) = tnow(ctr);
+%     end
+%     % robot controller - optimization
+%     [dqrob,dlambda] = robot_optimizer(robot_object,qrob,lambda,D,T_min,pfd,Qnow,alpha2);
+%     % calculate dt
+%     tnow(ctr+1) = toc*playspeed;
+%     dt = tnow(ctr+1) - tnow(ctr);
+%     % update pose
+%     qrh = qrh + dqrh*dt;
+%     qf = qf + dqf*dt;
+%     qrob = qrob + dqrob*dt;
+%     lambda = lambda + dlambda*dt;
+%     % qrob split
+%     [s,pfe,thfe,qae,qa,qb,qe,qc] = qrob_split(robot_object,qrob,qf);
+%     % save data
+%     qqr(ctr+1,:) = qr;
+%     qqc(ctr+1,:) = qc;
+%     qqrh{ctr+1} = qrh;
+%     qqf{ctr+1} = qf;
+%     qqrob{ctr+1} = qrob;
+%     llambda{ctr+1} = lambda;
+%     qqa{ctr+1} = qa;
+%     qqb{ctr+1} = qb;  
+%     qqe{ctr+1} = qe;
+%     % update figure
+%     fig = robot_animator(fig,robot_object,lidar_object,qrob,qrh,qf,...
+%         Qnow,val_min,var_min,val_max,var_max);
+%     % video
+%     if video_on
+%         f = getframe(gcf);
+%         f.cdata = imresize(f.cdata,[480,640]);
+%         writeVideo(writerObj,f);
+%     end
+%     % next loop
+%     drawnow
+%     toc
+% end
+% toc
+% video to avi
 if video_on
     close(writerObj);
 end
+% data to mat
+save('data3.mat','tnow','tlid','qqr','qqrh','qqf','qqrob','llambda','qqa','qqb','qqc','qqe');

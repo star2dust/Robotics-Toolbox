@@ -56,7 +56,7 @@ set(fig.hvar_min,'XData',psd(:,1),'YData',psd(:,2),'UData',s.*vsdar_min(:,1),...
 
 
 % Vda for all robots
-s_max_now = cell2mat_(Qnow.qlim,2,1);
+s_max_now = cell2mat_(Qnow.qlim,2,1,1);
 psfd_max = s_max_now.*pfd;
 psd_max = (SE2(qf)*psfd_max')';
 if nargin<13||~(isempty(val_max)||isempty(val_max))
