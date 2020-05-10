@@ -244,7 +244,10 @@ classdef PlanarRevolute < handle
                     qa(i,:) = getIkine3(obj(i).link,qtool,obj(i).type);
                 else
                     negmup2 = @(th) -getMu(obj(i).link,th);
-                    qa0 = sum(obj(i).qlim)/2;
+                    qa0(:,1) = sum(obj(i).qlim(:,1))/2;
+                    qa0(:,2:size(obj(i).qlim,2)) = ...
+                        abs(rand(1,size(obj(i).qlim,2)-1).*obj(i).qlim(2,2:end));
+                    % qa0 = sum(obj(i).qlim())/2;
                     if nargin<5
                         qa(i,:) = fmincon(negmup2,qa0',[],[],[],[],...
                             obj(i).qlim(1,:),obj(i).qlim(2,:),@(th) ...

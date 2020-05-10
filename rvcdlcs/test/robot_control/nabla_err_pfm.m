@@ -11,7 +11,7 @@ thfe = qrob(:,4); qae = qrob(:,5:end);
 Jme = Jacob_pme(robot,thfe,qae);
 for i=1:length(robot)
     robot_link = robot(i).link;
-    nablaefm{i} = (T{i}*[-pfd(i,:)',eye(2),-Jme{i}])';
+    nablaefm{i} = (T{i}*[-pfd(i,:)',eye(2),-Jme(:,:,i)])';
 %     nablaefm{i} = (T{i}*[-pfd(i,:)',eye(2),-S*rot2(thfe(i))*...
 %         PlanarRevolute.getFkine(robot_link,Gamma*qae(i,:)')',-rot2(thfe(i))*...
 %         PlanarRevolute.getJacob(robot_link,Gamma*qae(i,:)')*Gamma])';

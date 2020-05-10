@@ -1,21 +1,32 @@
-function [dqrob,dlambda] = robot_optimizer(robot,qrob,lambda,D,T,pfd,Qnow,alpha2)
+function [dqrob,dlambda] = robot_optimizer(robot,qrob,lambda,D,T_min,pfd,Qnow,qrob_opt,kappa,beta)
 
 % qrob lambda split
-[s,pfe,thfe,qae] = qrob_split(robot,qrob);
-qrob_min = [s,pfe,thfe,qae];
-qae_opt = Qnow.qa_opt(:,2:end);
+[s,qfe,qae] = qrob_split(robot,qrob);
+[s_opt,qfe_opt,qae_opt,~,~,~,qfc_opt] = qrob_split(robot,qrob_opt,zeros(1,3));
+qrob_min = [s,qfe,qae];
 lam = lambda(:,1); eta = lambda(:,2:end);
 dqrob = zeros(size(qrob));
 % primal-dual algorithm - primal
-wp = 1; wth = 1; L = D*D';
-nabla_err_pfm_now = nabla_err_pfm(robot,T,pfd,qrob_min);
-err_pfm_now = err_pfm(robot,T,pfd,qrob_min);
+L = D*D';
+Wf = eye(2)*2;
+Wth = eye(size(qae,2))*2; 
 for i=1:length(robot)
-    upfm(i,:) = wp*err_pfm_now(i,:)*nabla_err_pfm_now{i}';
-%     upfm(i,:) = wp*(pfe(i,:)-getFkine(robot(i).link,qae(i,:)*Gamma')...
-%         *rot2(thfe(i))'-s(i)*pfd(i,:))*T{i}'*nabla_epfm_now{i}';
+    pfe_vec = qfe(i,1:2)';
+    hpme_vec = T_min{i}*...
+        fkine_pme(robot(i),qfe(i,end),qae(i,:))';
+    nabla_hpme = (T_min{i}*...
+        Jacob_pme(robot(i),qfe(i,end),qae(i,:)))';
+    upfm_vec = [-pfd(i,:)*T_min{i}';eye(2)*T_min{i}';-nabla_hpme]*Wf*(T_min{i}*...
+        (pfe_vec-s(i)*pfd(i,:)')-hpme_vec);
+    upfm(i,:) = upfm_vec';
+    epfm(i,:) = (T_min{i}*(pfe_vec-s(i)*pfd(i,:)')-hpme_vec)';
+    % test qrob_opt
+    pfe_vec_opt = qfe_opt(i,1:2)';
+    hpme_vec_opt = T_min{i}*...
+        fkine_pme(robot(i),qfe_opt(i,end),qae_opt(i,:))';
+    epfm_opt(i,:) = (T_min{i}*(pfe_vec_opt-s_opt(i)*pfd(i,:)')-hpme_vec_opt)';
 end
-uq = upfm+[L*lam,eta,zeros(size(lam)),wth*(qae-qae_opt)];
+uq = upfm+[L*lam,eta,(qae-qae_opt)*Wth];
 % projection
 for i=1:length(robot)
     % calculate constraint set
@@ -23,36 +34,37 @@ for i=1:length(robot)
     b = Qnow.b{i};%[Qnow.bthfae{i};Qnow.bpfe{i}];
     qlim = Qnow.qlim{i};
     % calculate projectiojn
-%     if sum(~(A*qrob_min(i,:)'-b<0))
+%     if sum(A*qrob_min(i,:)'-b>0)
 %         disp('outside the constraint set')
 %     else
 %         disp('inside the constraint set')
 %     end
-%     if sum(normby(err_pfm(robot,T,pfd,qrob),1)<=0)
-%         disp('outside the sector');
-%     else
-%         disp('inside the sector');
-%     end
+    if sum(epfm(i,:)>=10^-4)
+        disp('inside the sector');
+    else
+        disp('outside the sector');
+    end
     qrob_uq(i,:)= convproj(qrob_min(i,:)-uq(i,:),A,b,qlim);
-    if sum(A*qrob_min(i,:)'-b>0)||sum(qrob_min(i,:)-qlim(1,:)<0)||sum(qrob_min(i,:)-qlim(2,:)>0)
+%     isinside(qrob_uq(i,:),A,b,qlim)
+    if ~isinside(qrob_min(i,:),A,b,qlim)%sum(A*qrob_min(i,:)'-b>0)||sum(qrob_min(i,:)-qlim(1,:)<0)||sum(qrob_min(i,:)-qlim(2,:)>0)
         % if not inside the constraint set
+        disp('outside the constraint set')
         qrob_Qnow(i,:) = convproj(qrob_min(i,:),A,b,qlim);
         qrob_dist(i,:) = normalize(qrob_min(i,:)-qrob_Qnow(i,:),'norm');  
-        1
     else
+        disp('inside the constraint set')
         qrob_dist(i,:) = zeros(size(qrob_min(i,:)));
-        0
     end
 end
-alpha = max(max(normby(uq,1))/2,alpha2); beta = 2; 
-alpha
-dqrob_min = qrob_uq-qrob_min-alpha*qrob_dist;
+dqrob_min = qrob_uq-qrob_min-kappa*qrob_dist;
 % dqrob split
-ds = dqrob(:,1); dpfe = dqrob(:,2:3); 
-dqrob(:,[1:3,7:end]) = dqrob_min;
+ds = dqrob(:,1); dqfe = dqrob(:,2:4); 
+dqrob = dqrob_min;
 % primal-dual algorithm - dual
+sum(qfe-qfc_opt)
 dlam = L*(s+ds);
-deta = pfe+dpfe-beta*D*sign(D'*eta);
+deta = (qfe-qfc_opt)+dqfe-beta*D*100*tanh(D'*eta);
+% deta = (qfe-qfc_opt)+dqfe-beta*D*sign(D'*eta);
 % dlambda
 dlambda = [dlam,deta];
 end

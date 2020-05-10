@@ -35,7 +35,7 @@ classdef Lidar < handle
             opt.alim = [-pi/2,pi/2];
             opt.hlim = [0,0.5];
             opt.dens = 30;
-            opt.mapind = [];
+            opt.mapind = 1;
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin);
             % check validity
