@@ -23,7 +23,7 @@ classdef Lidar < handle
         xdata
         ydata
         zdata
-        mapind
+        mapdata
     end
     
     methods
@@ -35,7 +35,7 @@ classdef Lidar < handle
             opt.alim = [-pi/2,pi/2];
             opt.hlim = [0,0.5];
             opt.dens = 30;
-            opt.mapind = 1;
+            opt.mapdata = [];
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin);
             % check validity
@@ -50,7 +50,7 @@ classdef Lidar < handle
             obj.hlim = opt.hlim;
             obj.dens = opt.dens;
             obj.radius = radius;
-            obj.mapind = opt.mapind;
+            obj.mapdata = opt.mapdata;
             [obj.xdata,obj.ydata,obj.zdata] = Lidar.cylinder_(obj.radius,obj.dens,obj.alim,obj.hlim);
         end
         
@@ -64,6 +64,7 @@ classdef Lidar < handle
             opt.detect = true;
             opt.licolor = 'g';
             opt.lithick = 0.5;
+            opt.listyle = ':';
             opt.decolor = 'r';
             opt.dethick = 3;
             % opt parse: only stated fields are chosen to opt, otherwise to arg
@@ -104,7 +105,10 @@ classdef Lidar < handle
                 %             set(gcf, 'Position', [0.1 1-pf(4) pf(3) pf(4)]);
                 %         end
             end
-            view(opt.dim); grid on; rotate3d on
+            view(opt.dim); grid on; 
+            if opt.dim==3
+                rotate3d on
+            end
             obj.animate(q, h.group);
         end
         
@@ -145,21 +149,21 @@ classdef Lidar < handle
         end
         
         function Vdc = detect(obj, q, s)
-            load(['map' num2str(obj.mapind) '.mat'],'map2','map3');
-            map_original = map2; map_dilated = map3;
-            X = obj.xdata; Y = obj.ydata; 
+            if isempty(obj.mapdata)
+                load('map.mat','map');
+                map_detect = map;
+            else
+                map_detect = obj.mapdata;
+            end
+            X = obj.xdata; Y = obj.ydata;
             Vd0 = [X(1,:);Y(1,:)]';
             Vd = [q(1:2);(SE2(q)*Vd0')';q(1:2)];
-%             Vd = [q(1:2);h2e(SE2(q).T*e2h(Vd0'))';q(1:2)];
-            switch s
-                case 0  
-                    Voc = map_original.Voc;
-                case 1
-                    Voc = map_dilated.Voc;
-                otherwise
-                    error('unknown detect type')
+            if s==0
+                Voc = map_detect.Voc_min;
+            else
+                Voc = map_detect.Voc;
             end
-            Vdc = cell(size(Voc)); 
+            Vdc = cell(size(Voc));
             for i=1:length(Voc)
 %                 ioc = convhull_(Voc{i});
 %                 plot(Voc{i}(ioc,1),Voc{i}(ioc,2),'r');
@@ -193,7 +197,9 @@ classdef Lidar < handle
                 if opt.dim == 2
                     V0 = [X(1,:);Y(1,:);Z(1,:)]';
                     p_fv = h2e(SE3.qrpy(q).T*e2h(V0'));
-                    h.lidar = line(p_fv(1,:),p_fv(2,:),p_fv(3,:),'Color',opt.licolor, 'LineWidth', opt.lithick, 'parent', group);
+                    h.lidar = line(p_fv(1,:),p_fv(2,:),p_fv(3,:),...
+                        'Color',opt.licolor, 'LineWidth', opt.lithick,...
+                        'LineStyle', opt.listyle, 'parent', group);
                     h.lidar.UserData = {V0};
                 else
                     [F0,V0]= surf2patch(X,Y,Z);

@@ -164,7 +164,10 @@ classdef PlanarRevolute < handle
                 %             set(gcf, 'Position', [0.1 1-pf(4) pf(3) pf(4)]);
                 %         end
             end
-            view(opt.dim); grid on; rotate3d on
+            view(opt.dim); grid on; 
+            if opt.dim==3
+                rotate3d on;
+            end
             obj.animate(qa, qb, h.group);
         end
         

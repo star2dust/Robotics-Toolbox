@@ -7,27 +7,19 @@ else
     s = cell2mat_(Qnow.qlim,2,1); qa = []; qb = []; qc = [];
 end
 
-% map and lidar 
-if isa(lidar,'Lidar')   
-    map_ind = lidar(1).mapind;
-else
-    map_ind = 3;
-end
-
-% load map file (unit: 1x1 formation = 4x4 robot = 8x8 tile)
-load(['map' num2str(map_ind) '.mat'],'map1','map2','map3','ws3d');
-
 % map plot
+load('map.mat','map');
 obs_height = robot(1).altitude+robot(1).height;
 obs_thick = 1;
-% ws = ws3d(1:end-2);
-ws = [0 8 0 8];
-dim = length(ws)/2;
 if isa(lidar,'Lidar')
-    map2.plot('workspace',ws,'dim',dim,'obheight',obs_height,...
+    ws = map.ws;
+    dim = length(ws)/2;
+    map_object = Map([],'nograph','noplanning');
+    map_object.Voc = map.Voc_min;
+    map_object.plot('workspace',ws,'dim',dim,'obheight',obs_height,...
         'obthick',obs_thick); hold on
-    for i=1:length(map3.Voc)
-        plot(map3.Voc{i}(:,1),map3.Voc{i}(:,2),'g');
+    for i=1:length(map.Voc)
+        plot(map.Voc{i}(:,1),map.Voc{i}(:,2),'g');
     end
 end
 
@@ -51,29 +43,15 @@ for i=1:nrob
     end
     if ~isempty(qb)&&isa(lidar,'Lidar')
         hlid(i) = lidar(i).plot([qb(i,1:2),phid(i)],'workspace',ws,'dim',dim,...
-            'licolor',lidar_licolor,'lithick',lidar_lithick,'detect','nolidar');
+            'licolor',lidar_licolor,'lithick',lidar_lithick,'detect','lidar');
         hold on
     else
         hlid = [];
     end
 end
 
-
-% path
-goal_ind = length(map1.matrix(:));
-pr_via = Map.ind2loc(map1.siz, map1.tile, map1.route{goal_ind});
-if map_ind==3
-    pr_via = [pr_via(1,:);15,4;pr_via(2:end,:)];
-    phir_via = [0;0;pi/6;pi/6;0];
-    qr_via = [pr_via,phir_via];
-else
-    phir_via = zeros(size(pr_via,1),1);
-    qr_via = [pr_via,phir_via];
-end
-[qqr,dqr,ddqr,tqr] = calctraj(qr_via,1*ones(1,size(qr_via,2)),0.1,1);
-
 % path plot
-hqr = plot(qqr(:,1),qqr(:,2),'r');
+hqr = plot(map.qqr(:,1),map.qqr(:,2),'r');
 
 % ground pose 1x3 (qf: formation, qr: refernce, qrh: estimation of reference)
 hqf = plot(qf(:,1),qf(:,2),'m*');
@@ -109,9 +87,9 @@ vsdar_max = (SO2(phif)*var_max')'/s_max;
 psfd = s.*pfd;
 psd = (SE2(qf)*psfd')';
 hval_min = quiver(psd(:,1),psd(:,2),s.*vsdal_min(:,1),...
-    s.*vsdal_min(:,2),'color','g','ShowArrowHead','off');
+    s.*vsdal_min(:,2),'color','c','ShowArrowHead','off');
 hvar_min = quiver(psd(:,1),psd(:,2),s.*vsdar_min(:,1),...
-    s.*vsdar_min(:,2),'color','g','ShowArrowHead','off');
+    s.*vsdar_min(:,2),'color','c','ShowArrowHead','off');
 
 % diamond detection space for all robots
 s_max_now = cell2mat_(Qnow.qlim,2,1,1);
@@ -138,7 +116,7 @@ hpsd = plot(psd(isd,1),psd(isd,2),'b');
 
 % object shape
 ipe = convhull_(qe(:,1:2));
-hpe = plot(qe(ipe,1),qe(ipe,2),'c');
+hpe = plot(qe(ipe,1),qe(ipe,2),'m');
 
 
 % save data
@@ -162,8 +140,8 @@ fig.hpsd = hpsd;
 fig.nrob = nrob;
 fig.pfd = pfd;
 fig.Qnow = Qnow;
-fig.qqr = qqr;
-fig.dqr = dqr;
-fig.ddqr = ddqr;
-fig.tqr = tqr;
+% fig.qqr = qqr;
+% fig.dqr = dqr;
+% fig.ddqr = ddqr;
+% fig.tqr = tqr;
 end

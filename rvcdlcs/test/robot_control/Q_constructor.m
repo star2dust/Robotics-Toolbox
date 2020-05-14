@@ -1,4 +1,4 @@
-function Qmax = Q_constructor(robot,qfe,qa_opt,T_min,pfd,xi,s_lim,phife_lim)
+function Qmax = Q_constructor(robot,qfe,qa_opt,T_min,pfd,xi,s_lim)
 
 import PlanarRevolute.*
 robot_num = length(robot);
@@ -6,7 +6,7 @@ robot_num = length(robot);
 for i=1:robot_num
     qa_lim = robot(i).qlim;
     pfe_lim = qfe(i,1:2)+[-xi,xi]';   
-    qfe_lim{i} = [pfe_lim,phife_lim(i,:)'];
+    qfe_lim{i} = [pfe_lim,qa_lim(:,1)];
     qae_lim{i} = qa_lim(:,2:end);
 end
 % Qmax - pfe circle constraint => polygon

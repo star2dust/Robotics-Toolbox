@@ -2,7 +2,7 @@ function Qnow = Q_updater(robot,lidar,qrob,qf,qflid,pfd,Qmax,val_max,var_max)
 
 
 % qrob split
-[s,pfe,thfe,qae,qa,qb,qe,qc] = qrob_split(robot,qrob,qf);
+[s,qfe,qae,qe,qa,qb,qc] = qrob_split(robot,qrob,qf);
 
 % s = qrob(:,1); qfe = qrob(:,2:7); qae = qrob(:,8:end);
 % qe = toqrpy(SE3.qrpy(qf).*SE3.qrpy(qfe));
@@ -31,12 +31,10 @@ for j=1:length(robot)
     for i=1:length(Vdc)
         Vfdcdt = [(SE2(qf(j,:)).inv*Vdc{i}')';
             (SE2(qflid(j,:)).inv*Vdc{i}')'];
-%         Vdcdt = [h2e(SE2(qf(j,:)).inv.T*e2h(Vdc{i}'))';
-%             h2e(SE2(qf_next(j,:)).inv.T*e2h(Vdc{i}'))'];
         Vfdc = Vfdcdt(convhull_(Vfdcdt),:);
-%         Vdcdt = (SE2(qf(j,:))*Vfdc')';
-%         plot(Vdc{i}(:,1),Vdc{i}(:,2),'r-');
-%         plot(Vdcdt(:,1),Vdcdt(:,2),'r:');
+        Vdcdt = (SE2(qf(j,:))*Vfdc')';
+        plot(Vdc{i}(:,1),Vdc{i}(:,2),'r-');
+        plot(Vdcdt(:,1),Vdcdt(:,2),'r:');
         % left and right
         Vfdcl = [Vfdcl;polyxpoly_(Vfdc,Vfdl)];
         Vfdcr = [Vfdcr;polyxpoly_(Vfdc,Vfdr)];    

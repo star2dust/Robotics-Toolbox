@@ -122,7 +122,10 @@ classdef Map < handle
                 %             set(gcf, 'Position', [0.1 1-pf(4) pf(3) pf(4)]);
                 %         end
             end
-            view(opt.dim); grid on; rotate3d on
+            view(opt.dim); grid on; 
+            if opt.dim==3
+                rotate3d on
+            end
         end
         
         function route = astar(obj,start,goal)
@@ -178,15 +181,15 @@ classdef Map < handle
                 end
                 set(h.obstacle(i),'Tag', [obj.name '-obstacle' num2str(i)]);
             end
-            % barrier
-            subb = [1,1;obj.siz(1),1;obj.siz;1,obj.siz(2)];
-            subbsplit = num2cell(subb,1);
-            indb = sub2ind(obj.siz,subbsplit{:});
-            locb = Map.ind2loc(obj.siz,obj.tile,indb);
-            Vb = Map.loc2vert(obj.siz,obj.tile,locb);
-            Ib = convhull_(Vb);
-            h.barrier = line(Vb(Ib,1),Vb(Ib,2),'Color',opt.bacolor,'LineStyle', opt.bastyle, 'LineWidth', opt.bathick, 'parent', group);
-            set(h.barrier,'Tag', [obj.name '-barrier']);
+%             % barrier
+%             subb = [1,1;obj.siz(1),1;obj.siz;1,obj.siz(2)];
+%             subbsplit = num2cell(subb,1);
+%             indb = sub2ind(obj.siz,subbsplit{:});
+%             locb = Map.ind2loc(obj.siz,obj.tile,indb);
+%             Vb = Map.loc2vert(obj.siz,obj.tile,locb);
+%             Ib = convhull_(Vb);
+%             h.barrier = line(Vb(Ib,1),Vb(Ib,2),'Color',opt.bacolor,'LineStyle', opt.bastyle, 'LineWidth', opt.bathick, 'parent', group);
+%             set(h.barrier,'Tag', [obj.name '-barrier']);
             
             % route
             if opt.route
@@ -216,7 +219,7 @@ classdef Map < handle
             % - str: path of the picture file
             % - matrix: map matrix with elements 0 or 1
             f1=imread(str);
-            bw1=imbinarize(f1);%Ê¹ÓÃÄ¬ÈÏÖµ0.5
+            bw1=imbinarize(f1);%Ê¹ï¿½ï¿½Ä¬ï¿½ï¿½Öµ0.5
             matrix = ~bw1(:,:,1);
         end
         
@@ -402,7 +405,7 @@ classdef Map < handle
             for i=1:size(loc,1)
                 lgrid = tile*ones(1,length(siz));
                 sub = (diag(lgrid)^-1*(loc(i,:)'-lgrid(:)/2)+ones(length(lgrid),1))';
-                sub = round(sub); % ËÄÉáÎåÈë
+                sub = round(sub); % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 ind(i) = sub2ind_(siz,sub);
             end
         end
