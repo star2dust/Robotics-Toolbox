@@ -20,6 +20,8 @@ for i=1:fig.nrob
     end
     if ~isempty(qb)&&isa(lidar,'Lidar')
         lidar(i).animate([qb(i,1:2),phid(i)],fig.hlid(i).group);
+    else
+        
     end
 end
 

@@ -57,8 +57,12 @@ dqrob = dqrob_min;
 ds = dqrob(:,1); dqfe = dqrob(:,2:4); 
 % primal-dual algorithm - dual
 dlam = L*(s+ds);
-deta = (qfe-qfc_opt)+dqfe-beta*D*10*tanh(D'*eta);
-% deta = (qfe-qfc_opt)+dqfe-beta*D*sign(D'*eta);
+if abs(D'*eta)<10^-2
+    deta = (qfe-qfc_opt)+dqfe-beta*D*100*tanh(D'*eta);
+    savelog(logfile,'eta stabilized');
+else
+    deta = (qfe-qfc_opt)+dqfe-beta*D*sign(D'*eta);
+end
 % dlambda
 dlambda = [dlam,deta];
 end

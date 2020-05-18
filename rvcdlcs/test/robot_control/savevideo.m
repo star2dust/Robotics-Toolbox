@@ -8,8 +8,10 @@ videoname = increment([respath name],'.avi');
 vdobj = VideoWriter(videoname);
 open(vdobj);
 for i=1:length(frame)
-    frame(i).cdata = imresize(frame(i).cdata,siz);
+    if nargin==4
+        frame(i).cdata = imresize(frame(i).cdata,siz);
+    end
+    writeVideo(vdobj,frame(i));
 end
-writeVideo(vdobj,frame);
 close(vdobj);
 end

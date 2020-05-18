@@ -33,8 +33,8 @@ for j=1:length(robot)
             (SE2(qflid(j,:)).inv*Vdc{i}')'];
         Vfdc = Vfdcdt(convhull_(Vfdcdt),:);
         Vdcdt = (SE2(qf(j,:))*Vfdc')';
-        plot(Vdc{i}(:,1),Vdc{i}(:,2),'r-');
-        plot(Vdcdt(:,1),Vdcdt(:,2),'r:');
+%         plot(Vdc{i}(:,1),Vdc{i}(:,2),'r-');
+%         plot(Vdcdt(:,1),Vdcdt(:,2),'r:');
         % left and right
         Vfdcl = [Vfdcl;polyxpoly_(Vfdc,Vfdl)];
         Vfdcr = [Vfdcr;polyxpoly_(Vfdc,Vfdr)];    
