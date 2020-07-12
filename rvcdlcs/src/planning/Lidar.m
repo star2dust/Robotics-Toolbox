@@ -23,7 +23,6 @@ classdef Lidar < handle
         xdata
         ydata
         zdata
-        mapdata
     end
     
     methods
@@ -35,7 +34,6 @@ classdef Lidar < handle
             opt.alim = [-pi/2,pi/2];
             opt.hlim = [0,0.5];
             opt.dens = 30;
-            opt.mapdata = [];
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin);
             % check validity
@@ -50,7 +48,6 @@ classdef Lidar < handle
             obj.hlim = opt.hlim;
             obj.dens = opt.dens;
             obj.radius = radius;
-            obj.mapdata = opt.mapdata;
             [obj.xdata,obj.ydata,obj.zdata] = Lidar.cylinder_(obj.radius,obj.dens,obj.alim,obj.hlim);
         end
         
@@ -66,13 +63,14 @@ classdef Lidar < handle
             opt.lithick = 0.5;
             opt.listyle = ':';
             opt.decolor = 'r';
-            opt.dethick = 3;
+            opt.dethick = 1;
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin);
             % argument parse
-            if length(arg)==1
+            if length(arg)==2
                 % get pose
                 q = arg{1}(:)';
+                Voc = arg{2};
             else
                 error('unknown arguments');
             end
@@ -83,7 +81,7 @@ classdef Lidar < handle
                     % this robot doesnt exist here, create it or add it
                     if ishold
                         % hold is on, add the robot, don't change the floor
-                        h = createLidar(obj, q, opt);
+                        h = createLidar(obj, q, Voc, opt);
                         % tag one of the graphical handles with the robot name and hang
                         % the handle structure off it
                         %                 set(handle.joint(1), 'Tag', robot.name);
@@ -91,13 +89,13 @@ classdef Lidar < handle
                     else
                         % create the robot
                         newplot();
-                        h = createLidar(obj, q, opt);
+                        h = createLidar(obj, q, Voc, opt);
                         set(gca, 'Tag', 'RTB.plot');
                     end
                 end
             else
                 % this axis never had a robot drawn in it before, let's use it
-                h = createLidar(obj, q, opt);
+                h = createLidar(obj, q, Voc, opt);
                 set(gca, 'Tag', 'RTB.plot');
                 set(gcf, 'Units', 'Normalized');
                 %         pf = get(gcf, 'Position');
@@ -109,19 +107,16 @@ classdef Lidar < handle
             if opt.dim==3
                 rotate3d on
             end
-            obj.animate(q, h.group);
+            obj.animate(q, Voc, h.group);
         end
         
-        function animate(obj, q, handles)
+        function animate(obj, q, Voc, handles)
             % L.animate  Animate Lidar object
             
             if nargin < 3
                 handles = findobj('Tag', obj.name);
             end
             % animate
-            if handles.UserData
-                Vdc = obj.detect(q,0);
-            end
             for i=1:length(handles.Children) % draw frame first otherwise there will be delay
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-lidar'])
                     VF0 = handles.Children(i).UserData;
@@ -134,6 +129,7 @@ classdef Lidar < handle
                     end
                 end
                 if handles.UserData
+                    Vdc = obj.detect(q,Voc);
                     tag = get(handles.Children(i),'Tag');
                     if strcmp(tag(1:end-1), [obj.name '-detect'])
                         j = ceil(str2double(tag(end)));
@@ -148,21 +144,10 @@ classdef Lidar < handle
             end
         end
         
-        function Vdc = detect(obj, q, s)
-            if isempty(obj.mapdata)
-                load('map.mat','map');
-                map_detect = map;
-            else
-                map_detect = obj.mapdata;
-            end
+        function Vdc = detect(obj, q, Voc)
             X = obj.xdata; Y = obj.ydata;
             Vd0 = [X(1,:);Y(1,:)]';
             Vd = [q(1:2);(SE2(q)*Vd0')';q(1:2)];
-            if s==0
-                Voc = map_detect.Voc_min;
-            else
-                Voc = map_detect.Voc;
-            end
             Vdc = cell(size(Voc));
             for i=1:length(Voc)
 %                 ioc = convhull_(Voc{i});
@@ -173,7 +158,7 @@ classdef Lidar < handle
         end
     end
     methods (Access = protected)
-        function h = createLidar(obj, q, opt)
+        function h = createLidar(obj, q, Voc, opt)
             % create an axis
             ish = ishold();
             if ~ishold
@@ -213,7 +198,7 @@ classdef Lidar < handle
             end
             
             if opt.detect
-                Vdc = obj.detect(q,0);
+                Vdc = obj.detect(q,Voc);
                 for i=1:length(Vdc)
                     if isempty(Vdc{i})
                         h.detect(i) = line('Color', opt.decolor, 'LineWidth', opt.dethick, 'Visible', 'off', 'parent', group);
@@ -235,10 +220,10 @@ classdef Lidar < handle
     methods (Static)
         function [X,Y,Z] = cylinder_(radius,num,alim,hlim)
             [X,Y,~] = cylinder(radius,num);
-            X = X(:,[num/2+1:num,1:num/2,num/2+1]);
-            Y = Y(:,[num/2+1:num,1:num/2,num/2+1]);
+%             X = X(:,[num/2+1:num,1:num/2,num/2+1]);
+%             Y = Y(:,[num/2+1:num,1:num/2,num/2+1]);
             Z = [ones(1,num+1)*hlim(1);ones(1,num+1)*hlim(2)];
-            I = cart2pol(X(1,:),Y(1,:))-alim(1)>0&cart2pol(X(1,:),Y(1,:))-alim(2)<0; % [-pi,pi]
+            I = cart2pol(X(1,:),Y(1,:))-alim(1)>=0&cart2pol(X(1,:),Y(1,:))-alim(2)<=0; % [-pi,pi]
             X = X(:,I); Y = Y(:,I); Z = Z(:,I);
         end
         

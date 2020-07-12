@@ -25,16 +25,16 @@ function vs = skew_(v)
 %   References::
 %   - Robotics, Vision & Control: Second Edition, Chap 2,
 %     P. Corke, Springer 2016.
-
-for i=1:size(v,1)
-    vs = [];
-    if isvec(v(i,:),2)
-        S = skew([v(i,:),0]);
-        vs = [vs;S(3,1:2)];
-    elseif isvec(v(i,:),1)||isvec(v(i,:),3)
-        vs = [vs;skew(v(i,:))];
-    else
-        error('unknown size');
-    end
+if isvec(v,1)||isvec(v,2)||isvec(v,3)
+    v = v(:)';
+else
+    error('unknown size');
+end
+vs = [];
+if isvec(v,2)
+    S = skew([v,0]);
+    vs = [vs;S(3,1:2)];
+else
+    vs = [vs;skew(v)];
 end
 end

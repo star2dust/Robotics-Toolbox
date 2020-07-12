@@ -32,8 +32,13 @@ classdef PlanarRevolute < handle
     properties
         % basic
         name
-        type
+        type 
+        % limit
         qlim
+        slim
+        Aq
+        bq
+        q0
         % arm
         link
         base
@@ -56,7 +61,11 @@ classdef PlanarRevolute < handle
             opt.name = 'pr';
             opt.base = SE3;
             opt.tool = SE3;
-            opt.qlim = [0,pi/2]';
+            opt.qlim = [];
+            opt.slim = [];
+            opt.Aq = [];
+            opt.bq = [];
+            opt.q0 = [];
             opt.height = 1;
             opt.radius = 0.5;
             opt.altitude = 0.5;
@@ -70,14 +79,14 @@ classdef PlanarRevolute < handle
             end
             % type
             m = length(link);
-            if size(opt.qlim,2)==1
+            if size(opt.qlim,2)==0
                 switch opt.type
                     case 'elbowdown'
                         qlim = [zeros(m,1),ones(m,1)*pi/2]';
                     case 'elbowup'
                         qlim = [-ones(m,1)*pi/2,zeros(m,1)]';
                     otherwise
-                        error('unknown type');
+                        qlim = [-ones(m,1)*pi/2,ones(m,1)*pi/2]';
                 end
             elseif size(opt.qlim,2)==m
                 qlim = opt.qlim;
@@ -88,6 +97,10 @@ classdef PlanarRevolute < handle
             obj.name = opt.name;
             obj.type = opt.type;
             obj.qlim = qlim;
+            obj.slim = opt.slim;
+            obj.Aq = opt.Aq;
+            obj.bq = opt.bq;
+            obj.q0 = opt.q0;
             obj.radius = opt.radius;
             obj.altitude = opt.altitude;
             % choose properties according to type of joints
@@ -164,7 +177,7 @@ classdef PlanarRevolute < handle
                 %             set(gcf, 'Position', [0.1 1-pf(4) pf(3) pf(4)]);
                 %         end
             end
-            view(opt.dim); grid on; 
+            view(opt.dim); 
             if opt.dim==3
                 rotate3d on;
             end
@@ -217,9 +230,7 @@ classdef PlanarRevolute < handle
                 for k=length(qa(i,:)):-1:1
                     g_st =  expm(wedge(obj(i).twist(:,k)).*qa(i,k))*g_st;
                 end
-                
-%                 gfk(i) = SE3.qrpy(qb(i,:))*SE3([0,0,obj(i).altitude])*obj(i).base*SE3(g_st);
-                
+                               
                 g_ss = {eye(4),transl([0,0,obj(i).height])}; 
                 g_hg = [g_ss,g_sl,{g_st}];
                 for j = 1:length(g_hg)
@@ -228,53 +239,59 @@ classdef PlanarRevolute < handle
             end
         end
         
-        function qa = ikine(obj,gfk,qb,A,b)
-            % PR.ikine Inverse kinematics for m-dof planar revolute manipulator
-            % - gfk: SE3 config of forward kinematics (SE3/ 1x6 qrpy/ 1x3 q)
-            % - qa: joint posture (1xm)
-            % - qb: base frame pose (1x6 qrpy/ 1x3 q)
+        function qa = ikine2d(obj,pe,qb)
             import PlanarRevolute.*
-            if ~isa(gfk,'SE3')
-                gfk = SE3.qrpy(gfk);
-            end
             for i=1:length(obj)
-                rfk = obj(i).base^-1*SE3([0,0,obj(i).altitude])^-1*...
-                    SE3.qrpy(qb(i,:))^-1*gfk(i)*obj(i).tool^-1;
-                qtool = rfk.toqrpy;
-                qtool = qtool([1:2,6]);
-                m = length(obj(i).link);
-                if m<=2
-                    qa(i,:) = getIkine3(obj(i).link,qtool,obj(i).type);
-                else
-                    negmup2 = @(th) -getMu(obj(i).link,th);
-                    qa0(:,1) = sum(obj(i).qlim(:,1))/2;
-                    qa0(:,2:size(obj(i).qlim,2)) = ...
-                        abs(rand(1,size(obj(i).qlim,2)-1).*obj(i).qlim(2,2:end));
-                    % qa0 = sum(obj(i).qlim())/2;
-                    if nargin<5
-                        qa(i,:) = fmincon(negmup2,qa0',[],[],[],[],...
-                            obj(i).qlim(1,:),obj(i).qlim(2,:),@(th) ...
-                            fkcon(obj(i).link,th,qtool(1:2)));
-                    else
-                        % NOTE: A and b only works for column vector
-                        if isa(A,'cell')&&isa(b,'cell')
-                            qa(i,:) = fmincon(negmup2,qa0',A{i},b{i},[],[],...
-                                obj(i).qlim(1,:)',obj(i).qlim(2,:)',@(th) ...
-                                fkcon(obj(i).link,th,qtool(1:2)))';
-                        else
-                            error('unknown constraint');
-                        end
-                    end
-                end
+                pbe(i,:) = (SE2(qb).inv*pe(i,:)')';
+                negmup2 = @(th) -getMu(obj(i).link,th);
+                qa(i,:) = fmincon(negmup2,obj(i).q0',obj(i).Aq,obj(i).bq,[],[],...
+                    obj(i).qlim(1,:),obj(i).qlim(2,:),@(th) ...
+                    fkcon(obj(i).link,th,pbe(i,:)));
             end
         end
+        
+%         function qa = ikine(obj,gfk,qb,A,b)
+%             % PR.ikine Inverse kinematics for m-dof planar revolute manipulator
+%             % - gfk: SE3 config of forward kinematics (SE3/ 1x6 qrpy/ 1x3 q)
+%             % - qa: joint posture (1xm)
+%             % - qb: base frame pose (1x6 qrpy/ 1x3 q)
+%             import PlanarRevolute.*
+%             if ~isa(gfk,'SE3')
+%                 gfk = SE3.qrpy(gfk);
+%             end
+%             for i=1:length(obj)
+%                 rfk = obj(i).base^-1*SE3([0,0,obj(i).altitude])^-1*...
+%                     SE3.qrpy(qb(i,:))^-1*gfk(i)*obj(i).tool^-1;
+%                 qtool = rfk.toqrpy;
+%                 qtool = qtool([1:2,6]);
+%                 m = length(obj(i).link);
+%                 if m<=2
+%                     qa(i,:) = getIkine3(obj(i).link,qtool,obj(i).type);
+%                 else
+%                     negmup2 = @(th) -getMu(obj(i).link,th);
+%                     if nargin==3
+%                         qa(i,:) = fmincon(negmup2,obj(i).q0',obj(i).Aq,obj(i).bq,[],[],...
+%                             obj(i).qlim(1,:),obj(i).qlim(2,:),@(th) ...
+%                             fkcon(obj(i).link,th,qtool(1:2)));
+%                     else
+%                         % NOTE: A and b only works for column vector
+%                         if isa(A,'cell')&&isa(b,'cell')
+%                             qa(i,:) = fmincon(negmup2,obj(i).q0',A{i},b{i},[],[],...
+%                                 obj(i).qlim(1,:)',obj(i).qlim(2,:)',@(th) ...
+%                                 fkcon(obj(i).link,th,qtool(1:2)))';
+%                         else
+%                             error('unknown constraint');
+%                         end
+%                     end
+%                 end
+%             end
+%         end
         
         function qb = bkine(obj,qa,gfk)
             % PR.fkine Forward kinematics for m-dof planar revolute manipulator
             % - qa: joint posture (1xm)
             % - qb: base frame pose (1x6 qrpy/ 1x3 q)
-            % - gfk: poses of all joints and tool frame (1xm SE3) 
-            % use fk(end).t to get the coordinate of tool point
+            % - gfk: poses of tool frame (1xm SE3) 
             import PlanarRevolute.*
             if ~isa(gfk,'SE3')
                 gfk = SE3.qrpy(gfk);
