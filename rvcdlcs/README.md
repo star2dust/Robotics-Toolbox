@@ -1,91 +1,79 @@
-# Robotics-Toolbox-Expansion-Package
+# Robotics Toolbox Expansions  (rvcdlcs)
 
-## Introduction
+A lot of useful scripts for research works. ([what is new?](https://github.com/star2dust/Robotics-Toolbox/tree/master/rvcdlcs))
 
-A expansion package for [Robotics Toolbox](http://petercorke.com/wordpress/toolboxes/robotics-toolbox) by Peter Corke. I add some new features for personal usage in my research works. I also integrated some useful third party scripts in this toolbox. 
+- New function for `SE2`, `SE3`.
 
-## Update Log
-
-- Updates on Apr. 04, 2020
-    1. Add support for `SE2` and `SE3` object. 
-       - Use `SE2.q` to get pose from a 1x6 vector. (discard some data)
-       - Use `SE3.qeul` and `SE3.qrpy` to get pose from a 1x3 vector. (set new dimension to zeros)
-    2. Update planning toolbox.
-       - Add `Lidar` and `Map` class. Some old features are integrated to the static methods of `Map` class.
-    3. Update robotics toolbox.
-       - Update `MobilePlanarRevolute` to `PlanarRevolute` class. Some old features are integrated to the static methods of `PlanarRevolute` class.
-    4. Add [`intersections`] to replace MATLAB's [`polyxpoly`] function in thirdparty scripts.
-
-- Updates on Jan. 09, 2020
-    1. Add class `CooperativeManipulation`, which supports simulation for mobile planar revolute manipulators.
-
-- Updates on Jan. 05, 2020
-    1. Add some planning functions in the folder `src/planning`.
-    	- `environment`: Generate an obstacles environment with grid cell.
-        - `ind2loc`: Get real coordinate from map index.
-        - `map2graph`: Transfer map matrix to search graph for A* and Dijkstra.
-    2. Add examples in the folder `example/path_planning`.
-    3. Add edges for diagonal grid cells in `map2graph`. 
-
-- Updates on Jan. 02, 2020
-    1. Add class `MobilePlanarRevolute`, which supports mobile platform with m-dof planar revolute manipulator. (See `model/MobilePlanarRevolute.m`)
-    2. Add examples for `Cuboid`, `MobileRobot` and `MobilePlanarRevolute`. (See `example/model_sim`)
-    3. Add POE and DH construction method for class `MobileRobot`.
-
-- Updates on Jan. 01, 2020
-	1. Add class `Cuboid`. (See `model/Cuboid.m`)
-    2. Add class `MobileRobot`, which supports all kinds of mobile manipulators. (See `model/MobileRobot.m`) 
-    3. All class above support `plot` and `animate` methods same as class`SerialLink`. 	
-       - Example: See `example/model_sim/mr_eg.m`.
-
-- Updates on Dec. 31, 2019
-	1. All third party packages are put inside `thirdparty` folder and managed by `startup_rte.m`.
-    2. Add `qlim` support for `SerialLink` object construction by DH parameters. (`Qlim`: m x 2 matrix)
-       - Example: `SerialLink([dh,sigma], 'base', Hb, 'tool', Ht, 'qlim', Qlim)`.
-
-- Updates on Dec. 27, 2019
-    1. Add translations between DH parameters and POE parameters.
-    2. Add `LineStyle` support for `trplot2` and `trplot`. 
-       -  Example:  `SE3.plot('style','-.')`. (4 styles: -. / : / .. / --)
-    3. Add pose support for `SE2` and `SE3` object. 
-       - Use `SE2.q` and `SE3.toqeul`, `SE3.toqrpy` to get pose.
-       - Use `SE3.qeul` and `SE3.qrpy` to construct `SE3` object.
-
-- Updates on Dec. 20, 2019
-    1. Add calculation support for  4 x 4 double matrix.
-       - `Adg`: adjoint transformation.
-       - `invg`:  inverse transformation.
-       - `bracket`: Lie bracket.
-       - `wedge` and `vee`: `w^` and `Wˇ` calculation for twists.
-    2. Add velocity and acceleration support for `calctraj`.
+    1. `SE2.q`: Get translation and angle in a row vector. 
+    2. `SE3.qrpy`/`SE3.qeul`: Construct an SE(3) object from translation and rpy/eul angles
+    3. `SE3.toqrpy`/`SE3.toqeul`: Get translation and rpy/eul angle in a row vector.
+    4. `SE2.q`, `SE3.qrpy`, `SE3.qeul` support both 1x3 and 1x6 vectors.
     
+- New `LineStyle` option for `SE2.plot` and `SE3.plot`. Example:  `SE3.plot('style','-.')`. (4 styles: -. / : / .. / --)
+	
+- New calculation functions for  4 x 4 double matrix. (See folder `src/common`)
 
-## Third Party Scripts
+	1. `Adg`: adjoint transformation.
+	2. `invg`:  inverse transformation.
+	3. `bracket`: Lie bracket.
+	4. `wedge` and `vee`: calculation for twists.
+	
+- New functions for DH parameters and POE parameters. (See folder `src/robotics`)
 
-1. Convex Hull Scripts (cvxhull)
-	- [`inhull`](https://nl.mathworks.com/matlabcentral/fileexchange/10226-inhull ): Tests if a set of points are inside a convex hull by John D'Errico 
-	- [`inpoly`](https://github.com/dengwirda/inpoly ): Fast point-in-polygon queries in MATLAB by Darren Engwirda 
-    - [`intersections`](https://www.mathworks.com/matlabcentral/fileexchange/11837-fast-and-robust-curve-intersections): Fast and Robust Curve Intersections by Douglas Schwarz
-2. STL Read & Write Scripts (stlreader) by 2011 [Eric Johnson](https://nl.mathworks.com/matlabcentral/profile/authors/2990507-eric-johnson)
-	- [`stlread`](https://nl.mathworks.com/matlabcentral/fileexchange/22409-stl-file-reader): Imports geometry from an STL file into MATLAB.
-	- `stlwrite`: Write STL file from patch or surface data.
-	- `surf2stl`: Write STL file from surface data.
-3. Searching Algorithm on Undirected Graph (graphsearch)  by [muhammet balcilar](https://nl.mathworks.com/matlabcentral/profile/authors/7269297-muhammet-balcilar)
-    - `dijkstra`: Dijkstra planning algorithm.
-    - `astar`: A* planning algorithm.
-	- `dynamicpathplanning`: Dynamic path planning algorithm.
-4. Iterative Regional Inflation by SDP (iris-distro) by [Robin Deits](https://github.com/rdeits)
-    - `+iris`: Package for generating maximum convex region.
-5. Input Scripts (hebinput) by [HebiRobotics](https://github.com/HebiRobotics/MatlabInput)
-	- `HebiJoystick`: Creates a joystick object. 
-	- `HebiKeyboard`: Creates a keyboard object.
-6. Bidirectional Conversion between D-H Parameters and POE Parameters (dh2poe) by [Liao Wu](https://www.researchgate.net/profile/Liao_Wu4)
-	- `POE2DH_Joint`: Demonstrate Lemma 1 and 2.
-	- `POE2DH_Tool`: Demonstrate Lemma 3.
-	- Details see [Wu, L., Crawford, R., & Roberts, J. (2017)](https://ieeexplore.ieee.org/document/7968294/).
+    1. `poe2dh`: Transfer POE parameters to DH parameters.
+    2. `dh2poe`: Transfer DH parameters to POE parameters.
+    
+- New `qlim` option for `SerialLink` object construction by DH parameters. (`Qlim`: m x 2 matrix)
 
+    - Example: `SerialLink([dh,sigma], 'base', Hb, 'tool', Ht, 'qlim', Qlim)`.
+    
+- New classes for robotics. (See folder `src/robotics` and `example/model_tutorials`)
+
+    1. `Cuboid`: Rigid Cuboid 3D Model class (rpy).
+    2. `Cylinder`: Rigid Cylinder 3D Model class (rpy).
+    3. `MobileRobot`: Mobile Robot 3D Model class (rpy).
+    4. `MobilePlanarRevolute`: Mobile Planar Revolute Robot 3D Model class (rpy, stdDH). 
+    
+    <img src="https://s2.ax1x.com/2020/01/10/l4pMMF.jpg" alt="l4pMMF.jpg" border="0"  width="375" />
+    
+    5. `CooperativeManipulation`: Cooperative Manipulation 3D Model class (rpy, stdDH). 
+    
+    <img src="https://s2.ax1x.com/2020/01/10/l4p3Z9.gif" alt="l4p3Z9.gif" border="0" width="350" /><img src="https://s2.ax1x.com/2020/01/10/l4plqJ.gif" alt="l4plqJ.gif" border="0" width="350" />
+    
+- New functions for path planning. (See folder `src/planning` and `example/path_planning`).
+
+    1. `environment`: Generate 3D obstacle environment with grid cell. 
+    2. `ind2loc`: Get real coordinate from map index.
+    3. `map2gphA`: Transfer map matrix to adjancent matrix A of graph.
+    4. `dijkstra`: Dijkstra algorithm for graph searching.
+    5. `astar`: A* algorithm for graph searching.
+
+    <img src="https://s2.ax1x.com/2020/01/10/l4pQr4.jpg" alt="l4pQr4.jpg" border="0"  width="350" /><img src="https://s2.ax1x.com/2020/01/10/l4PdMT.gif" alt="l4PdMT.gif" border="0"  width="350" />
 
 ## Installation
 
-- See [here](https://github.com/star2dust/Robotics-Toolbox).
-- To use `+iris`, the [MOSEK-MATLAB](https://github.com/star2dust/MOSEK-MATLAB) toolbox is needed.
+For RVC, you can install it by following the procedures below.
+
+- `git clone https://github.com/star2dust/Robotics-Toolbox.git`
+- Add the toolbox folder to MATLAB path.
+- Add `startup_rvc` and `startup_rte` to the last line of the file `startup.m` in your MATLAB default working folder (or run it directly).
+- An example for `startup.m`:
+
+  ```matlab
+  % set toolpath
+  toolpath = <the path where you put toolbox>
+  % add robotics toolbox
+  addpath([toolpath 'Robotics-Toolbox/rvctools/release10.3.1'])
+  addpath([toolpath 'Robotics-Toolbox/rvcdlcs/src'])
+  startup_rvc
+  startup_rte
+  ```
+
+## References
+
+1. [P.I. Corke. (2017). Robotics, Vision & Control. Springer. ISBN 978-3-319-54413-7.](http://petercorke.com/wordpress/toolboxes/robotics-toolbox)
+2. [Murray, R. M. (1994). A mathematical introduction to robotic manipulation. CRC press.](https://www.crcpress.com/A-Mathematical-Introduction-to-Robotic-Manipulation/Murray/p/book/9780849379819)
+3. [Deits, R., & Tedrake, R. (2015). Computing large convex regions of obstacle-free space through semidefinite programming. *Springer Tracts in Advanced Robotics*, *107*, 109�?124.](http://groups.csail.mit.edu/robotics-center/public_papers/Deits14.pdf)
+4. [Wu, L., Crawford, R., & Roberts, J. (2017). An analytic approach to converting POE parameters into D–H parameters for serial-link robots. IEEE Robotics and Automation Letters, 2(4), 2174-2179.](https://ieeexplore.ieee.org/document/7968294/)
+
+

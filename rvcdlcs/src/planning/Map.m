@@ -17,11 +17,14 @@
 classdef Map < handle
     properties
         name
-        map
+        matrix
+        siz
         tile
         Af
         Ao
+        indoc
         Voc
+        route
     end
     
     methods
@@ -31,38 +34,53 @@ classdef Map < handle
             % opt statement
             opt.name = 'map';
             opt.tile = 1;
+            opt.graph = true;
+            opt.planning = true;
+            opt.start = 1;
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin);
             % check validity
             if length(arg)==1
-                map = arg{1};
+                matrix = arg{1};
             else
                 error('unknown argument')
             end
             % read from picture or matrix
-            if ischar(map)
-                obj.map = readMap(map);
+            if ischar(matrix)
+                obj.matrix = readMap(matrix);
             else
-                obj.map = map;
+                obj.matrix = matrix;
             end
             % struct
             obj.name = opt.name;
+            obj.siz = size(obj.matrix);
             obj.tile = opt.tile;
-            obj.Ao = Map.map2gphA(obj.map,1);
-            obj.Af = Map.map2gphA(obj.map,0);
-            obj.Voc = Map.map2Voc(obj.map,obj.tile);
+            if opt.graph
+                obj.Ao = Map.map2gphA(obj.matrix,1);
+                obj.indoc = Map.map2indoc(obj.matrix);
+                obj.Voc = Map.indoc2Voc(obj.siz,obj.tile,obj.indoc);
+            end
+            if opt.planning
+                obj.Af = Map.map2gphA(obj.matrix,0);  
+                n = length(obj.matrix(:));
+                sub = ind2sub_(obj.siz,1:n);
+                obj.route = dijkstra(obj.Af,sub,opt.start);
+            end
         end
         
         function h = plot(obj,varargin)
             % M.plot  Plot Map object
             
             % opt statement
-            opt.dim = length(size(obj.map));
+            opt.dim = length(size(obj.matrix));
             if opt.dim==2
-                opt.workspace = [0 obj.tile*size(obj.map,1) 0 obj.tile*size(obj.map,2)];
+                opt.workspace = [0 obj.tile*size(obj.matrix,1) 0 obj.tile*size(obj.matrix,2)];
             else
-                opt.workspace = [0 obj.tile*size(obj.map,1) 0 obj.tile*size(obj.map,2) 0 obj.tile*size(obj.map,3)];
+                opt.workspace = [0 obj.tile*size(obj.matrix,1) 0 obj.tile*size(obj.matrix,2) 0 obj.tile*size(obj.matrix,3)];
             end
+            opt.shrink = 0;
+            opt.route = false;
+            opt.goal = length(obj.matrix(:));
             opt.obheight = 0.5;
             opt.obcolor = 'k';
             opt.obthick = 1;
@@ -104,7 +122,16 @@ classdef Map < handle
                 %             set(gcf, 'Position', [0.1 1-pf(4) pf(3) pf(4)]);
                 %         end
             end
-            view(opt.dim); grid on; rotate3d on
+            view(opt.dim); grid on; 
+            if opt.dim==3
+                rotate3d on
+            end
+        end
+        
+        function route = astar(obj,start,goal)
+            n = length(obj.matrix(:));
+            sub = ind2sub_(obj.siz,1:n);
+            route = astar(obj.Af,sub,start,goal);
         end
     end
     
@@ -123,18 +150,18 @@ classdef Map < handle
             group = hggroup('Tag', obj.name);
             h.group = group;
             
-            siz = size(obj.map);
             % obstacles
             for i=1:length(obj.Voc)
-                I = convhull(obj.Voc{i});
-                if length(opt.dim) == 2      
+                I = boundary(obj.Voc{i},opt.shrink);
+%                 I = 1:size(obj.Voc{i},1);
+                if opt.dim == 2      
                     h.obstacle(i) = patch('vertices', obj.Voc{i}(I,:), 'faces', 1:length(I),...
                         'facecolor', opt.obcolor, 'facealpha', opt.obthick,...
                         'edgecolor', opt.obcolor, 'edgealpha', opt.obthick, 'parent', group);
                 else
                     X = kron(ones(2,1),obj.Voc{i}(I,1)');
                     Y = kron(ones(2,1),obj.Voc{i}(I,2)');
-                    if length(siz)==2
+                    if length(obj.siz)==2
                         m = length(obj.Voc{i}(I,1));
                         Z = [zeros(1,m);ones(1,m)]*opt.obheight;
                         [Fo,Vo]= surf2patch(X,Y,Z);
@@ -154,14 +181,22 @@ classdef Map < handle
                 end
                 set(h.obstacle(i),'Tag', [obj.name '-obstacle' num2str(i)]);
             end
-            % barrier
-            subb = [1,1;siz(1),1;siz;1,siz(2)];
-            subbsplit = num2cell(subb,1);
-            indb = sub2ind(siz,subbsplit{:});
-            locb = Map.ind2loc(siz,obj.tile,indb);
-            Vb = Map.loc2vert(siz,obj.tile,locb);
-            h.barrier = line(Vb(:,1),Vb(:,2),'Color',opt.bacolor,'LineStyle', opt.bastyle, 'LineWidth', opt.bathick, 'parent', group);
-            set(h.barrier,'Tag', [obj.name '-barrier']);
+%             % barrier
+%             subb = [1,1;obj.siz(1),1;obj.siz;1,obj.siz(2)];
+%             subbsplit = num2cell(subb,1);
+%             indb = sub2ind(obj.siz,subbsplit{:});
+%             locb = Map.ind2loc(obj.siz,obj.tile,indb);
+%             Vb = Map.loc2vert(obj.siz,obj.tile,locb);
+%             Ib = convhull_(Vb);
+%             h.barrier = line(Vb(Ib,1),Vb(Ib,2),'Color',opt.bacolor,'LineStyle', opt.bastyle, 'LineWidth', opt.bathick, 'parent', group);
+%             set(h.barrier,'Tag', [obj.name '-barrier']);
+            
+            % route
+            if opt.route
+                locru = Map.ind2loc(obj.siz,obj.tile,obj.route{opt.goal});
+                h.route = line(locru(:,1),locru(:,2),'Color',opt.bacolor,'LineStyle', opt.bastyle, 'LineWidth', opt.bathick, 'parent', group);
+                set(h.route,'Tag', [obj.name '-route']);
+            end
             
             % restore hold setting
             if ~ish
@@ -171,61 +206,65 @@ classdef Map < handle
     end
     
     methods (Static)
-        function map = randMap(range,pct)
+        function matrix = randMap(range,pct)
             % M.randMap  Randomly generate map matrix by percentage
             % - range: size of map matrix
             % - pct: percentage of obstacles (from 0 to 1) (0: no obs, 1: full obs)
-            % - map: map matrix with elements 0 or 1
-            map = rand(range)<pct;
+            % - matrix: map matrix with elements 0 or 1
+            matrix = rand(range)<pct;
         end
         
-        function map = readMap(str)
+        function matrix = readMap(str)
             % M.readMap  Read map matrix from a picture
             % - str: path of the picture file
-            % - map: map matrix with elements 0 or 1
+            % - matrix: map matrix with elements 0 or 1
             f1=imread(str);
-            bw1=imbinarize(f1);%Ê¹ÓÃÄ¬ÈÏÖµ0.5
-            map = ~bw1(:,:,1);
+            bw1=imbinarize(f1);%Ê¹ï¿½ï¿½Ä¬ï¿½ï¿½Öµ0.5
+            matrix = ~bw1(:,:,1);
         end
         
-        function map = dilateMap(map,str,pixel)
+        function matrix = dilateMap(matrix,str,pixel)
             % M.dilateMap  Dilate map matrix by pixel size
-            % - map: map matrix with elements 0 or 1
+            % - matrix: map matrix with elements 0 or 1
             % - str, siz: see strel function
             % (eg. 2D: 'octagon',r; 3D: 'sphere',r)
             SE = strel(str,ceil(pixel));
-            map = imdilate(map,SE);
+            matrix = imdilate(matrix,SE);
         end
         
-        function varargout = map2gphA(map,type)
+        function varargout = map2gphA(matrix,type)
             % M.map2gphA  Get adjacency matrix of obstacle-free(type 0) or 
             % obstacle(type 1) graph from map matrix
-            % - map: map matrix with elements 0 or 1
+            % - matrix: map matrix with elements 0 or 1
             % - A: Adjacency matrix of graph
-            nx = size(map,1); ny = size(map,2); nz = size(map,3); n = nx*ny*nz;
+            nx = size(matrix,1); ny = size(matrix,2); nz = size(matrix,3); n = nx*ny*nz;
             Ab = zeros(n); Af = zeros(n);
             for i=1:n-1
                 for j=i+1:n
-                    [ix,iy,iz] = ind2sub(size(map),i);
-                    [jx,jy,jz] = ind2sub(size(map),j);
-                    if nargin<2||(type==0&&map(i)==0&&map(j)==0)
-                        % any vertice pair inside an obstacle free district has an edge
-                        ijx = min(ix,jx):max(ix,jx);
-                        ijy = min(iy,jy):max(iy,jy);
-                        ijz = min(iz,jz):max(iz,jz);
-                        if sum(sum(map(ijx,ijy,ijz)))==0
-                            Af(i,j) = 1;
-                            Af(j,i) = 1;
+                    [ix,iy,iz] = ind2sub(size(matrix),i);
+                    [jx,jy,jz] = ind2sub(size(matrix),j);
+                    if nargin<2||type==0
+                        if matrix(i)==0&&matrix(j)==0
+                            % any vertice pair inside an obstacle free district has an edge
+                            ijx = min(ix,jx):max(ix,jx);
+                            ijy = min(iy,jy):max(iy,jy);
+                            ijz = min(iz,jz):max(iz,jz);
+                            if sum(sum(matrix(ijx,ijy,ijz)))==0
+                                Af(i,j) = 1;
+                                Af(j,i) = 1;
+                            end
                         end
                     end
-                    if nargin<2||(type==1&&map(i)==1&&map(j)==1)
-                        % any adjancent vertice pair inside an obstacle district has an edge
-                        ijx = max(ix,jx)-min(ix,jx);
-                        ijy = max(iy,jy)-min(iy,jy);
-                        ijz = max(iz,jz)-min(iz,jz);
-                        if ijx<=1&&ijy<=1&&ijz<=1
-                            Ab(i,j) = 1;
-                            Ab(j,i) = 1;
+                    if nargin<2||type==1
+                        if matrix(i)==1&&matrix(j)==1
+                            % any adjancent vertice pair inside an obstacle district has an edge
+                            ijx = max(ix,jx)-min(ix,jx);
+                            ijy = max(iy,jy)-min(iy,jy);
+                            ijz = max(iz,jz)-min(iz,jz);
+                            if ijx<=1&&ijy<=1&&ijz<=1
+                                Ab(i,j) = 1;
+                                Ab(j,i) = 1;
+                            end
                         end
                     end
                     if nargin<2
@@ -244,21 +283,21 @@ classdef Map < handle
             end
         end
         
-        function indoc = map2indoc(map)
+        function indoc = map2indoc(matrix)
             % M.map2indoc  Get the connected components of obstacle graph
             % from map matrix, where nc = lenth(indoc) is the number of all 
             % connected components and indoc{i} contains all index of tiles
             % lying in the ith connected component.
-            % - map: map matrix with elements 0 or 1
+            % - matrix: map matrix with elements 0 or 1
             % - indoc: tile indices in each connected component (cell 1xnc)
             
-            % get Ao from map
+            % get Ao from matrix
             import Map.*
-            Ao = map2gphA(map,1);
+            Ao = map2gphA(matrix,1);
             indo = 1:size(Ao,1);
             % discard obstacle-free nodes
-            Ao1 = Ao(map==1,map==1);
-            indo1 = indo(map==1);
+            Ao1 = Ao(matrix==1,matrix==1);
+            indo1 = indo(matrix==1);
             % generate graph G (nxn)
             Go1 = graph(Ao1);
             % find connected component of G
@@ -271,13 +310,29 @@ classdef Map < handle
             end
         end
         
-        function Voc = map2Voc(map,tile)
+%         function Voc = map2Voc(matrix,tile)
+%             
+%             % get indoc from map
+%             import Map.* 
+%             indoc = map2indoc(matrix);
+%             % get lococ from indoc
+%             siz = size(matrix);
+%             nc = length(indoc); % component number
+%             lococ = cell(1,nc);
+%             for i=1:nc
+%                 lococ{i} = ind2loc(siz,tile,indoc{i});
+%             end
+%             % get Voc from lococ
+%             Voc = cell(1,nc);
+%             for i=1:nc
+%                 Voc{i} = loc2vert(siz,tile,lococ{i});
+%             end
+%         end
+        
+        function Voc = indoc2Voc(siz,tile,indoc)
             
-            % get indoc from map
-            import Map.* 
-            indoc = map2indoc(map);
+            import Map.*
             % get lococ from indoc
-            siz = size(map);
             nc = length(indoc); % component number
             lococ = cell(1,nc);
             for i=1:nc
@@ -303,12 +358,12 @@ classdef Map < handle
             for i=1:nc
                 V = [V;loc(i,:)+V0];
             end   
-            V = V(convhull(V),:);
+            V = V(convhull_(V),:);
         end
             
         function loc = ind2loc(siz,tile,ind)
-            % get tile center coordinate from map index
-            % - ind: map index (from 1 to size(map,1)*size(map,2)*size(map,3))
+            % get tile center coordinate from matrix index
+            % - ind: matrix index (from 1 to size(matrix,1)*size(matrix,2)*size(matrix,3))
             % - siz: size of map matrix
             % - tile: scale of tiles
             % - loc: real coordinate of tile center at first quadrant 
@@ -337,8 +392,7 @@ classdef Map < handle
         function ind = loc2ind(siz,tile,loc)
             % get tile index from the real location 
             % (which tile are we located in?)
-            % - ind: map index (from 1 to size(map,1)*size(map,2)*size(map,3))
-            % - map: map matrix
+            % - ind: matrix index (from 1 to size(matrix,1)*size(matrix,2)*size(matrix,3))
             % - tile: scale of tiles
             % - loc: real coordinate of tile center at first quadrant 
             % |---------y
@@ -351,25 +405,9 @@ classdef Map < handle
             for i=1:size(loc,1)
                 lgrid = tile*ones(1,length(siz));
                 sub = (diag(lgrid)^-1*(loc(i,:)'-lgrid(:)/2)+ones(length(lgrid),1))';
-                sub = round(sub); % ËÄÉáÎåÈë
+                sub = round(sub); % ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 ind(i) = sub2ind_(siz,sub);
             end
-        end
-        
-        function sub = ind2sub_(siz,ind)
-            ind = ind(:);
-            if length(siz)==2
-                [ix,iy] = ind2sub(siz,ind);
-                sub = [ix,iy];
-            else
-                [ix,iy,iz] = ind2sub(siz,ind);
-                sub = [ix,iy,iz];
-            end
-        end
-        
-        function ind = sub2ind_(siz,sub)
-            subsplit = num2cell(sub,1);
-            ind = sub2ind(siz,subsplit{:});
         end
     end
 end

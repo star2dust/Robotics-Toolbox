@@ -1,2 +1,0 @@
-       clear
-       load exampleRobots
