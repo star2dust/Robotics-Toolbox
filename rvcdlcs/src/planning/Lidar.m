@@ -67,10 +67,9 @@ classdef Lidar < handle
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin);
             % argument parse
-            if length(arg)==2
+            if length(arg)==1
                 % get pose
                 q = arg{1}(:)';
-                Voc = arg{2};
             else
                 error('unknown arguments');
             end
@@ -81,7 +80,7 @@ classdef Lidar < handle
                     % this robot doesnt exist here, create it or add it
                     if ishold
                         % hold is on, add the robot, don't change the floor
-                        h = createLidar(obj, q, Voc, opt);
+                        h = createLidar(obj, q, opt);
                         % tag one of the graphical handles with the robot name and hang
                         % the handle structure off it
                         %                 set(handle.joint(1), 'Tag', robot.name);
@@ -89,13 +88,13 @@ classdef Lidar < handle
                     else
                         % create the robot
                         newplot();
-                        h = createLidar(obj, q, Voc, opt);
+                        h = createLidar(obj, q, opt);
                         set(gca, 'Tag', 'RTB.plot');
                     end
                 end
             else
                 % this axis never had a robot drawn in it before, let's use it
-                h = createLidar(obj, q, Voc, opt);
+                h = createLidar(obj, q, opt);
                 set(gca, 'Tag', 'RTB.plot');
                 set(gcf, 'Units', 'Normalized');
                 %         pf = get(gcf, 'Position');
@@ -107,10 +106,10 @@ classdef Lidar < handle
             if opt.dim==3
                 rotate3d on
             end
-            obj.animate(q, Voc, h.group);
+            obj.animate(q, h.group);
         end
         
-        function animate(obj, q, Voc, handles)
+        function animate(obj, q, handles)
             % L.animate  Animate Lidar object
             
             if nargin < 3
@@ -129,7 +128,7 @@ classdef Lidar < handle
                     end
                 end
                 if handles.UserData
-                    Vdc = obj.detect(q,Voc);
+                    Vdc = obj.detect(q);
                     tag = get(handles.Children(i),'Tag');
                     if strcmp(tag(1:end-1), [obj.name '-detect'])
                         j = ceil(str2double(tag(end)));
@@ -144,7 +143,9 @@ classdef Lidar < handle
             end
         end
         
-        function Vdc = detect(obj, q, Voc)
+        function Vdc = detect(obj, q)
+            load('map.mat','map2');
+            Voc = map2.Voc;
             X = obj.xdata; Y = obj.ydata;
             Vd0 = [X(1,:);Y(1,:)]';
             Vd = [q(1:2);(SE2(q)*Vd0')';q(1:2)];
@@ -158,7 +159,7 @@ classdef Lidar < handle
         end
     end
     methods (Access = protected)
-        function h = createLidar(obj, q, Voc, opt)
+        function h = createLidar(obj, q, opt)
             % create an axis
             ish = ishold();
             if ~ishold
@@ -198,7 +199,7 @@ classdef Lidar < handle
             end
             
             if opt.detect
-                Vdc = obj.detect(q,Voc);
+                Vdc = obj.detect(q);
                 for i=1:length(Vdc)
                     if isempty(Vdc{i})
                         h.detect(i) = line('Color', opt.decolor, 'LineWidth', opt.dethick, 'Visible', 'off', 'parent', group);

@@ -1,6 +1,6 @@
-disp('Robotics Toolbox Extensions: (c) star2dust 2019-2020')
+disp('Robotics Toolbox Expansions: (c) star2dust 2019-2020')
 
-% quick start for the robotics toolbox extensions
+% quick start for the toolbox 
 srcpath = fileparts(mfilename('fullpath'));
 addpath(srcpath); % add src folder to the matlab path
 addpath([srcpath '/common']); % add common

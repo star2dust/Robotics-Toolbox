@@ -52,7 +52,7 @@ qbvia = [rloc,rand(size(rloc(:,1)))];
 qavia = rand(size(rloc,1),link_num); 
 
 qvia = [qavia,qbvia];
-[qq,~,~,tq] = calctraj(qvia,1*ones(1,size(qvia,2)),0.1,2);
+[qq,~,~,tq] = mstraj_(qvia,1*ones(1,size(qvia,2)),0.1,2);
 
 lazel = size(qq,1);
 cazel = [-40 30;0 90;-40 30];
