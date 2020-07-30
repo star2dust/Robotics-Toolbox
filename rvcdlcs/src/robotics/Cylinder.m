@@ -14,16 +14,16 @@
 classdef Cylinder < handle
     properties (SetAccess = protected) % all display variables are row vectors
         name
-        % params
-        mass % center of body frame (1 dim)
-        inertia % [Ixx Iyy Izz -Iyz Ixz -Ixy] vector relative to the body frame (6 dim)
-        % how to calculate? => I = diag([Ixx Iyy Izz])+skew([-Iyz Ixz -Ixy])
-        inerMat % [M,0;0,I]
-        % a list of verts and edges
+        % verts and edges
         bvert % (body frame)
         face %
         radius 
         height
+        % dynamic params
+        mass % center of body frame (1 dim)
+        inertia % [Ixx Iyy Izz -Iyz Ixz -Ixy] vector relative to the body frame (6 dim)
+        % how to calculate? => I = diag([Ixx Iyy Izz])+skew([-Iyz Ixz -Ixy])
+        inerMat % [M,0;0,I]
     end
     
     methods

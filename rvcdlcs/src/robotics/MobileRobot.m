@@ -1,9 +1,9 @@
 % - Mobile Robot 3D Model class (SE3, rpy, stdDH)
-% (last mod.: 01-01-2020, Author: Chu Wu)
+% (last mod.: 29-07-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
 % - name: str (robot*)
-% - base: Cuboid
+% - base: Platform
 % - arm: SerialLink
 % - mount: SE3 (on the upper surface of mobile base)
 % Methods:
@@ -48,10 +48,10 @@ classdef MobileRobot < handle
             plotopt = {'noname', 'nobase', 'notiles', 'noshading', 'noshadow', 'nowrist'};
             % set qlim
             if ~isempty(opt.qlim)
-                obj.base = Cuboid(edge,'name', [obj.name '-base']);
+                obj.base = Platform(edge,'name', [obj.name '-base']);
                 obj.arm = SerialLink(dh, 'name', [obj.name '-arm'], 'base', Hb, 'tool', Ht, 'plotopt', plotopt, 'qlim', opt.qlim);
             else
-                obj.base = Cuboid(edge,'name', [obj.name '-base']);
+                obj.base = Platform(edge,'name', [obj.name '-base']);
                 obj.arm = SerialLink(dh, 'name', [obj.name '-arm'], 'base', Hb, 'tool', Ht, 'plotopt', plotopt);
             end
         end

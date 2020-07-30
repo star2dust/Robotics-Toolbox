@@ -31,15 +31,12 @@ A lot of useful scripts for research works. ([what is new?](https://github.com/s
 
     1. `Cuboid`: Rigid Cuboid 3D Model class (rpy).
     2. `Cylinder`: Rigid Cylinder 3D Model class (rpy).
-    3. `MobileRobot`: Mobile Robot 3D Model class (rpy).
-    4. `MobilePlanarRevolute`: Mobile Planar Revolute Robot 3D Model class (rpy, stdDH). 
-    
-    <img src="https://s2.ax1x.com/2020/01/10/l4pMMF.jpg" alt="l4pMMF.jpg" border="0"  width="375" />
-    
-    5. `CooperativeManipulation`: Cooperative Manipulation 3D Model class (rpy, stdDH). 
-    
-    <img src="https://s2.ax1x.com/2020/01/10/l4p3Z9.gif" alt="l4p3Z9.gif" border="0" width="350" /><img src="https://s2.ax1x.com/2020/01/10/l4plqJ.gif" alt="l4plqJ.gif" border="0" width="350" />
-    
+    3. `Platfrom`: Rigid Platform 3D Model class (rpy). Formed by `Cuboid` and `Cylinder`.
+    4. `MobileRobot`: Mobile Robot 3D Model class (rpy).
+    5. `MobilePlanarRevolute`: Mobile Planar Revolute Robot 3D Model class (rpy, stdDH). 
+
+<img src="https://s1.ax1x.com/2020/07/30/an1Aaj.png" alt="an1Aaj.png" border="0" width="375" />
+
 - New functions for path planning. (See folder `src/planning` and `example/path_planning`).
 
     1. `environment`: Generate 3D obstacle environment with grid cell. 

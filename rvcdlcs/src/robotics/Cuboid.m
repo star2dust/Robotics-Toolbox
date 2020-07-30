@@ -16,16 +16,16 @@
 classdef Cuboid < handle
     properties (SetAccess = protected) % all display variables are row vectors
         name
-        % dynamics
-        mass % center of body frame (1 dim)
-        inertia % [Ixx Iyy Izz -Iyz Ixz -Ixy] vector relative to the body frame (6 dim)
-        % how to calculate? => I = diag([Ixx Iyy Izz])+skew([-Iyz Ixz -Ixy])
-        inerMat % [M,0;0,I]
         % a list of verts and edges
         bvert % (8x3) (body frame)
         % verts % (8x3) (inertia frame)
         face % (6x4)
         edge % (1x3) depth(x) width(y) height(z)
+        % dynamic params
+        mass % center of body frame (1 dim)
+        inertia % [Ixx Iyy Izz -Iyz Ixz -Ixy] vector relative to the body frame (6 dim)
+        % how to calculate? => I = diag([Ixx Iyy Izz])+skew([-Iyz Ixz -Ixy])
+        inerMat % [M,0;0,I]
     end
     
 %     properties (Constant, Access = private)
@@ -140,7 +140,8 @@ classdef Cuboid < handle
             for i=1:length(handles.Children)
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-cuboid'])
                     set(handles.Children(i),'vertices',obj.vert(q),'faces',obj.face);
-                else
+                end
+                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-frame'])
                     frame = SE3.qrpy(q);
                     set(handles.Children(i),'matrix',frame.T);
                 end
