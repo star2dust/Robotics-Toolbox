@@ -272,7 +272,7 @@ classdef Link < matlab.mixin.Copyable
                 opt.a = 0;
                 opt.d = [];
                 opt.alpha = 0;
-                opt.G = 0;
+                opt.G = 1;
                 opt.B = 0;
                 opt.Tc = [0 0];
                 opt.Jm = 0;

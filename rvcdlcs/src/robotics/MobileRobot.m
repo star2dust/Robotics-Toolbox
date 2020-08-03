@@ -13,7 +13,7 @@
 classdef MobileRobot < handle
     properties
         name
-        base % Cuboid
+        base % Platform
         arm % SerialLink
         mount % SE3
     end

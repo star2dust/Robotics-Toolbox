@@ -52,8 +52,9 @@ function [tauB, J] = gravjac(robot, q, grav)
     n = robot.n;
     revolute = [robot.links(:).isrevolute];
     if ~robot.mdh
-        baseAxis = robot.base(1:3,3);
-        baseOrigin = robot.base(1:3,4);
+        Tbmat = robot.base.T;
+        baseAxis = Tbmat(1:3,3);
+        baseOrigin = Tbmat(1:3,4);
     end
     
     poses = size(q, 1);
@@ -77,9 +78,9 @@ function [tauB, J] = gravjac(robot, q, grav)
     for pose = 1: poses
         
         [Te, T] = robot.fkine(q(pose,:));
-        
-        jointOrigins = squeeze(T(1:3,4,:));
-        jointAxes = squeeze(T(1:3,3,:));
+        Tmat = T.T; Temat = Te.T;
+        jointOrigins = squeeze(Tmat(1:3,4,:));
+        jointAxes = squeeze(Tmat(1:3,3,:));
         
         if ~robot.mdh
             jointOrigins = [baseOrigin, jointOrigins(:,1:end-1)];
@@ -89,7 +90,7 @@ function [tauB, J] = gravjac(robot, q, grav)
         % Backwards recursion
         for joint = n: -1: 1
             
-            com = T(:,:,joint) * r(:,joint); % C.o.M. in world frame, homog
+            com = Tmat(:,:,joint) * r(:,joint); % C.o.M. in world frame, homog
             com_arr(:,joint) = com(1:3); % Add it to the distal others
             
             t = 0;
@@ -110,7 +111,7 @@ function [tauB, J] = gravjac(robot, q, grav)
         end
         
         if nargout == 2
-            J(:,:,pose) = makeJ(jointOrigins,jointAxes,Te(1:3,4),revolute);
+            J(:,:,pose) = makeJ(jointOrigins,jointAxes,Temat(1:3,4),revolute);
         end
         
     end

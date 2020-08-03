@@ -51,10 +51,7 @@
 syms a1 a2 g real
 syms c1 c2 m1 m2 real
 
-%syms Iyy1 Iyy2 b1 b2 real
-Iyy2 = 0
-b1 = 0
-b2 = 0
+syms Iyy1 Iyy2 b1 b2 real
 
 twolink = SerialLink([
     Revolute('d', 0, 'a', a1, 'alpha', 0, 'm', m1, 'r', [c1 0 0], 'I', [0 Iyy1 0], 'B', b1, 'G', 1, 'Jm', 0, 'standard')

@@ -1,29 +1,32 @@
 % - Rigid Cylinder 3D Model class (rpy)
-% (last mod.: 06-01-2020, Author: Chu Wu)
+% (last mod.: 30-07-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
 % - name: str
-% - dynamics: mass(1x1), inertia(1x6), inerMat(6x6)
-% - shapes: faces, bverts(body), radius(1x1), height(1x1)
+% - bvert(body frame): 42x3
+% - face: 20x4
+% - radius: 1x1
+% - height: 1x1
+% - density: 1x1
 % Methods:
-% - Cylinder: construction (opt: name)
-% - addDym: add dynamics
-% - verts: get vertices in inertia frame
-% - plot (opt: facecolor,facealpha, workspace, [no]frame, framecolor)
+% - Cuboid: construction
+% - mass: get mass value
+% - inertia: get inertia matrix
+% - plot
 % - animate
+% - vert: get vertices in inertia frame
+% Methods (Static):
+% - tobvert: get body vertices from radius and height
 classdef Cylinder < handle
     properties (SetAccess = protected) % all display variables are row vectors
         name
         % verts and edges
-        bvert % (body frame)
-        face %
+        bvert 
+        face 
         radius 
         height
         % dynamic params
-        mass % center of body frame (1 dim)
-        inertia % [Ixx Iyy Izz -Iyz Ixz -Ixy] vector relative to the body frame (6 dim)
-        % how to calculate? => I = diag([Ixx Iyy Izz])+skew([-Iyz Ixz -Ixy])
-        inerMat % [M,0;0,I]
+        density
     end
     
     methods
@@ -32,6 +35,7 @@ classdef Cylinder < handle
             
             % opt statement
             opt.name = 'cyl';
+            opt.density = 1;
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin); 
             obj.name = opt.name;
@@ -51,13 +55,24 @@ classdef Cylinder < handle
             else
                 error('improper input dimension')
             end
+            obj.density = opt.density;
         end
         
-        function obj = addDym(obj,m)
-            % C.addDym  Add dynamic parameters for Cylinder object
-            r = obj.radius; h = obj.height; obj.mass = m;
-            obj.inertia = 1/12*m*[3*r^2+h^2 3*r^2+h^2 6*r^2 0 0 0];
-            obj.inerMat = [obj.mass*eye(3),zeros(3);zeros(3),diag(obj.inertia(1:3))+skew(obj.inertia(4:end))];
+        function mas = mass(obj)
+            % C.mass  Calculate mass value
+            
+            vol = pi*obj.radius^2*obj.height;
+            mas = vol*obj.density;
+        end
+        
+        function ine = inertia(obj)
+            % C.inertia  Calculate inertia matrix
+            
+            % [Ixx Iyy Izz -Iyz Ixz -Ixy] vector relative to the body frame (6 dim)
+            r = obj.radius; h = obj.height; m = obj.mass;
+            vec = 1/12*m*[3*r^2+h^2 3*r^2+h^2 6*r^2 0 0 0];
+            % how to calculate? => I = diag([Ixx Iyy Izz])+skew([-Iyz Ixz -Ixy])
+            ine = diag(vec(1:3))+skew(vec(4:6));
         end
         
         function h = plot(obj,varargin)  
@@ -160,7 +175,7 @@ classdef Cylinder < handle
         end
     end
     
-    methods (Access = protected)   
+    methods (Access = private)   
         function h = createCylinder(obj,q,opt)
             % create an axis
             ish = ishold();

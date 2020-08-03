@@ -1,22 +1,21 @@
-% - Rigid Platform 3D Model class (rpy)
-% (last mod.: 29-07-2020, Author: Chu Wu)
+% - Onmi Platform 3D Model class (rpy)
+% (last mod.: 03-08-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
-% - name: str
-% - dynamics: mass(1x1), inertia(1x6), inerMat(6x6)
-% - shapes: face(6x4), bvert(body)(8x3), edge(1x3)
+% - wheel: Cylinder
+% - body: Cuboid
+% - mount: SE3
+% - dh: 3x5
 % Methods:
-% - Cuboid: construction (opt: name)
-% - addDym: add dynamics
-% - verts: get vertices in inertia frame
-% - plot (opt: facecolor,facealpha, workspace, [no]frame, framecolor)
+% - Platform: construction 
+% - plot
 % - animate
-% Methods (Static):
-% - tobverts: get body vertices from edge
-classdef Platform < Cuboid
+classdef Platform < SerialLink
     properties (SetAccess = protected) % all display variables are row vectors
         wheel = Cylinder
+        body = Cuboid
         mount = SE3
+        dh
     end
     
     methods
@@ -24,34 +23,45 @@ classdef Platform < Cuboid
             % P.Platform  Create Platform object
             
             % opt statement
+            opt.B = zeros(2,1);
+            opt.Tc = zeros(2,2);
             opt.name = 'plat';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
-            [opt,arg] = tb_optparse(opt, varargin); 
-            % argument parse
-            if isempty(arg)
-                edge = ones(1,3);
-            elseif length(arg)==1
-                edge = arg{1}(:)';
-            else
-                error('unknown arguments');
-            end           
+            [opt,arg] = tb_optparse(opt, varargin);  
             % platform body
-            obj = obj@Cuboid(edge,'name',opt.name);
-            obj.name = opt.name;
+            cub = Cuboid(arg{:},'name','body');
             % platform wheel
             for i=1:4
-                obj.wheel(i) = Cylinder(edge(1)/6,edge(2)/6,'name',[opt.name '-wheel#' num2str(i)]);
-                pwh = [(-1)^(i>2), (-1)^(mod(i,2)==0),1].*[edge(1)/2-edge(1)/6,edge(2)/2,-edge(3)/2];
-                obj.mount(i) = SE3.qrpy([pwh,pi/2,0,0]);
+                wheel(i) = Cylinder(cub.edge(1)/6,cub.edge(2)/6,'name',['wheel#' num2str(i)]);
+                pwh = [(-1)^(i>2), (-1)^(mod(i,2)==0),1].*[cub.edge(1)/2-cub.edge(1)/6,cub.edge(2)/2,-cub.edge(3)/2];
+                mount(i) = SE3.qrpy([pwh,pi/2,0,0]);
             end
-        end
-        
-        function obj = addDym(obj,mass)
-            % C.addDym  Add dynamic parameters for Cuboid object
-            ed = obj.edge;
-            obj.mass = mass;
-            obj.inertia = 1/12*mass*[ed(2)^2+ed(3)^2 ed(1)^2+ed(3)^2 ed(2)^2+ed(1)^2 0 0 0];
-            obj.inerMat = [obj.mass*eye(3),zeros(3);zeros(3),diag(obj.inertia(1:3))+skew(obj.inertia(4:end))];
+            % platform tree
+            Hb = SE3([0,0,cub.edge(1)/6+cub.edge(3)/2])*SE3(SO3.Ry(pi/2));
+            Ht = SE3;
+            trsopt = {'m', 0, 'r', [0,0,0], 'I', zeros(3),'B', opt.B(1,:), 'Tc', opt.Tc(1,:)};
+            rotopt = {'m', cub.mass, 'r', [0,0,0], 'I', cub.inertia, 'B', opt.B(2,:), 'Tc', opt.Tc(2,:)};
+            dh = [0,0,0,-pi/2,1;
+                -pi/2,0,0,pi/2,1;
+                0,0,0,0,0];
+            for i=1:3
+                if dh(i,end)
+                    dhopt = {'theta', dh(i,1), 'a', dh(i,3), 'alpha', dh(i,4), 'prismatic'};
+                else
+                    dhopt = {'d', dh(i,2), 'a', dh(i,3), 'alpha', dh(i,4), 'revolute'};
+                end
+                if i==3
+                    tree(i) = Link(dhopt{:},rotopt{:});
+                else
+                    tree(i) = Link(dhopt{:},trsopt{:});
+                end
+            end
+            % construction
+            obj = obj@SerialLink(tree, 'name', opt.name, 'base', Hb, 'tool', Ht);
+            obj.body = cub;
+            obj.wheel = wheel;
+            obj.mount = mount;
+            obj.dh = dh;
         end
         
         function h = plot(obj,varargin)  
@@ -64,7 +74,7 @@ classdef Platform < Cuboid
             opt.workspace = [];
             opt.frame = false;
             opt.framecolor = 'b';
-            opt.framelength = sum(obj.edge)/length(obj.edge)/3;
+            opt.framelength = sum(obj.body.edge)/length(obj.body.edge)/3;
             opt.framethick = 1;
             opt.framestyle = '-';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
@@ -74,18 +84,7 @@ classdef Platform < Cuboid
             else
                 error('unknown argument')
             end
-            if opt.frame
-                h = obj.plot@Cuboid(q,'workspace',opt.workspace,'facecolor',...
-                    opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
-                    opt.edgecolor, 'frame', 'framecolor', opt.framecolor,...
-                    'framelength', opt.framelength, 'framethick',...
-                    opt.framethick, 'framestyle', opt.framestyle);
-            else
-                h = obj.plot@Cuboid(q,'workspace',opt.workspace,'facecolor',...
-                    opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
-                    opt.edgecolor,'framecolor');
-            end
-            h = createWheel(obj,q,opt,h);
+            h = createPlatform(obj,q,opt);
             view(3); grid on;
             obj.animate(q,h.group);
         end 
@@ -95,8 +94,10 @@ classdef Platform < Cuboid
             if nargin < 3
                 handles = findobj('Tag', obj.name);
             end
-            obj.animate@Cuboid(q,handles);
             for i=1:length(handles.Children)
+                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-' obj.body.name])
+                    obj.body.animate(q,handles.Children(i));
+                end
                 for j=1:length(obj.wheel)
                     if strcmp(get(handles.Children(i),'Tag'), [obj.name '-wheel#' num2str(j)])
                         qwh = toqrpy(SE3.qrpy(q)*obj.mount(j));
@@ -106,37 +107,10 @@ classdef Platform < Cuboid
                 end
             end
         end
-        
-        function vert = vert(obj,pose)
-            % C.vert  Get vertices relative to inertia frame
-            
-            % frame update
-            frame = SE3(pose(1:3))*SE3.rpy(pose(4:6));
-            % verts position   
-            vert = h2e(frame.T*e2h(obj.bvert'))';
-        end
     end
     
-    methods (Static)
-        function [bvert,face] = tobvert(edge)
-            % C.tobvert  Get vertices relative to body frame from edge
-            templateVerts = [0,0,0;0,1,0;1,1,0;1,0,0;0,0,1;0,1,1;1,1,1;1,0,1];
-            templateFaces = [1,2,3,4;5,6,7,8;1,2,6,5;3,4,8,7;1,4,8,5;2,3,7,6];
-            % ^ y axis
-            % | 6 % % 7 -> top
-            % | % 2 3 % -> bottom
-            % | % 1 4 % -> bottom
-            % | 5 % % 8 -> top
-            % -------> x axis
-            face = templateFaces;
-            bvert = [templateVerts(:,1)*edge(1)-edge(1)/2,...
-                templateVerts(:,2)*edge(2)-edge(2)/2,...
-                templateVerts(:,3)*edge(3)-edge(3)/2];
-        end
-    end
-    
-    methods (Access = protected)   
-        function h = createWheel(obj,q,opt,h)
+    methods (Access = private)           
+        function h = createPlatform(obj,q,opt)
             % create an axis
             ish = ishold();
             if ~ishold
@@ -147,12 +121,30 @@ classdef Platform < Cuboid
                 hold on
             end
             
+            group = hggroup('Tag', obj.name);
+            h.group = group;
+            
+            if opt.frame
+                h.body = obj.body.plot(q,'workspace',opt.workspace,'facecolor',...
+                    opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
+                    opt.edgecolor, 'frame', 'framecolor', opt.framecolor,...
+                    'framelength', opt.framelength, 'framethick',...
+                    opt.framethick, 'framestyle', opt.framestyle);
+            else
+                h.body = obj.body.plot(q,'workspace',opt.workspace,'facecolor',...
+                    opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
+                    opt.edgecolor,'framecolor');
+            end
+            set(h.body.group, 'parent', group);
+            set(h.body.group, 'Tag', [obj.name '-' obj.body.name]);
+            
             for i=1:length(obj.wheel)
                 qwh = toqrpy(SE3.qrpy(q)*obj.mount(i));
                 qwh(isnan(qwh))=0;
                 h.wheel(i) = obj.wheel(i).plot(qwh, 'facecolor', opt.facecolor,...
                     'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor);
-                set(h.wheel(i).group,'parent',h.group);
+                set(h.wheel(i).group, 'parent', group);
+                set(h.wheel(i).group,'Tag',[obj.name '-' obj.wheel(i).name]);
             end
                       
             % restore hold setting

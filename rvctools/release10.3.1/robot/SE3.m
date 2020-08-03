@@ -888,19 +888,27 @@ classdef SE3 < SO3
             pose = varargin{1}; 
             if length(varargin)>1
                 opt = varargin(2:end);
-                if size(pose,2)==6
-                    obj = SE3(pose(:,1:3))*SE3( SO3.rpy(pose(:,4:end),opt{:}) );
+                if isa(pose,'SO3')
+                    obj = SE3(pose);
                 else
-                    pose = [pose(:,1:2),zeros(size(pose,1),3),pose(:,3)];
-                    obj = SE3(pose(:,1:3))*SE3( SO3.rpy(pose(:,4:end),opt{:}) );
-                end          
+                    if size(pose,2)==6
+                        obj = SE3(pose(:,1:3))*SE3( SO3.rpy(pose(:,4:end),opt{:}) );
+                    else
+                        pose = [pose(:,1:2),zeros(size(pose,1),3),pose(:,3)];
+                        obj = SE3(pose(:,1:3))*SE3( SO3.rpy(pose(:,4:end),opt{:}) );
+                    end
+                end
             else
-                if size(pose,2)==6
-                    obj = SE3(pose(:,1:3))*SE3( SO3.rpy(pose(:,4:end)));
+                if isa(pose,'SO3')
+                    obj = SE3(pose);
                 else
-                    pose = [pose(:,1:2),zeros(size(pose,1),3),pose(:,3)];
-                    obj = SE3(pose(:,1:3))*SE3( SO3.rpy(pose(:,4:end)) );
-                end    
+                    if size(pose,2)==6
+                        obj = SE3(pose(:,1:3))*SE3( SO3.rpy(pose(:,4:end)));
+                    else
+                        pose = [pose(:,1:2),zeros(size(pose,1),3),pose(:,3)];
+                        obj = SE3(pose(:,1:3))*SE3( SO3.rpy(pose(:,4:end)) );
+                    end
+                end
             end  
         end
         

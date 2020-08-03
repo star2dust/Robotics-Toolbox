@@ -1,43 +1,31 @@
 % - Rigid Cuboid 3D Model class (rpy)
-% (last mod.: 01-01-2020, Author: Chu Wu)
+% (last mod.: 30-07-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
 % - name: str
-% - dynamics: mass(1x1), inertia(1x6), inerMat(6x6)
-% - shapes: face(6x4), bvert(body)(8x3), edge(1x3)
+% - bvert(body frame): 8x3
+% - face: 6x4
+% - edge: 1x3 length(x) width(y) height(z)
+% - density: 1x1
 % Methods:
-% - Cuboid: construction (opt: name)
-% - addDym: add dynamics
-% - verts: get vertices in inertia frame
-% - plot (opt: facecolor,facealpha, workspace, [no]frame, framecolor)
+% - Cuboid: construction
+% - mass: get mass value
+% - inertia: get inertia matrix
+% - plot
 % - animate
+% - vert: get vertices in inertia frame
 % Methods (Static):
-% - tobverts: get body vertices from edge
+% - tobvert: get body vertices from edge
 classdef Cuboid < handle
     properties (SetAccess = protected) % all display variables are row vectors
         name
-        % a list of verts and edges
-        bvert % (8x3) (body frame)
-        % verts % (8x3) (inertia frame)
-        face % (6x4)
-        edge % (1x3) depth(x) width(y) height(z)
+        % verts and edges
+        bvert 
+        face 
+        edge 
         % dynamic params
-        mass % center of body frame (1 dim)
-        inertia % [Ixx Iyy Izz -Iyz Ixz -Ixy] vector relative to the body frame (6 dim)
-        % how to calculate? => I = diag([Ixx Iyy Izz])+skew([-Iyz Ixz -Ixy])
-        inerMat % [M,0;0,I]
+        density
     end
-    
-%     properties (Constant, Access = private)
-%         templateVerts = [0,0,0;0,1,0;1,1,0;1,0,0;0,0,1;0,1,1;1,1,1;1,0,1];
-%         templateFaces = [1,2,3,4;5,6,7,8;1,2,6,5;3,4,8,7;1,4,8,5;2,3,7,6];
-%         % ^ y axis
-%         % | 6 % % 7 -> top
-%         % | % 2 3 % -> bottom
-%         % | % 1 4 % -> bottom
-%         % | 5 % % 8 -> top
-%         % -------> x axis
-%     end
     
     methods
         function obj = Cuboid(varargin)
@@ -45,9 +33,9 @@ classdef Cuboid < handle
             
             % opt statement
             opt.name = 'cub';
+            opt.density = 1;
             % opt parse: only stated fields are chosen to opt, otherwise to arg
-            [opt,arg] = tb_optparse(opt, varargin); 
-            obj.name = opt.name;
+            [opt,arg] = tb_optparse(opt, varargin);       
             % argument parse
             if isempty(arg)
                 edge = ones(1,3);
@@ -66,14 +54,26 @@ classdef Cuboid < handle
             else
                 error('improper input dimension')
             end
+            % set options
+            obj.name = opt.name;
+            obj.density = opt.density;
         end
         
-        function obj = addDym(obj,mass)
-            % C.addDym  Add dynamic parameters for Cuboid object
-            ed = obj.edge;
-            obj.mass = mass;
-            obj.inertia = 1/12*mass*[ed(2)^2+ed(3)^2 ed(1)^2+ed(3)^2 ed(2)^2+ed(1)^2 0 0 0];
-            obj.inerMat = [obj.mass*eye(3),zeros(3);zeros(3),diag(obj.inertia(1:3))+skew(obj.inertia(4:end))];
+        function mas = mass(obj)
+            % C.mass  Calculate mass value
+            
+            vol = obj.edge(1)*obj.edge(2)*obj.edge(3);
+            mas = vol*obj.density;
+        end
+        
+        function ine = inertia(obj)
+            % C.inertia  Calculate inertia matrix
+            
+            % [Ixx Iyy Izz -Iyz Ixz -Ixy] vector relative to the body frame (6 dim)
+            e = obj.edge; m = obj.mass;
+            vec = 1/12*m*[e(2)^2+e(3)^2,e(1)^2+e(3)^2,e(2)^2+e(1)^2,0,0,0];  
+            % how to calculate? => I = diag([Ixx Iyy Izz])+skew([-Iyz Ixz -Ixy])
+            ine = diag(vec(1:3))+skew(vec(4:6));
         end
         
         function h = plot(obj,varargin)  
@@ -174,7 +174,7 @@ classdef Cuboid < handle
         end
     end
     
-    methods (Access = protected)   
+    methods (Access = private)   
         function h = createCuboid(obj,q,opt)
             % create an axis
             ish = ishold();
