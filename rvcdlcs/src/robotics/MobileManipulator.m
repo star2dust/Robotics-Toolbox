@@ -1,59 +1,79 @@
-% - Mobile Robot 3D Model class (SE3, rpy, stdDH)
-% (last mod.: 29-07-2020, Author: Chu Wu)
+% - Mobile Manipulator 3D Model class (SE3, rpy, stdDH)
+% (last mod.: 03-08-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
 % - name: str (robot*)
-% - base: Platform
+% - plat: Platform
 % - arm: SerialLink
 % - mount: SE3 (on the upper surface of mobile base)
 % Methods:
 % - MobileRobot: construction (opt: name, qlim)
 % - plot (opt: workspace, [no]frame, framecolor)
 % - animate
-classdef MobileRobot < handle
+classdef MobileManipulator < SerialLink
     properties
-        name
-        base % Platform
+        plat % Platform
         arm % SerialLink
-        mount % SE3
+        tree % Link
     end
     
     methods
-        function obj = MobileRobot(varargin)
+        function obj = MobileManipulator(varargin)
             % MR.MobileRobot   Create MobileRobot robot object
             
             % opt statement
-            opt.name = 'robot';
+            opt.B = zeros(2,1);
+            opt.Tc = zeros(2,2);
             opt.qlim = [];
+            opt.name = 'robot';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin); 
-            obj.name = opt.name; 
             % argument parse
             if length(arg)==3
                 edge = arg{1}(:)';
-                twist = arg{2};
-                Hb = arg{3};
-                [dh, Ht, sigma] = poe2dh(twist); 
-                dh = [dh,sigma];
-                obj.mount = SE3(Hb);              
-            elseif length(arg)==4
-                edge = arg{1}(:)';
                 dh = arg{2};
-                Hb = arg{3};
-                Ht = arg{4};
-                obj.mount = SE3(Hb);         
+                Ht = arg{3};         
             else
                 error('unknown arguments');
             end
-            plotopt = {'noname', 'nobase', 'notiles', 'noshading', 'noshadow', 'nowrist'};
-            % set qlim
-            if ~isempty(opt.qlim)
-                obj.base = Platform(edge,'name', [obj.name '-base']);
-                obj.arm = SerialLink(dh, 'name', [obj.name '-arm'], 'base', Hb, 'tool', Ht, 'plotopt', plotopt, 'qlim', opt.qlim);
-            else
-                obj.base = Platform(edge,'name', [obj.name '-base']);
-                obj.arm = SerialLink(dh, 'name', [obj.name '-arm'], 'base', Hb, 'tool', Ht, 'plotopt', plotopt);
+            if size(dh,2)<5
+                error('dh should be Nx5 (N>3)');
             end
+            plotopt = {'noname', 'nobase', 'notiles', 'noshading', 'noshadow', 'nowrist'};
+            % set base
+            mmplat = Platform(edge, 'name', 'base', 'B', opt.B, 'Tc', opt.Tc);
+            % set arm
+            if ~isempty(opt.qlim)
+                mmarm = SerialLink(dh(4:end,:), 'name', 'arm', 'tool', Ht, 'plotopt', plotopt, 'qlim', opt.qlim);
+            else
+                mmarm = SerialLink(dh(4:end,:), 'name', 'arm', 'tool', Ht, 'plotopt', plotopt);
+            end
+            % construction
+            Hb = mmplat.base;
+            Ht = mmarm.tool;
+            for i=1:size(dh,1)
+                rod = Cuboid([dh(i,3),dh(i,3)/10,dh(i,3)/10]);
+                if dh(i,end)
+                    if i>3
+                        rodopt = {'m', rod.mass, 'r', [-rod.edge(1)/2,0,0], 'I', rod.inertia, 'B', opt.B(1,:), 'Tc', opt.Tc(1,:)};
+                    else
+                        rodopt = {'m', mmplat.body.mass, 'r', [0,0,0], 'I', mmplat.body.inertia, 'B', opt.B(1,:), 'Tc', opt.Tc(1,:)};
+                    end
+                    dhopt = {'theta', dh(i,1), 'a', dh(i,3), 'alpha', dh(i,4), 'prismatic'};
+                else
+                    if i>3
+                        rodopt = {'m', rod.mass, 'r', [-rod.edge(1)/2,0,0], 'I', rod.inertia, 'B', opt.B(2,:), 'Tc', opt.Tc(2,:)};
+                    else
+                        rodopt = {'m', mmplat.body.mass, 'r', [0,0,0], 'I', mmplat.body.inertia, 'B', opt.B(2,:), 'Tc', opt.Tc(2,:)};
+                    end
+                    dhopt = {'d', dh(i,2), 'a', dh(i,3), 'alpha', dh(i,4), 'revolute'};
+                end
+                mmtree(i) = Link(dhopt{:},rodopt{:}); 
+            end
+            obj = obj@SerialLink(mmtree, 'name', opt.name, 'base', Hb, 'tool', Ht);
+            obj.plat = mmplat;
+            obj.arm = mmarm;
+            obj.tree = mmtree;
         end
         
         function h = plot(obj,varargin) 
@@ -63,7 +83,7 @@ classdef MobileRobot < handle
             opt.workspace = [];
             opt.frame = false;
             opt.framecolor = 'b';
-            opt.framelength = sum(obj.base.body.edge)/length(obj.base.body.edge)/3;
+            opt.framelength = sum(obj.plat.body.edge)/length(obj.plat.body.edge)/3;
             opt.framethick = 1;
             opt.framestyle = '-';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
@@ -72,6 +92,9 @@ classdef MobileRobot < handle
             if length(arg)==1
                 % get pose
                 q = arg{1}(:)';
+                if length(q)~=obj.n
+                    error(['q should be 1x' num2str(obj.n)]);
+                end
             else
                 error('unknown arguments');
             end
@@ -116,16 +139,16 @@ classdef MobileRobot < handle
             end
             % update pose
             qa = q(4:end); qb = q(1:3);
-            obj.arm.base = obj.base.fkine(qb)*obj.mount;
+            obj.arm.base = obj.base*obj.tree(1).A(qb(1))*obj.tree(2).A(qb(2))*obj.tree(3).A(qb(3));
             % animate
             for i=1:length(handles.Children) % draw frame first otherwise there will be delay
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-tool'])
                     set(handles.Children(i),'matrix',obj.arm.fkine(qa).T);
                 end
-                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-base'])
-                    obj.base.animate(qb,handles.Children(i));
+                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-' obj.plat.name])
+                    obj.plat.animate(qb,handles.Children(i));
                 end
-                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-arm'])
+                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-' obj.arm.name])
                     obj.arm.animate(qa,handles.Children(i));
                 end
             end 
@@ -145,21 +168,23 @@ classdef MobileRobot < handle
             end
             % update pose
             qa = q(4:end); qb = q(1:3);
-            obj.arm.base = SE3.qrpy(qb)*obj.mount;
+            obj.arm.base = obj.base*obj.tree(1).A(qb(1))*obj.tree(2).A(qb(2))*obj.tree(3).A(qb(3));
             
             group = hggroup('Tag', obj.name);
             h.group = group;
             h.arm = obj.arm.plot(qa);
             if opt.frame
-                h.base = obj.base.plot(qb,'frame','framecolor', opt.framecolor,'framelength',opt.framelength, 'framethick', opt.framethick, 'framestyle', opt.framestyle);
+                h.plat = obj.plat.plot(qb,'frame','framecolor', opt.framecolor,'framelength',opt.framelength, 'framethick', opt.framethick, 'framestyle', opt.framestyle);
                 h.tool = SE3(obj.arm.fkine(qa)).plot('color', opt.framecolor,'length',opt.framelength, 'thick', opt.framethick, 'style', opt.framestyle);
                 set(h.tool,'parent',group);
                 set(h.tool,'Tag', [obj.name '-tool']);
             else
-                h.base = obj.base.plot(qb);
+                h.plat = obj.plat.plot(qb);
             end
+            set(h.arm.group,'Tag', [obj.name '-' obj.arm.name]);
+            set(h.plat.group,'Tag', [obj.name '-' obj.plat.name]);
             set(h.arm.group,'parent',group);
-            set(h.base.group,'parent',group);
+            set(h.plat.group,'parent',group);
                 
             % restore hold setting
             if ~ish

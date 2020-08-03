@@ -5,17 +5,17 @@
 % - wheel: Cylinder
 % - body: Cuboid
 % - mount: SE3
-% - dh: 3x5
+% - tree: Link
 % Methods:
 % - Platform: construction 
 % - plot
 % - animate
 classdef Platform < SerialLink
     properties (SetAccess = protected) % all display variables are row vectors
-        wheel = Cylinder
-        body = Cuboid
-        mount = SE3
-        dh
+        wheel
+        body
+        mount
+        tree
     end
     
     methods
@@ -25,6 +25,9 @@ classdef Platform < SerialLink
             % opt statement
             opt.B = zeros(2,1);
             opt.Tc = zeros(2,2);
+            opt.dh = [0,0,0,-pi/2,1;
+                -pi/2,0,0,pi/2,1;
+                0,0,0,0,0];
             opt.name = 'plat';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin);  
@@ -41,14 +44,11 @@ classdef Platform < SerialLink
             Ht = SE3;
             trsopt = {'m', 0, 'r', [0,0,0], 'I', zeros(3),'B', opt.B(1,:), 'Tc', opt.Tc(1,:)};
             rotopt = {'m', cub.mass, 'r', [0,0,0], 'I', cub.inertia, 'B', opt.B(2,:), 'Tc', opt.Tc(2,:)};
-            dh = [0,0,0,-pi/2,1;
-                -pi/2,0,0,pi/2,1;
-                0,0,0,0,0];
             for i=1:3
-                if dh(i,end)
-                    dhopt = {'theta', dh(i,1), 'a', dh(i,3), 'alpha', dh(i,4), 'prismatic'};
+                if opt.dh(i,end)
+                    dhopt = {'theta', opt.dh(i,1), 'a', opt.dh(i,3), 'alpha', opt.dh(i,4), 'prismatic'};
                 else
-                    dhopt = {'d', dh(i,2), 'a', dh(i,3), 'alpha', dh(i,4), 'revolute'};
+                    dhopt = {'d', opt.dh(i,2), 'a', opt.dh(i,3), 'alpha', opt.dh(i,4), 'revolute'};
                 end
                 if i==3
                     tree(i) = Link(dhopt{:},rotopt{:});
@@ -61,7 +61,7 @@ classdef Platform < SerialLink
             obj.body = cub;
             obj.wheel = wheel;
             obj.mount = mount;
-            obj.dh = dh;
+            obj.tree = tree;
         end
         
         function h = plot(obj,varargin)  
@@ -81,6 +81,9 @@ classdef Platform < SerialLink
             [opt,arg] = tb_optparse(opt, varargin); 
             if length(arg)==1
                 q = arg{1}(:)';
+                if length(q)~=obj.n
+                   error(['q should be 1x' num2str(obj.n)]); 
+                end
             else
                 error('unknown argument')
             end
@@ -94,13 +97,14 @@ classdef Platform < SerialLink
             if nargin < 3
                 handles = findobj('Tag', obj.name);
             end
+            qb = toqrpy(obj.fkine(q));
             for i=1:length(handles.Children)
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-' obj.body.name])
-                    obj.body.animate(q,handles.Children(i));
+                    obj.body.animate(qb,handles.Children(i));
                 end
                 for j=1:length(obj.wheel)
                     if strcmp(get(handles.Children(i),'Tag'), [obj.name '-wheel#' num2str(j)])
-                        qwh = toqrpy(SE3.qrpy(q)*obj.mount(j));
+                        qwh = toqrpy(SE3.qrpy(qb)*obj.mount(j));
                         qwh(isnan(qwh))=0;
                         obj.wheel(j).animate(qwh,handles.Children(i));
                     end
@@ -123,15 +127,16 @@ classdef Platform < SerialLink
             
             group = hggroup('Tag', obj.name);
             h.group = group;
+            qb = toqrpy(obj.fkine(q));
             
             if opt.frame
-                h.body = obj.body.plot(q,'workspace',opt.workspace,'facecolor',...
+                h.body = obj.body.plot(qb,'workspace',opt.workspace,'facecolor',...
                     opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
                     opt.edgecolor, 'frame', 'framecolor', opt.framecolor,...
                     'framelength', opt.framelength, 'framethick',...
                     opt.framethick, 'framestyle', opt.framestyle);
             else
-                h.body = obj.body.plot(q,'workspace',opt.workspace,'facecolor',...
+                h.body = obj.body.plot(qb,'workspace',opt.workspace,'facecolor',...
                     opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
                     opt.edgecolor,'framecolor');
             end
@@ -139,7 +144,7 @@ classdef Platform < SerialLink
             set(h.body.group, 'Tag', [obj.name '-' obj.body.name]);
             
             for i=1:length(obj.wheel)
-                qwh = toqrpy(SE3.qrpy(q)*obj.mount(i));
+                qwh = toqrpy(SE3.qrpy(qb)*obj.mount(i));
                 qwh(isnan(qwh))=0;
                 h.wheel(i) = obj.wheel(i).plot(qwh, 'facecolor', opt.facecolor,...
                     'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor);

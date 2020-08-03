@@ -63,7 +63,7 @@ classdef MobilePlanarRevolute < MobileRobot
             opt.workspace = [];
             opt.frame = false;
             opt.framecolor = 'b';
-            opt.framelength = sum(obj.base.edge)/length(obj.base.edge)/3;
+            opt.framelength = sum(obj.base.body.edge)/length(obj.base.body.edge)/3;
             opt.framethick = 1;
             opt.framestyle = '-';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
@@ -75,8 +75,6 @@ classdef MobilePlanarRevolute < MobileRobot
             else
                 error('unknown arguments');
             end
-            % q (3+m) => (6+m)
-            q = obj.min2config(q);
             if opt.frame
                 h = obj.plot@MobileRobot(q,'workspace',opt.workspace,'frame','framecolor',opt.framecolor,'framelength',opt.framelength, 'framethick', opt.framethick, 'framestyle', opt.framestyle);
             else
@@ -90,8 +88,6 @@ classdef MobilePlanarRevolute < MobileRobot
             if nargin < 3
                 h = findobj('Tag', obj.name);
             end
-            % q (3+m) => (6+m)
-            q = obj.min2config(q);
             obj.animate@MobileRobot(q,h);
         end
             
@@ -128,7 +124,7 @@ classdef MobilePlanarRevolute < MobileRobot
         function q = min2config(obj,q)
             % q (3+m) => (6+m)
             if length(q)==obj.arm.n+3
-                q = q(:)'; q = [q(1:2),obj.base.edge(3)/2+obj.base.edge(1)/6,0,0,q(3:end)];
+                q = q(:)'; q = [q(1:2),obj.base.body.edge(3)/2+obj.base.body.edge(1)/6,0,0,q(3:end)];
             end
         end
         
