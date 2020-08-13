@@ -19,7 +19,7 @@ classdef MobileManipulator < SerialLink
     
     methods
         function obj = MobileManipulator(varargin)
-            % MR.MobileRobot   Create MobileRobot robot object
+            % Create MobileRobot robot object
             
             % opt statement
             opt.B = zeros(2,1);
@@ -77,7 +77,7 @@ classdef MobileManipulator < SerialLink
         end
         
         function h = plot(obj,varargin) 
-            % MR.plot   Plot MobileRobot robot object
+            % Plot MobileRobot robot object
             
             % opt statement
             opt.workspace = [];
@@ -133,7 +133,8 @@ classdef MobileManipulator < SerialLink
         end 
         
         function animate(obj,q,handles)
-            % MR.animate  Animate MobileRobot robot object
+            % Animate MobileRobot robot object
+            
             if nargin < 3
                 handles = findobj('Tag', obj.name);
             end

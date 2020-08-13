@@ -83,6 +83,7 @@ classdef Cuboid < handle
             opt.facecolor = 'y';
             opt.facealpha = 0.8;
             opt.edgecolor = 'k';
+            opt.edgealpha = 0.2;
             opt.workspace = [];
             opt.frame = false;
             opt.framecolor = 'b';
@@ -188,12 +189,15 @@ classdef Cuboid < handle
             
             group = hggroup('Tag', obj.name);
             h.group = group;
-            h.cub = patch('vertices',obj.vert(q), 'faces', obj.face, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor, 'parent', group);
+            h.cub = patch('vertices',obj.vert(q), 'faces', obj.face, 'facecolor',...
+                opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
+                opt.edgecolor, 'edgealpha', opt.edgealpha, 'parent', group);
             set(h.cub,'Tag', [obj.name '-cuboid']);
             
             if opt.frame
                 frame = SE3.qrpy(q);
-                h.frame = frame.plot('color', opt.framecolor,'length',opt.framelength, 'thick', opt.framethick, 'style', opt.framestyle);
+                h.frame = frame.plot('color', opt.framecolor,'length',...
+                    opt.framelength, 'thick', opt.framethick, 'style', opt.framestyle);
                 set(h.frame,'parent',group);
                 set(h.frame,'Tag', [obj.name '-frame']);
             end

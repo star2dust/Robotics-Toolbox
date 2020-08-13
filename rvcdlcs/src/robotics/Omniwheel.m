@@ -1,4 +1,4 @@
-% - Rigid Cylinder 3D Model class (rpy)
+% - Omni Wheel 3D Model class (rpy)
 % (last mod.: 30-07-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
@@ -8,8 +8,9 @@
 % - radius: 1x1
 % - height: 1x1
 % - density: 1x1
+% - type: 45a or 45b
 % Methods:
-% - Cuboid: construction
+% - Omniwheel: construction
 % - mass: get mass value
 % - inertia: get inertia matrix
 % - plot
@@ -17,28 +18,21 @@
 % - vert: get vertices in inertia frame
 % Methods (Static):
 % - tobvert: get body vertices from radius and height
-classdef Cylinder < handle
+classdef Omniwheel < Cylinder
     properties (SetAccess = protected) % all display variables are row vectors
-        name
-        % verts and edges
-        bvert 
-        face 
-        radius 
-        height
-        % dynamic params
-        density
+        type
     end
     
     methods
-        function obj = Cylinder(varargin)
-            % Create Cylinder object
+        function obj = Omniwheel(varargin)
+            % Create Omniwheel object
             
             % opt statement
-            opt.name = 'cyl';
+            opt.name = 'whl';
             opt.density = 1;
+            opt.type = '45a';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin); 
-            obj.name = opt.name;
             % argument parse
             if isempty(arg)
                 radius = 1; height = 1;
@@ -46,43 +40,27 @@ classdef Cylinder < handle
                 radius = arg{1}; height = arg{2};
             else
                 error('unknown arguments');
-            end           
-            % basic configuration
+            end
+            obj = obj@Cylinder(radius,height,'name',opt.name,'density',opt.density);
+            % reset body vertices
             if isscalar(radius)&&isscalar(height)
                 % verts list in body frame (format: [x y z])
                 obj.radius = radius; obj.height = height;
-                [obj.bvert,obj.face] = obj.tobvert(radius,height);
+                [obj.bvert,obj.face] = obj.tobvert(radius,height,opt.type);
             else
                 error('improper input dimension')
             end
-            obj.density = opt.density;
+            obj.type = opt.type;
         end
         
-        function mas = mass(obj)
-            % Calculate mass value
-            
-            vol = pi*obj.radius^2*obj.height;
-            mas = vol*obj.density;
-        end
-        
-        function ine = inertia(obj)
-            % Calculate inertia matrix
-            
-            % [Ixx Iyy Izz -Iyz Ixz -Ixy] vector relative to the body frame (6 dim)
-            r = obj.radius; h = obj.height; m = obj.mass;
-            vec = 1/12*m*[3*r^2+h^2 3*r^2+h^2 6*r^2 0 0 0];
-            % how to calculate? => I = diag([Ixx Iyy Izz])+skew([-Iyz Ixz -Ixy])
-            ine = diag(vec(1:3))+skew(vec(4:6));
-        end
-        
-        function h = plot(obj,varargin)  
+        function h = plot(obj,varargin)
             % Plot Cylinder object
             
             % opt statement
             opt.facecolor = 'y';
             opt.facealpha = 0.8;
             opt.edgecolor = 'k';
-            opt.edgealpha = 0.2;
+            opt.edgealpha = 0.1;
             opt.workspace = [];
             opt.frame = false;
             opt.framecolor = 'b';
@@ -106,7 +84,7 @@ classdef Cylinder < handle
                     % this robot doesnt exist here, create it or add it  
                     if ishold
                         % hold is on, add the robot, don't change the floor
-                        h = createCylinder(obj, q, opt);
+                        h = createWheel(obj, q, opt);
                         % tag one of the graphical handles with the robot name and hang
                         % the handle structure off it
                         %                 set(handle.joint(1), 'Tag', robot.name);
@@ -114,13 +92,13 @@ classdef Cylinder < handle
                     else
                         % create the robot 
                         newplot();
-                        h = createCylinder(obj, q, opt);
+                        h = createWheel(obj, q, opt);
                         set(gca, 'Tag', 'RTB.plot');
                     end 
                 end      
             else
                 % this axis never had a robot drawn in it before, let's use it
-                h = createCylinder(obj, q, opt);
+                h = createWheel(obj, q, opt);
                 set(gca, 'Tag', 'RTB.plot');
                 set(gcf, 'Units', 'Normalized');
                 pf = get(gcf, 'Position');
@@ -134,6 +112,7 @@ classdef Cylinder < handle
         
         function animate(obj,q,handles)
             % Animate Cylinder object
+            
             if nargin < 3
                 handles = findobj('Tag', obj.name);
             end
@@ -141,48 +120,31 @@ classdef Cylinder < handle
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-frame'])
                     frame = SE3.qrpy(q);
                     set(handles.Children(i),'matrix',frame.T);
-                elseif strcmp(get(handles.Children(i),'Tag'), [obj.name '-cylinder'])
-                    set(handles.Children(i),'vertices',obj.vert(q),'faces',obj.face);
                 else
-                    vert = reshape(obj.vert(q)',6,21)';
-                    if strcmp(get(handles.Children(i),'Tag'), [obj.name '-lower-surface'])
-                        % plot lower surface
-                        set(handles.Children(i),'vertices',vert(:,1:3), 'faces', 1:21);
-                    else
-                        % plot upper surface
-                        set(handles.Children(i),'vertices',vert(:,4:6), 'faces', 1:21);
-                    end
+                    set(handles.Children(i),'vertices',obj.vert(q),'faces',obj.face);
                 end
             end
-        end
-        
-        function vert = vert(obj,pose)
-            % Get vertices relative to inertia frame
-            
-            % frame update
-            if isa(pose,'SE3')
-                frame = pose;
-            else
-                frame = SE3(pose(1:3))*SE3.rpy(pose(4:6));
-            end
-            % verts position   
-            vert = h2e(frame.T*e2h(obj.bvert'))';
         end
     end
     
     methods (Static)
-        function [bvert,face] = tobvert(r,h)
+        function [bvert,face] = tobvert(r,h,t)
             % Get vertices relative to body frame from radius and height
-            
-            [X,Y,Z] = cylinder(r,20);
-            [TRI,V]= surf2patch(X,Y,Z);
-            bvert = [V(:,1:2),V(:,3)*h-h/2];
-            face = TRI;
+            if nargin<3
+                t='45a';
+            end
+            if t=="45a"||t=="45b"
+                [F,V] = stlread(['omni' t '.stl']);
+            else
+               error('omni wheel type should be 45a or 45b') 
+            end
+            bvert = [V(:,1:2)/0.05*r,V(:,3)/0.04*h];
+            face = F;
         end
     end
     
     methods (Access = private)   
-        function h = createCylinder(obj,q,opt)
+        function h = createWheel(obj,q,opt)
             % create an axis
             ish = ishold();
             if ~ishold
@@ -195,20 +157,16 @@ classdef Cylinder < handle
             
             group = hggroup('Tag', obj.name);
             h.group = group;
-            % plot cylinder
-            h.cyl = patch('vertices',obj.vert(q), 'faces', obj.face, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.facecolor, 'parent', group);
-            set(h.cyl,'Tag', [obj.name '-cylinder']);
-            % plot lower surface
-            vert = reshape(obj.vert(q)',6,21)';
-            h.surl = patch('vertices',vert(:,1:3), 'faces', 1:21, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor, 'parent', group);
-            set(h.surl,'Tag', [obj.name '-lower-surface']);
-            % plot upper surface
-            h.suru = patch('vertices',vert(:,4:6), 'faces', 1:21, 'facecolor', opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor, 'parent', group);
-            set(h.suru,'Tag', [obj.name '-upper-surface']);
+            % plot wheel
+            h.whl = patch('vertices',obj.vert(q), 'faces', obj.face, 'facecolor',...
+                opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
+                opt.edgecolor, 'edgealpha', opt.edgealpha, 'parent', group);
+            set(h.whl,'Tag', [obj.name '-wheel']);
             
             if opt.frame
                 frame = SE3.qrpy(q);
-                h.frame = frame.plot('color', opt.framecolor, 'length', opt.framelength, 'thick', opt.framethick, 'style', opt.framestyle);
+                h.frame = frame.plot('color', opt.framecolor, 'length',...
+                    opt.framelength, 'thick', opt.framethick, 'style', opt.framestyle);
                 set(h.frame,'parent',group);
                 set(h.frame,'Tag', [obj.name '-frame']);
             end

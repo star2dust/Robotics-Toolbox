@@ -14,10 +14,8 @@ classdef Platform < SerialLink
     properties (SetAccess = protected) % all display variables are row vectors
         wheel
         body
-        Lwh
-        lwh
+        mount
         tree
-        jacob
     end
     
     methods
@@ -38,17 +36,11 @@ classdef Platform < SerialLink
             % platform wheel
             namelist = ["fl" "fr" "bl" "br"];
             typelist = ["45a" "45b" "45b" "45a"];
-            Lwh = cub.edge(1)/2-cub.edge(1)/6;
-            lwh = cub.edge(2)/2;
-            rwh = cub.edge(1)/6;
-            hwh = cub.edge(2)/6;
             for i=1:4
-                wheel(i) = Omniwheel(rwh,hwh,'name',namelist(i),'type',typelist(i));
+                wheel(i) = Omniwheel(cub.edge(1)/6,cub.edge(2)/6,'name',namelist(i),'type',typelist(i));
+                pwh = [(-1)^(i>2), (-1)^(mod(i,2)==0),1].*[cub.edge(1)/2-cub.edge(1)/6,cub.edge(2)/2,-cub.edge(3)/2];
+                mount(i) = SE3.qrpy([pwh,pi/2,0,0]);
             end
-            jacob = [1,-1,-(lwh+Lwh);
-                1,1,(lwh+Lwh);
-                1,1,-(lwh+Lwh);
-                1,-1,(lwh+Lwh)]/rwh;
             % platform tree
             Hb = SE3([0,0,cub.edge(1)/6+cub.edge(3)/2])*SE3(SO3.Ry(pi/2));
             Ht = SE3;
@@ -70,10 +62,8 @@ classdef Platform < SerialLink
             obj = obj@SerialLink(tree, 'name', opt.name, 'base', Hb, 'tool', Ht);
             obj.body = cub;
             obj.wheel = wheel;
-            obj.lwh = lwh;
-            obj.Lwh = Lwh;
+            obj.mount = mount;
             obj.tree = tree;
-            obj.jacob = jacob;
         end
         
         function h = plot(obj,varargin)  
@@ -94,8 +84,8 @@ classdef Platform < SerialLink
             [opt,arg] = tb_optparse(opt, varargin); 
             if length(arg)==1
                 q = arg{1}(:)';
-                if length(q)~=obj.n+length(obj.wheel)&&length(q)~=obj.n
-                   error(['q should be 1x ' num2str(obj.n) ' or 1x' num2str(obj.n+length(obj.wheel))]); 
+                if length(q)~=obj.n&&length(q)~=length(obj.wheel)
+                   error(['q should be 1x' num2str(obj.n) 'or 1x' num2str(length(obj.wheel))]); 
                 end
             else
                 error('unknown argument')
@@ -110,19 +100,16 @@ classdef Platform < SerialLink
             if nargin < 3
                 handles = findobj('Tag', obj.name);
             end
-            qb = toqrpy(obj.fkine(q(1:obj.n)));
+            qb = toqrpy(obj.fkine(q));
             for i=1:length(handles.Children)
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-' obj.body.name])
                     obj.body.animate(qb,handles.Children(i));
                 end
                 for j=1:length(obj.wheel)
                     if strcmp(get(handles.Children(i),'Tag'), [obj.name '-' obj.wheel(j).name])
-                        pwh = [(-1)^(i>2), (-1)^(mod(i,2)==0),1].*[obj.Lwh,obj.lwh,-obj.body.edge(3)/2];
-                        if length(q)==obj.n
-                            q = [q,zeros(1,length(obj.wheel))];
-                        end
-                        Twh = SE3.qrpy(qb)*SE3(pwh)*SE3(SO3.Rx(pi/2))*SE3(SO3.Rz(-q(obj.n+i)));
-                        obj.wheel(j).animate(Twh,handles.Children(i));
+                        qwh = toqrpy(SE3.qrpy(qb)*obj.mount(j));
+                        qwh(isnan(qwh))=0;
+                        obj.wheel(j).animate(qwh,handles.Children(i));
                     end
                 end
             end
@@ -143,7 +130,7 @@ classdef Platform < SerialLink
             
             group = hggroup('Tag', obj.name);
             h.group = group;
-            qb = toqrpy(obj.fkine(q(1:obj.n)));
+            qb = toqrpy(obj.fkine(q));
             
             if opt.frame
                 h.body = obj.body.plot(qb,'workspace',opt.workspace,'facecolor',...
@@ -161,23 +148,11 @@ classdef Platform < SerialLink
             set(h.body.group, 'Tag', [obj.name '-' obj.body.name]);
             
             for i=1:length(obj.wheel)
-                pwh = [(-1)^(i>2), (-1)^(mod(i,2)==0),1].*[obj.Lwh,obj.lwh,-obj.body.edge(3)/2];
-                if length(q)==obj.n
-                    q = [q,zeros(1,length(obj.wheel))];
-                end
-                Twh = SE3.qrpy(qb)*SE3(pwh)*SE3(SO3.Rx(pi/2))*SE3(SO3.Rz(-q(obj.n+i)));
-                if opt.frame       
-                    h.wheel(i) = obj.wheel(i).plot(Twh, 'facecolor', opt.facecolor,...
-                        'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor,...
-                        'edgealpha',opt.edgealpha*0.3, 'frame',...
-                        'framecolor', opt.framecolor,...
-                        'framelength', opt.framelength, 'framethick',...
-                        opt.framethick, 'framestyle', opt.framestyle);
-                else
-                    h.wheel(i) = obj.wheel(i).plot(Twh, 'facecolor', opt.facecolor,...
-                        'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor,...
-                        'edgealpha',opt.edgealpha*0.3);
-                end
+                qwh = toqrpy(SE3.qrpy(qb)*obj.mount(i));
+                qwh(isnan(qwh))=0;
+                h.wheel(i) = obj.wheel(i).plot(qwh, 'facecolor', opt.facecolor,...
+                    'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor,...
+                    'edgealpha',opt.edgealpha*0.2);
                 set(h.wheel(i).group, 'parent', group);
                 set(h.wheel(i).group,'Tag',[obj.name '-' obj.wheel(i).name]);
             end
