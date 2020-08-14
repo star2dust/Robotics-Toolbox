@@ -1,9 +1,19 @@
 ## Update Log
 
-- Updates on July. 29, 2020
-    
+- Updates on Aug. 14, 2020
+
+    1. Update class `Platfrom`. 
+
+       - Add class `Omniwheel` and `Youbot` to replace `Cylinder` and `Cuboid`.
+       - Change the parent class of `Platform` to `SerialLink`.
+
+    2. Change the example `plat_eg` to show `Platfrom`. The property `real3d` determines whether to plot the real 3d shape or the virtual shape.
+
+- Updates on July 29, 2020
+  
     1. Add class `Platfrom` and change the base type of `MobileRobot`  from `Cuboid` to `Platfrom`.
     2. Change the example `cub_eg` to show `Platfrom`.
+    
 - Updates on Apr. 04, 2020
     1. Add support for `SE2` and `SE3` object. 
        - Use `SE2.q` to get pose from a 1x6 vector. (discard some data)
@@ -13,6 +23,7 @@
     3. Update robotics toolbox.
        - Update `MobilePlanarRevolute` to `PlanarRevolute` class. Some old features are integrated to the static methods of `PlanarRevolute` class.
     4. Add [`intersections`] to replace MATLAB's [`polyxpoly`] function in thirdparty scripts.
+    
 - Updates on Jan. 05, 2020
     1. Add some planning functions in the folder `src/planning`.
     	- `environment`: Generate an obstacles environment with grid cell.
@@ -20,19 +31,23 @@
         - `map2graph`: Transfer map matrix to search graph for A* and Dijkstra.
     2. Add examples in the folder `example/path_planning`.
     3. Add edges for diagonal grid cells in `map2graph`. 
+    
 - Updates on Jan. 02, 2020
     1. Add class `MobilePlanarRevolute`, which supports mobile platform with m-dof planar revolute manipulator. (See `model/MobilePlanarRevolute.m`)
     2. Add examples for `Cuboid`, `MobileRobot` and `MobilePlanarRevolute`. (See `example/model_sim`)
     3. Add POE and DH construction method for class `MobileRobot`.
+    
 - Updates on Jan. 01, 2020
   1. Add class `Cuboid`. (See `model/Cuboid.m`)
     2. Add class `MobileRobot`, which supports all kinds of mobile manipulators. (See `model/MobileRobot.m`) 
     3. All class above support `plot` and `animate` methods same as class`SerialLink`. 	
        - Example: See `example/model_sim/mr_eg.m`.
+  
 - Updates on Dec. 31, 2019
   1. All third party packages are put inside `thirdparty` folder and managed by `startup_rte.m`.
     2. Add `qlim` support for `SerialLink` object construction by DH parameters. (`Qlim`: m x 2 matrix)
        - Example: `SerialLink([dh,sigma], 'base', Hb, 'tool', Ht, 'qlim', Qlim)`.
+  
 - Updates on Dec. 27, 2019
     1. Add translations between DH parameters and POE parameters.
     2. Add `LineStyle` support for `trplot2` and `trplot`. 
@@ -40,6 +55,7 @@
     3. Add pose support for `SE2` and `SE3` object. 
        - Use `SE2.q` and `SE3.toqeul`, `SE3.toqrpy` to get pose.
        - Use `SE3.qeul` and `SE3.qrpy` to construct `SE3` object.
+    
 - Updates on Dec. 20, 2019
     1. Add calculation support for  4 x 4 double matrix.
        - `Adg`: adjoint transformation.

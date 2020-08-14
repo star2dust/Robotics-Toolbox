@@ -7,6 +7,7 @@ addpath([srcpath '/common']); % add common
 addpath([srcpath '/robotics']); % add model
 addpath([srcpath '/planning']); % add planning
 
+
 % import third party toolboxes
 thirdpartypath = [srcpath '/thirdparty'];
 
@@ -31,5 +32,8 @@ addpath([thirdpartypath '/stlreader/lib']);
 
 % add iris
 addpath([thirdpartypath '/iris-distro/src/matlab']); 
+
+% add visual
+addpath(genpath([thirdpartypath '/coppelia/visual'])); 
 
 

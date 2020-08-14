@@ -3,8 +3,8 @@
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
 % - name: str
-% - bvert(body frame): 42x3
-% - face: 20x4
+% - bvert3d(body frame)
+% - face3d
 % - radius: 1x1
 % - height: 1x1
 % - density: 1x1
@@ -21,6 +21,8 @@
 classdef Omniwheel < Cylinder
     properties (SetAccess = protected) % all display variables are row vectors
         type
+        bvert3d
+        face3d
     end
     
     methods
@@ -45,16 +47,15 @@ classdef Omniwheel < Cylinder
             % reset body vertices
             if isscalar(radius)&&isscalar(height)
                 % verts list in body frame (format: [x y z])
-                obj.radius = radius; obj.height = height;
-                [obj.bvert,obj.face] = obj.tobvert(radius,height,opt.type);
+                [obj.bvert3d,obj.face3d] = obj.tobvert3d(radius,height,opt.type);
             else
                 error('improper input dimension')
             end
             obj.type = opt.type;
         end
         
-        function h = plot(obj,varargin)
-            % Plot Cylinder object
+        function h = plot3d(obj,varargin)
+            % Plot Omniwheel object
             
             % opt statement
             opt.facecolor = 'y';
@@ -107,11 +108,11 @@ classdef Omniwheel < Cylinder
                 %         end
             end
             view(3); grid on;
-            obj.animate(q,h.group);
+            obj.animate3d(q,h.group);
         end 
         
-        function animate(obj,q,handles)
-            % Animate Cylinder object
+        function animate3d(obj,q,handles)
+            % Animate Omniwheel object
             
             if nargin < 3
                 handles = findobj('Tag', obj.name);
@@ -121,25 +122,49 @@ classdef Omniwheel < Cylinder
                     frame = SE3.qrpy(q);
                     set(handles.Children(i),'matrix',frame.T);
                 else
-                    set(handles.Children(i),'vertices',obj.vert(q),'faces',obj.face);
+                    vert3d = obj.vert3d(q);
+                    for j=1:length(obj.bvert3d)
+                        if strcmp(get(handles.Children(i),'Tag'), [obj.name '-shape' num2str(j)])
+                            set(handles.Children(i),'vertices',vert3d{j},'faces',obj.face3d{j});
+                        end
+                    end
                 end
+            end
+        end
+        
+        function vert3d = vert3d(obj,pose)
+            % Get vertices relative to inertia frame
+            
+            % frame update
+            if isa(pose,'SE3')
+                frame = pose;
+            else
+                frame = SE3(pose(1:3))*SE3.rpy(pose(4:6));
+            end
+            % verts position   
+            for i=1:length(obj.bvert3d)
+                vert3d{i} = h2e(frame.T*e2h(obj.bvert3d{i}'))';
             end
         end
     end
     
     methods (Static)
-        function [bvert,face] = tobvert(r,h,t)
+        function [bvert3d,face3d] = tobvert3d(r,h,t)
             % Get vertices relative to body frame from radius and height
             if nargin<3
                 t='45a';
             end
             if t=="45a"||t=="45b"
-                [F,V] = stlread(['omni' t '.stl']);
+                for i=1:3
+                    [F{i},V{i}] = stlread(['omni' t num2str(i) '.stl']);
+                end
             else
                error('omni wheel type should be 45a or 45b') 
             end
-            bvert = [V(:,1:2)/0.05*r,V(:,3)/0.04*h];
-            face = F;
+            for i=1:3
+                bvert3d{i} = [V{i}(:,1:2)/0.05*r,V{i}(:,3)/0.08*h];
+                face3d{i} = F{i};
+            end
         end
     end
     
@@ -158,10 +183,15 @@ classdef Omniwheel < Cylinder
             group = hggroup('Tag', obj.name);
             h.group = group;
             % plot wheel
-            h.whl = patch('vertices',obj.vert(q), 'faces', obj.face, 'facecolor',...
-                opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
-                opt.edgecolor, 'edgealpha', opt.edgealpha, 'parent', group);
-            set(h.whl,'Tag', [obj.name '-wheel']);
+            facecolor = {[.75 .75 .75],'k',opt.facecolor};
+            edgecolor = facecolor;
+            for i=1:length(obj.bvert3d)
+                vert3d = obj.vert3d(q);
+                h.whl(i) = patch('vertices',vert3d{i}, 'faces', obj.face3d{i}, 'facecolor',...
+                    facecolor{i}, 'facealpha', opt.facealpha, 'edgecolor',...
+                    edgecolor{i}, 'edgealpha', opt.edgealpha, 'parent', group);
+                set(h.whl(i),'Tag', [obj.name '-shape' num2str(i)]);
+            end
             
             if opt.frame
                 frame = SE3.qrpy(q);

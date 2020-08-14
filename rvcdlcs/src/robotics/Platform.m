@@ -4,10 +4,12 @@
 % Properties:
 % - wheel: Cylinder
 % - body: Cuboid
-% - mount: SE3
+% - Lwh: 1x1
+% - lwh: 1x1
 % - tree: Link
+% - jacob: 4x3
 % Methods:
-% - Platform: construction 
+% - Platform: construction
 % - plot
 % - animate
 classdef Platform < SerialLink
@@ -18,11 +20,12 @@ classdef Platform < SerialLink
         lwh
         tree
         jacob
+        real3d
     end
     
     methods
         function obj = Platform(varargin)
-            % P.Platform  Create Platform object
+            % Create Platform object
             
             % opt statement
             opt.B = zeros(2,1);
@@ -30,18 +33,21 @@ classdef Platform < SerialLink
             opt.dh = [0,0,0,-pi/2,1;
                 -pi/2,0,0,pi/2,1;
                 0,0,0,0,0];
+            opt.r = 0.1;
+            opt.h = 0.2;
+            opt.real3d = true;
             opt.name = 'plat';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
-            [opt,arg] = tb_optparse(opt, varargin);  
+            [opt,arg] = tb_optparse(opt, varargin);
             % platform body
-            cub = Cuboid(arg{:},'name','body');
+            cub = Youbot(arg{:},'name','body');
             % platform wheel
             namelist = ["fl" "fr" "bl" "br"];
             typelist = ["45a" "45b" "45b" "45a"];
-            Lwh = cub.edge(1)/2-cub.edge(1)/6;
-            lwh = cub.edge(2)/2;
-            rwh = cub.edge(1)/6;
-            hwh = cub.edge(2)/6;
+            rwh = cub.edge(1)*opt.r;
+            hwh = cub.edge(2)*opt.h;
+            Lwh = cub.edge(1)/2-rwh;
+            lwh = cub.edge(2)/2-7*hwh/16;
             for i=1:4
                 wheel(i) = Omniwheel(rwh,hwh,'name',namelist(i),'type',typelist(i));
             end
@@ -50,7 +56,7 @@ classdef Platform < SerialLink
                 1,1,-(lwh+Lwh);
                 1,-1,(lwh+Lwh)]/rwh;
             % platform tree
-            Hb = SE3([0,0,cub.edge(1)/6+cub.edge(3)/2])*SE3(SO3.Ry(pi/2));
+            Hb = SE3([0,0,rwh+cub.edge(3)/2])*SE3(SO3.Ry(pi/2));
             Ht = SE3;
             trsopt = {'m', 0, 'r', [0,0,0], 'I', zeros(3),'B', opt.B(1,:), 'Tc', opt.Tc(1,:)};
             rotopt = {'m', cub.mass, 'r', [0,0,0], 'I', cub.inertia, 'B', opt.B(2,:), 'Tc', opt.Tc(2,:)};
@@ -74,16 +80,17 @@ classdef Platform < SerialLink
             obj.Lwh = Lwh;
             obj.tree = tree;
             obj.jacob = jacob;
+            obj.real3d = opt.real3d;
         end
         
-        function h = plot(obj,varargin)  
-            % C.plot  Plot Cuboid object
+        function h = plot(obj,varargin)
+            % Plot Platform object
             
             % opt statement
-            opt.facecolor = 'y';
-            opt.facealpha = 0.8;
-            opt.edgecolor = [0.1 0.1 0.1];
-            opt.edgealpha = 0.5;
+            opt.facecolor = [.5 .5 .5];
+            opt.facealpha = 0.9;
+            opt.edgecolor = 'k';
+            opt.edgealpha = 0;
             opt.workspace = [];
             opt.frame = false;
             opt.framecolor = 'b';
@@ -91,11 +98,11 @@ classdef Platform < SerialLink
             opt.framethick = 1;
             opt.framestyle = '-';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
-            [opt,arg] = tb_optparse(opt, varargin); 
+            [opt,arg] = tb_optparse(opt, varargin);
             if length(arg)==1
                 q = arg{1}(:)';
                 if length(q)~=obj.n+length(obj.wheel)&&length(q)~=obj.n
-                   error(['q should be 1x ' num2str(obj.n) ' or 1x' num2str(obj.n+length(obj.wheel))]); 
+                    error(['q should be 1x ' num2str(obj.n) ' or 1x' num2str(obj.n+length(obj.wheel))]);
                 end
             else
                 error('unknown argument')
@@ -103,33 +110,42 @@ classdef Platform < SerialLink
             h = createPlatform(obj,q,opt);
             view(3); grid on;
             obj.animate(q,h.group);
-        end 
+        end
         
         function animate(obj,q,handles)
-            % C.animate  Animate Cuboid object
+            % Animate Platform object
+            
             if nargin < 3
                 handles = findobj('Tag', obj.name);
             end
             qb = toqrpy(obj.fkine(q(1:obj.n)));
             for i=1:length(handles.Children)
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-' obj.body.name])
-                    obj.body.animate(qb,handles.Children(i));
+                    if obj.real3d
+                        obj.body.animate3d(qb,handles.Children(i));
+                    else
+                        obj.body.animate(qb,handles.Children(i));
+                    end
                 end
                 for j=1:length(obj.wheel)
                     if strcmp(get(handles.Children(i),'Tag'), [obj.name '-' obj.wheel(j).name])
-                        pwh = [(-1)^(i>2), (-1)^(mod(i,2)==0),1].*[obj.Lwh,obj.lwh,-obj.body.edge(3)/2];
+                        pwh = [(-1)^(j>2), (-1)^(mod(j,2)==0),1].*[obj.Lwh,obj.lwh,-obj.body.edge(3)/2];
                         if length(q)==obj.n
                             q = [q,zeros(1,length(obj.wheel))];
                         end
-                        Twh = SE3.qrpy(qb)*SE3(pwh)*SE3(SO3.Rx(pi/2))*SE3(SO3.Rz(-q(obj.n+i)));
-                        obj.wheel(j).animate(Twh,handles.Children(i));
+                        Twh = SE3.qrpy(qb)*SE3(pwh)*SE3(SO3.Rx(pi/2))*SE3(SO3.Rz(-q(obj.n+j)));
+                        if obj.real3d
+                            obj.wheel(j).animate3d(Twh,handles.Children(i));
+                        else
+                            obj.wheel(j).animate(Twh,handles.Children(i));
+                        end
                     end
                 end
             end
         end
     end
     
-    methods (Access = private)           
+    methods (Access = private)
         function h = createPlatform(obj,q,opt)
             % create an axis
             ish = ishold();
@@ -145,43 +161,74 @@ classdef Platform < SerialLink
             h.group = group;
             qb = toqrpy(obj.fkine(q(1:obj.n)));
             
-            if opt.frame
-                h.body = obj.body.plot(qb,'workspace',opt.workspace,'facecolor',...
-                    opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
-                    opt.edgecolor, 'edgealpha', opt.edgealpha, 'frame',...
-                    'framecolor', opt.framecolor,...
-                    'framelength', opt.framelength, 'framethick',...
-                    opt.framethick, 'framestyle', opt.framestyle);
+            if obj.real3d
+                if opt.frame
+                    h.body = obj.body.plot3d(qb,'workspace',opt.workspace,'facecolor',...
+                        opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
+                        opt.edgecolor, 'edgealpha', opt.edgealpha, 'frame',...
+                        'framecolor', opt.framecolor,...
+                        'framelength', opt.framelength, 'framethick',...
+                        opt.framethick, 'framestyle', opt.framestyle);
+                else
+                    h.body = obj.body.plot3d(qb,'workspace',opt.workspace,'facecolor',...
+                        opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
+                        opt.edgecolor,'framecolor','edgealpha',opt.edgealpha);
+                end
             else
-                h.body = obj.body.plot(qb,'workspace',opt.workspace,'facecolor',...
-                    opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
-                    opt.edgecolor,'framecolor','edgealpha',opt.edgealpha);
+                if opt.frame
+                    h.body = obj.body.plot(qb,'workspace',opt.workspace,'facecolor',...
+                        opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
+                        opt.edgecolor, 'edgealpha', opt.edgealpha, 'frame',...
+                        'framecolor', opt.framecolor,...
+                        'framelength', opt.framelength, 'framethick',...
+                        opt.framethick, 'framestyle', opt.framestyle);
+                else
+                    h.body = obj.body.plot(qb,'workspace',opt.workspace,'facecolor',...
+                        opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
+                        opt.edgecolor,'framecolor','edgealpha',opt.edgealpha);
+                end
             end
             set(h.body.group, 'parent', group);
             set(h.body.group, 'Tag', [obj.name '-' obj.body.name]);
             
+            wheelcolor = [0.9290, 0.6940, 0.1250];
             for i=1:length(obj.wheel)
                 pwh = [(-1)^(i>2), (-1)^(mod(i,2)==0),1].*[obj.Lwh,obj.lwh,-obj.body.edge(3)/2];
                 if length(q)==obj.n
                     q = [q,zeros(1,length(obj.wheel))];
                 end
                 Twh = SE3.qrpy(qb)*SE3(pwh)*SE3(SO3.Rx(pi/2))*SE3(SO3.Rz(-q(obj.n+i)));
-                if opt.frame       
-                    h.wheel(i) = obj.wheel(i).plot(Twh, 'facecolor', opt.facecolor,...
-                        'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor,...
-                        'edgealpha',opt.edgealpha*0.3, 'frame',...
-                        'framecolor', opt.framecolor,...
-                        'framelength', opt.framelength, 'framethick',...
-                        opt.framethick, 'framestyle', opt.framestyle);
+                if obj.real3d
+                    if opt.frame
+                        h.wheel(i) = obj.wheel(i).plot3d(Twh, 'facecolor', wheelcolor,...
+                            'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor,...
+                            'edgealpha',opt.edgealpha, 'frame',...
+                            'framecolor', opt.framecolor,...
+                            'framelength', opt.framelength, 'framethick',...
+                            opt.framethick, 'framestyle', opt.framestyle);
+                    else
+                        h.wheel(i) = obj.wheel(i).plot3d(Twh, 'facecolor', wheelcolor,...
+                            'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor,...
+                            'edgealpha',opt.edgealpha);
+                    end
                 else
-                    h.wheel(i) = obj.wheel(i).plot(Twh, 'facecolor', opt.facecolor,...
-                        'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor,...
-                        'edgealpha',opt.edgealpha*0.3);
+                    if opt.frame
+                        h.wheel(i) = obj.wheel(i).plot(Twh, 'facecolor', wheelcolor,...
+                            'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor,...
+                            'edgealpha',opt.edgealpha, 'frame',...
+                            'framecolor', opt.framecolor,...
+                            'framelength', opt.framelength, 'framethick',...
+                            opt.framethick, 'framestyle', opt.framestyle);
+                    else
+                        h.wheel(i) = obj.wheel(i).plot(Twh, 'facecolor', wheelcolor,...
+                            'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor,...
+                            'edgealpha',opt.edgealpha);
+                    end
                 end
                 set(h.wheel(i).group, 'parent', group);
                 set(h.wheel(i).group,'Tag',[obj.name '-' obj.wheel(i).name]);
             end
-                      
+            
             % restore hold setting
             if ~ish
                 hold off

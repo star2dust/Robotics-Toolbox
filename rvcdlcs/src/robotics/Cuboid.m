@@ -29,7 +29,7 @@ classdef Cuboid < handle
     
     methods
         function obj = Cuboid(varargin)
-            % C.Cuboid  Create Cuboid object
+            % Create Cuboid object
             
             % opt statement
             opt.name = 'cub';
@@ -60,24 +60,24 @@ classdef Cuboid < handle
         end
         
         function mas = mass(obj)
-            % C.mass  Calculate mass value
+            % Calculate mass value
             
             vol = obj.edge(1)*obj.edge(2)*obj.edge(3);
             mas = vol*obj.density;
         end
         
         function ine = inertia(obj)
-            % C.inertia  Calculate inertia matrix
+            % Calculate inertia matrix
             
-            % [Ixx Iyy Izz -Iyz Ixz -Ixy] vector relative to the body frame (6 dim)
+            % [Ixx Iyy Izz Iyz Ixz Ixy] vector relative to the body frame (6 dim)
             e = obj.edge; m = obj.mass;
             vec = 1/12*m*[e(2)^2+e(3)^2,e(1)^2+e(3)^2,e(2)^2+e(1)^2,0,0,0];  
             % how to calculate? => I = diag([Ixx Iyy Izz])+skew([-Iyz Ixz -Ixy])
-            ine = diag(vec(1:3))+skew(vec(4:6));
+            ine = diag(vec(1:3))+skew([-1,1,-1].*vec(4:6));
         end
         
         function h = plot(obj,varargin)  
-            % C.plot  Plot Cuboid object
+            % Plot Cuboid object
             
             % opt statement
             opt.facecolor = 'y';
@@ -134,7 +134,8 @@ classdef Cuboid < handle
         end 
         
         function animate(obj,q,handles)
-            % C.animate  Animate Cuboid object
+            % Animate Cuboid object
+            
             if nargin < 3
                 handles = findobj('Tag', obj.name);
             end
@@ -150,7 +151,7 @@ classdef Cuboid < handle
         end
         
         function vert = vert(obj,pose)
-            % C.vert  Get vertices relative to inertia frame
+            % Get vertices relative to inertia frame
             
             % frame update
             frame = SE3(pose(1:3))*SE3.rpy(pose(4:6));
@@ -161,7 +162,8 @@ classdef Cuboid < handle
     
     methods (Static)
         function [bvert,face] = tobvert(edge)
-            % C.tobvert  Get vertices relative to body frame from edge
+            % Get vertices relative to body frame from edge
+            
             templateVerts = [0,0,0;0,1,0;1,1,0;1,0,0;0,0,1;0,1,1;1,1,1;1,0,1];
             templateFaces = [1,2,3,4;5,6,7,8;1,2,6,5;3,4,8,7;1,4,8,5;2,3,7,6];
             % ^ y axis
