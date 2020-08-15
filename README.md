@@ -1,4 +1,4 @@
-# Robotics Toolbox Expansions  (rvcdlcs)
+# Robotics Toolbox Extension  (rvcdlcs)
 
 RTE contains a lot of useful scripts for research works ([what is new?](https://github.com/star2dust/Robotics-Toolbox/tree/master/rvcdlcs/LOG.md)) , which is based on RTB of Peter Corke.
 
@@ -28,7 +28,7 @@ The introduction of RTB of Peter Corke, see [here](https://github.com/star2dust/
     2. `Cylinder`: Rigid Cylinder 3D Model class (rpy).
     3. `Youbot`: Youbot Platform 3D Model class (rpy), inherited from `Cuboid`.
     4. `Omniwheel`: Mecanum Wheel 3D Model class (rpy), inherited from `Cylinder`.
-    5. `Platfrom`: Mobile Platform 3D Model class (rpy), formed by `Youbot` and `Omniwheel`. 
+    5. `Platform`: Mobile Platform 3D Model class (rpy), formed by `Youbot` and `Omniwheel`. 
 
 <img src="https://s1.ax1x.com/2020/08/14/diFvY4.gif" alt="diFvY4.gif" border="0" width="350" /> <img src="https://s1.ax1x.com/2020/08/14/diFxfJ.gif" alt="diFxfJ.gif" border="0" width="350"/>
 
