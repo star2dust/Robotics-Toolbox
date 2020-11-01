@@ -191,10 +191,6 @@ classdef Cuboid < handle
             
             group = hggroup('Tag', obj.name);
             h.group = group;
-            h.cub = patch('vertices',obj.vert(q), 'faces', obj.face, 'facecolor',...
-                opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
-                opt.edgecolor, 'edgealpha', opt.edgealpha, 'parent', group);
-            set(h.cub,'Tag', [obj.name '-cuboid']);
             
             if opt.frame
                 frame = SE3.qrpy(q);
@@ -203,7 +199,12 @@ classdef Cuboid < handle
                 set(h.frame,'parent',group);
                 set(h.frame,'Tag', [obj.name '-frame']);
             end
-                      
+            
+            h.cub = patch('vertices',obj.vert(q), 'faces', obj.face, 'facecolor',...
+                opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
+                opt.edgecolor, 'edgealpha', opt.edgealpha, 'parent', group);
+            set(h.cub,'Tag', [obj.name '-cuboid']);
+                    
             % restore hold setting
             if ~ish
                 hold off

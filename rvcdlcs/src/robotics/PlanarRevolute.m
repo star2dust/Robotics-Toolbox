@@ -116,26 +116,26 @@ classdef PlanarRevolute < handle
             % MPR.plot  Plot m-dof MobileRevolute robot object
             
             % opt statement
-            opt.workspace = [];
-            opt.dim = 3;
+            opt.workspace = [-10 0 -5 5];
+            opt.dim = 2;
             opt.arm = true;
-            opt.plat = false;
+            opt.plat = true;
             opt.frame = false;
             % platform opt
             opt.plcolor = 'b';
             opt.plthick = 1;
             % frame opt
-            opt.frcolor = 'b';
+            opt.frcolor = 'r';
             opt.frlength = 0.5;
             opt.frthick = 0.5;
             opt.frstyle = '-';
             % hinge opt
             opt.hgstyle = 'o';
-            opt.hgsize = 5;
+            opt.hgsize = 2;
             opt.hgcolor = 'b';
             % link opt
             opt.lkcolor = 'b';
-            opt.lkthick = 3;
+            opt.lkthick = 2;
             opt.lkstyle = '-';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin);

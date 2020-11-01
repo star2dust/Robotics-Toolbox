@@ -1,6 +1,6 @@
 function [A, b, infeas_start] = separating_hyperplanes(obstacle_pts, C, d)
 
-  persistent mosek_res
+%   persistent mosek_res
 
   dim = size(C,1);
   infeas_start = false;
@@ -44,10 +44,12 @@ function [A, b, infeas_start] = separating_hyperplanes(obstacle_pts, C, d)
         A(i,:) = nhat';
         b(i) = b0;
       else
-        if isempty(mosek_res)
-          [~,mosek_res] = mosekopt('symbcon echo(0)');
-        end
-        ystar = iris.least_distance.mosek_ldp(ys, mosek_res);
+          [As,bs] = polycons(ys');
+          ystar = convproj(zeros(1,size(ys,1)),As,bs)';
+%         if isempty(mosek_res)
+%           [~,mosek_res] = mosekopt('symbcon echo(0)');
+%         end
+%         ystar = iris.least_distance.mosek_ldp(ys, mosek_res);
 
         if norm(ystar) < 1e-3
           % d is inside the obstacle. So we'll just reverse nhat to try to push the

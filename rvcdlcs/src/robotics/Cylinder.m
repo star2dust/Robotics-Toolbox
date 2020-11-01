@@ -195,6 +195,14 @@ classdef Cylinder < handle
             
             group = hggroup('Tag', obj.name);
             h.group = group;
+            
+            if opt.frame
+                frame = SE3.qrpy(q);
+                h.frame = frame.plot('color', opt.framecolor, 'length', opt.framelength, 'thick', opt.framethick, 'style', opt.framestyle);
+                set(h.frame,'parent',group);
+                set(h.frame,'Tag', [obj.name '-frame']);
+            end
+            
             % plot cylinder
             h.cyl = patch('vertices',obj.vert(q), 'faces', obj.face, 'facecolor',...
                 opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
@@ -211,13 +219,6 @@ classdef Cylinder < handle
                 opt.facecolor, 'facealpha', opt.facealpha, 'edgecolor',...
                 opt.edgecolor, 'edgealpha', opt.edgealpha, 'parent', group);
             set(h.suru,'Tag', [obj.name '-upper-surface']);
-            
-            if opt.frame
-                frame = SE3.qrpy(q);
-                h.frame = frame.plot('color', opt.framecolor, 'length', opt.framelength, 'thick', opt.framethick, 'style', opt.framestyle);
-                set(h.frame,'parent',group);
-                set(h.frame,'Tag', [obj.name '-frame']);
-            end
                       
             % restore hold setting
             if ~ish

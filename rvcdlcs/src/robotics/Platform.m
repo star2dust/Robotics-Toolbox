@@ -131,9 +131,10 @@ classdef Platform < SerialLink
                     if strcmp(get(handles.Children(i),'Tag'), [obj.name '-' obj.wheel(j).name])
                         pwh = [(-1)^(j>2), (-1)^(mod(j,2)==0),1].*[obj.Lwh,obj.lwh,-obj.body.edge(3)/2];
                         if length(q)==obj.n
-                            q = [q,zeros(1,length(obj.wheel))];
+                            Twh = SE3.qrpy(qb)*SE3(pwh)*SE3(SO3.Rx(pi/2));
+                        else
+                            Twh = SE3.qrpy(qb)*SE3(pwh)*SE3(SO3.Rx(pi/2))*SE3(SO3.Rz(-q(obj.n+j)));
                         end
-                        Twh = SE3.qrpy(qb)*SE3(pwh)*SE3(SO3.Rx(pi/2))*SE3(SO3.Rz(-q(obj.n+j)));
                         if obj.real3d
                             obj.wheel(j).animate3d(Twh,handles.Children(i));
                         else
@@ -195,11 +196,12 @@ classdef Platform < SerialLink
             for i=1:length(obj.wheel)
                 pwh = [(-1)^(i>2), (-1)^(mod(i,2)==0),1].*[obj.Lwh,obj.lwh,-obj.body.edge(3)/2];
                 if length(q)==obj.n
-                    q = [q,zeros(1,length(obj.wheel))];
+                    Twh = SE3.qrpy(qb)*SE3(pwh)*SE3(SO3.Rx(pi/2));
+                else
+                    Twh = SE3.qrpy(qb)*SE3(pwh)*SE3(SO3.Rx(pi/2))*SE3(SO3.Rz(-q(obj.n+i)));
                 end
-                Twh = SE3.qrpy(qb)*SE3(pwh)*SE3(SO3.Rx(pi/2))*SE3(SO3.Rz(-q(obj.n+i)));
                 if obj.real3d
-                    if opt.frame
+                    if opt.frame&&length(q)==obj.n+length(obj.wheel)
                         h.wheel(i) = obj.wheel(i).plot3d(Twh, 'facecolor', wheelcolor,...
                             'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor,...
                             'edgealpha',opt.edgealpha, 'frame',...
@@ -212,7 +214,7 @@ classdef Platform < SerialLink
                             'edgealpha',opt.edgealpha);
                     end
                 else
-                    if opt.frame
+                    if opt.frame&&length(q)==obj.n+length(obj.wheel)
                         h.wheel(i) = obj.wheel(i).plot(Twh, 'facecolor', wheelcolor,...
                             'facealpha', opt.facealpha, 'edgecolor', opt.edgecolor,...
                             'edgealpha',opt.edgealpha, 'frame',...

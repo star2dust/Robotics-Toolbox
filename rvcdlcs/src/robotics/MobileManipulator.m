@@ -3,7 +3,7 @@
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
 % - name: str (robot*)
-% - plat: Platform
+% - platform: Platform
 % - arm: SerialLink
 % - mount: SE3 (on the upper surface of mobile base)
 % Methods:
@@ -12,20 +12,21 @@
 % - animate
 classdef MobileManipulator < SerialLink
     properties
-        plat % Platform
+        platform % Platform
         arm % SerialLink
-        tree % Link
+        real3d
     end
     
     methods
         function obj = MobileManipulator(varargin)
-            % Create MobileRobot robot object
+            % Create MobileManipulator object
             
             % opt statement
             opt.B = zeros(2,1);
             opt.Tc = zeros(2,2);
             opt.qlim = [];
             opt.name = 'robot';
+            opt.real3d = false;
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin); 
             % argument parse
@@ -39,10 +40,14 @@ classdef MobileManipulator < SerialLink
             if size(dh,2)<5
                 error('dh should be Nx5 (N>3)');
             end
-            plotopt = {'noname', 'nobase', 'notiles', 'noshading', 'noshadow', 'nowrist'};
             % set base
-            mmplat = Platform(edge, 'name', 'base', 'B', opt.B, 'Tc', opt.Tc);
+            if opt.real3d
+                mmplat = Platform(edge, 'name', 'base', 'B', opt.B, 'Tc', opt.Tc, 'real3d');
+            else
+                mmplat = Platform(edge, 'name', 'base', 'B', opt.B, 'Tc', opt.Tc, 'noreal3d');
+            end
             % set arm
+            plotopt = {'noname', 'nobase', 'tiles', 'floorlevel', 0, 'tilesize', 0.4, 'noshading', 'noshadow', 'nowrist'};
             if ~isempty(opt.qlim)
                 mmarm = SerialLink(dh(4:end,:), 'name', 'arm', 'tool', Ht, 'plotopt', plotopt, 'qlim', opt.qlim);
             else
@@ -71,9 +76,9 @@ classdef MobileManipulator < SerialLink
                 mmtree(i) = Link(dhopt{:},rodopt{:}); 
             end
             obj = obj@SerialLink(mmtree, 'name', opt.name, 'base', Hb, 'tool', Ht);
-            obj.plat = mmplat;
+            obj.platform = mmplat;
             obj.arm = mmarm;
-            obj.tree = mmtree;
+            obj.real3d = opt.real3d;
         end
         
         function h = plot(obj,varargin) 
@@ -83,7 +88,7 @@ classdef MobileManipulator < SerialLink
             opt.workspace = [];
             opt.frame = false;
             opt.framecolor = 'b';
-            opt.framelength = sum(obj.plat.body.edge)/length(obj.plat.body.edge)/3;
+            opt.framelength = sum(obj.platform.body.edge)/length(obj.platform.body.edge)/3;
             opt.framethick = 1;
             opt.framestyle = '-';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
@@ -140,14 +145,14 @@ classdef MobileManipulator < SerialLink
             end
             % update pose
             qa = q(4:end); qb = q(1:3);
-            obj.arm.base = obj.base*obj.tree(1).A(qb(1))*obj.tree(2).A(qb(2))*obj.tree(3).A(qb(3));
+            obj.arm.base = obj.base*obj.links(1).A(qb(1))*obj.links(2).A(qb(2))*obj.links(3).A(qb(3));
             % animate
             for i=1:length(handles.Children) % draw frame first otherwise there will be delay
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-tool'])
                     set(handles.Children(i),'matrix',obj.arm.fkine(qa).T);
                 end
-                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-' obj.plat.name])
-                    obj.plat.animate(qb,handles.Children(i));
+                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-' obj.platform.name])
+                    obj.platform.animate(qb,handles.Children(i));
                 end
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-' obj.arm.name])
                     obj.arm.animate(qa,handles.Children(i));
@@ -169,23 +174,23 @@ classdef MobileManipulator < SerialLink
             end
             % update pose
             qa = q(4:end); qb = q(1:3);
-            obj.arm.base = obj.base*obj.tree(1).A(qb(1))*obj.tree(2).A(qb(2))*obj.tree(3).A(qb(3));
+            obj.arm.base = obj.base*obj.links(1).A(qb(1))*obj.links(2).A(qb(2))*obj.links(3).A(qb(3));
             
             group = hggroup('Tag', obj.name);
             h.group = group;
-            h.arm = obj.arm.plot(qa);
+            h.arm = obj.arm.plot(qa,'workspace',opt.workspace);
             if opt.frame
-                h.plat = obj.plat.plot(qb,'frame','framecolor', opt.framecolor,'framelength',opt.framelength, 'framethick', opt.framethick, 'framestyle', opt.framestyle);
+                h.platform = obj.platform.plot(qb,'frame','framecolor', opt.framecolor,'framelength',opt.framelength, 'framethick', opt.framethick, 'framestyle', opt.framestyle);
                 h.tool = SE3(obj.arm.fkine(qa)).plot('color', opt.framecolor,'length',opt.framelength, 'thick', opt.framethick, 'style', opt.framestyle);
                 set(h.tool,'parent',group);
                 set(h.tool,'Tag', [obj.name '-tool']);
             else
-                h.plat = obj.plat.plot(qb);
+                h.platform = obj.platform.plot(qb);
             end
             set(h.arm.group,'Tag', [obj.name '-' obj.arm.name]);
-            set(h.plat.group,'Tag', [obj.name '-' obj.plat.name]);
+            set(h.platform.group,'Tag', [obj.name '-' obj.platform.name]);
             set(h.arm.group,'parent',group);
-            set(h.plat.group,'parent',group);
+            set(h.platform.group,'parent',group);
                 
             % restore hold setting
             if ~ish

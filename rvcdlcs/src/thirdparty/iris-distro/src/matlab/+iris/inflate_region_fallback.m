@@ -4,9 +4,9 @@ import iris.*;
 
 DEBUG = false;
 
-if ~exist('mosekopt', 'file')
-  addpath_mosek
-end
+% if ~exist('mosekopt', 'file')
+%   addpath_mosek
+% end
 
 results = inflation_results();
 results.start = start;
