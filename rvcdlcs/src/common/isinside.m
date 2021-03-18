@@ -1,5 +1,5 @@
 function f = isinside(q,A,b,lim,e)
-% ISINSIDE test if q is inside a constraint set composed by A,b,qlim
+% Check if q is inside a constraint set composed by A,b,qlim
 if nargin<5
    e = 10^-4; 
 end

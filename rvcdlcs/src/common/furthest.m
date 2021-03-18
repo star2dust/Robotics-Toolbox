@@ -1,5 +1,5 @@
 function [I,V] = furthest(V)
-% furthest - Find the furthest two vertices in a set of vertices 
+% Find the furthest two vertices in a set of vertices 
 % - V = [X,Y] or V = [X,Y,Z], where X and Y are column vectors.
 % - I = [i,j] is the index of furthest two vertices in V
 

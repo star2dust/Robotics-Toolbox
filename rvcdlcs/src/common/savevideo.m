@@ -1,5 +1,5 @@
 function savevideo(name,frame,siz)
-% SAVEVIDEO Save video files (avi)
+% Save frames into video files (avi)
 name = increment(name,'.avi');
 vdobj = VideoWriter(name);
 open(vdobj);

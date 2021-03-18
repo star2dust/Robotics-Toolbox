@@ -1,4 +1,4 @@
-% - Mobile Robot 3D Model class (SE3, rpy, stdDH)
+% Mobile Robot 3D Model class (SE3, rpy, stdDH)
 % (last mod.: 29-07-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:

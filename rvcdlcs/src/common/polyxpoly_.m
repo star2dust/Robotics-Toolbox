@@ -1,5 +1,5 @@
 function [Vc, Vx] = polyxpoly_(V1,V2)
-% polyxpoly_ - Intersection points for lines or polygon edges (2D)
+% Intersection points for lines or polygon edges (2D)
 %
 %     This function returns the intersection convex hull Vc and points Vx
 %     of two polylines in a planar, Cartesian system, with vertices defined

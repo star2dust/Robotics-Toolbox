@@ -1,23 +1,23 @@
-function n = normby(V,s,p)
-% normby - Vectors norms by row or column
+function n = normby(x,s,p)
+% Calculate vector norms for a matrix by row (1) or column (2)
 % 
-%     This function returns the Euclidean norm of vectors V.
+%     This function returns the norm of matrix x.
 %     s = 1 means by row, s = 2 means by column
 %
-%     n = norm(V,s)  
-%     n = norm(V,s,p)
-for i=1:size(V,s)
+%     n = norm(x,s)  
+%     n = norm(x,s,p)
+for i=1:size(x,s)
     if s==1
         if nargin<3
-            n(i,:) = norm(V(i,:));
+            n(i,:) = norm(x(i,:));
         else
-            n(i,:) = norm(V(i,:),p);
+            n(i,:) = norm(x(i,:),p);
         end
     elseif s==2
         if nargin<3
-            n(:,i) = norm(V(:,i));
+            n(:,i) = norm(x(:,i));
         else
-            n(:,i) = norm(V(:,i),p);
+            n(:,i) = norm(x(:,i),p);
         end
     else
         error('unknown argument');

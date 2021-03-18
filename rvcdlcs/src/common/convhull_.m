@@ -1,5 +1,5 @@
 function I = convhull_(V)
-% convhull_ - Convex hull
+% Convex hull with relative interior
 % 
 %     This function returns the 2-D convex hull of the points V = [X,Y], where X
 %     and Y are column vectors.

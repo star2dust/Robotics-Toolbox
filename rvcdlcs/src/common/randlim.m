@@ -1,4 +1,5 @@
 function x = randlim(lim)
+% Randomly generate points within given limitations
 if size(lim,1)~=2||size(lim,3)~=1
    error('unknown size'); 
 end

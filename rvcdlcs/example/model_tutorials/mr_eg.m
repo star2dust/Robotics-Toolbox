@@ -11,7 +11,7 @@ xi = getTwist(l,hb_d,SE3);
 [dh, Ht, sigma] = poe2dh(xi,hb_d); % qb only for theta or d
 Hb = transl(cub_surf); % Hb can only be on the surface of mobile base
 rob = MobileRobot(ed,xi,Hb,'name','rob1','qlim', Qlim);
-rob.plot([0,0,0,0,0],'frame','workspace',[-1,3,-1,3,0,4]);
+rob.plot([0,0,0,0,0],'frame','workspace',[-1,3,-1,3,0,4]*5);
 q0 = [0,0,0,0,0];
 q1 = [1,0,-1,1,2];
 q2 = [1,1,1,2,1];

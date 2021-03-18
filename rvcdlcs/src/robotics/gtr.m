@@ -1,5 +1,5 @@
 function g_ij = gtr(xi_cell,th_vec,i,j)
-% rigid transformation g_ij from (i+1)-th frame to j-th frame if j>i otherwise eye(4)
+% Rigid transformation g_ij from (i+1)-th frame to j-th frame if j>i otherwise eye(4)
 l = min([i,j]);
 u = max([i,j]);
 g_lu = eye(4);

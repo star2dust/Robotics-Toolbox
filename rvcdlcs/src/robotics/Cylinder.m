@@ -1,4 +1,4 @@
-% - Rigid Cylinder 3D Model class (rpy)
+% Rigid Cylinder 3D Model class (rpy)
 % (last mod.: 30-07-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:

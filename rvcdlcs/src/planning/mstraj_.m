@@ -1,10 +1,10 @@
-function [qt,qdt,qddt,tt] = mstraj_(qvia,qdmax,dt,tacc)
-% MSTRAJ_ Calculate trajectory (q,qd,qdd) by (qvia,qdmax,dt,tacc)
+function [q,qd,qdd,t] = mstraj_(qvia,qdmax,dt,tacc)
+% Generate trajectory from via points
 qlen = size(qvia,2);
 q0 = qvia(1,:);
-qt = mstraj(qvia(2:end,:),qdmax,[],q0,dt,tacc); % row vector for each xr
-qt = [q0;qt];
-qdt = [diff(qt)./dt;zeros(1,qlen)];
-qddt = [diff(qdt)./dt;zeros(1,qlen)];
-tt = 0:dt:(size(qt,1)-1)*dt;
+q = mstraj(qvia(2:end,:),qdmax,[],q0,dt,tacc); % row vector for each xr
+q = [q0;q];
+qd = [diff(q)./dt;zeros(1,qlen)];
+qdd = [diff(qd)./dt;zeros(1,qlen)];
+t = 0:dt:(size(q,1)-1)*dt;
 end

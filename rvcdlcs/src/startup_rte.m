@@ -5,23 +5,24 @@ if ~isdeployed
     srcpath = fileparts(mfilename('fullpath'));
     addpath(srcpath); % add src folder to the matlab path
     addpath([srcpath '/common']); % add common
-    addpath([srcpath '/robotics']); % add model
+    addpath([srcpath '/robotics']); % add robotics
     addpath([srcpath '/planning']); % add planning
+    addpath([srcpath '/multiagent']); % add robotics
     
     % import third party toolboxes
     thirdpartypath = [srcpath '/thirdparty'];
     % add cvxhull
-%     addpath([thirdpartypath '/cvxhull/circles']);
-%     addpath([thirdpartypath '/cvxhull/inhull']);
-%     addpath([thirdpartypath '/cvxhull/inpoly']);
-%     addpath([thirdpartypath '/cvxhull/intersections']);
-%     addpath([thirdpartypath '/cvxhull/polytopes']);
-    % add dh2poe
-%     addpath([thirdpartypath '/dh2poe/lib']);
+    addpath([thirdpartypath '/cvxhull/circles']);
+    addpath([thirdpartypath '/cvxhull/inhull']);
+    addpath([thirdpartypath '/cvxhull/inpoly']);
+    addpath([thirdpartypath '/cvxhull/intersections']);
+    addpath([thirdpartypath '/cvxhull/polytopes']);
     % add graphsearch
     addpath([thirdpartypath '/graphsearch/lib']);
     % add hebi input
     addpath([thirdpartypath '/hebinput/hebi']);
+    % add dh2poe
+    addpath([thirdpartypath '/dh2poe/lib']);
     % add stlreader
     addpath([thirdpartypath '/stlreader/lib']);
     % add iris

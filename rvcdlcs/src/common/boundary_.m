@@ -1,5 +1,5 @@
-function [I,V] = boundary_(V,s)
-% boundary_ - Boundary of a set of points in 2-D or 3-D
+function [I,V] = boundary_(V,S)
+% Boundary of a set of points in 2-D or 3-D
 %
 %     This MATLAB function returns a vector of point indices representing a single
 %     conforming 2-D boundary around the points (x,y).
@@ -56,7 +56,7 @@ else
     if nargin<2
         I = boundary(V);
     else
-        I = boundary(V,s);
+        I = boundary(V,S);
     end
 end
 end

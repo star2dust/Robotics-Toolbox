@@ -1,5 +1,5 @@
 function [A,b] = polycons(x)
-% polycons - Generate a linear constraint A*x<=b for 2D convex hull
+% Generate a linear constraint A*x<=b for 2D convex hull
 % - x = [X,Y], where X and Y are column vectors.
 % - A,b : the linear constraint A*x<=b
 

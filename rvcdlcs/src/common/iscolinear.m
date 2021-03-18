@@ -1,5 +1,5 @@
 function f = iscolinear(V)
-% iscolinear - Test if colinear (2D) or coplanar (3D)
+% Check if vertices are colinear (2D) or coplanar (3D)
 %     iscolinear(V) is true (1) if vertex set V is colinear or coplanar or empty,
 %     else false (0).
 

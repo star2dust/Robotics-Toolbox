@@ -1,5 +1,5 @@
 function savelog(file,msg,opt)
-% SAVELOG Save log files for debug
+% Save messages into log files
 
 if nargin<3
    opt = 'a'; 

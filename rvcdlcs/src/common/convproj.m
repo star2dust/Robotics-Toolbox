@@ -1,5 +1,5 @@
 function [xf,resnorm,exitflag] = convproj(x0,A,b,lim,Aeq,beq)
-
+% Find the projection of a point to a general convex set
 
 resnorm = zeros(size(x0,1),1);
 exitflag = ones(size(x0,1),1);

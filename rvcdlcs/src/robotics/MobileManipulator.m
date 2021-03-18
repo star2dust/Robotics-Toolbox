@@ -1,4 +1,4 @@
-% - Mobile Manipulator 3D Model class (SE3, rpy, stdDH)
+% Mobile Manipulator 3D Model class (SE3, rpy, stdDH)
 % (last mod.: 03-08-2020, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
@@ -59,6 +59,8 @@ classdef MobileManipulator < SerialLink
             for i=1:size(dh,1)
                 rod = Cuboid([dh(i,3),dh(i,3)/10,dh(i,3)/10]);
                 if dh(i,end)
+                    % The first 3 joints are from the platform,
+                    % the joints of manipulator start from the 4th one.
                     if i>3
                         rodopt = {'m', rod.mass, 'r', [-rod.edge(1)/2,0,0], 'I', rod.inertia, 'B', opt.B(1,:), 'Tc', opt.Tc(1,:)};
                     else
@@ -86,11 +88,14 @@ classdef MobileManipulator < SerialLink
             
             % opt statement
             opt.workspace = [];
+            opt.dim = 3;
             opt.frame = false;
             opt.framecolor = 'b';
             opt.framelength = sum(obj.platform.body.edge)/length(obj.platform.body.edge)/3;
             opt.framethick = 1;
             opt.framestyle = '-';
+            opt.shading = false;
+            opt.lightpos = [0 0 20];
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin); 
             % argument parse
@@ -133,7 +138,12 @@ classdef MobileManipulator < SerialLink
                 %             set(gcf, 'Position', [0.1 1-pf(4) pf(3) pf(4)]);
                 %         end
             end
-            view(3); grid on;
+            % deal with some display options
+            if opt.shading
+                lighting gouraud
+                light('position', opt.lightpos)
+            end
+            view(opt.dim); grid on;
             obj.animate(q,h.group);
         end 
         

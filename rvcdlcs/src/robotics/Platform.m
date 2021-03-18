@@ -35,7 +35,7 @@ classdef Platform < SerialLink
                 0,0,0,0,0];
             opt.r = 0.1;
             opt.h = 0.2;
-            opt.real3d = true;
+            opt.real3d = false;
             opt.name = 'plat';
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin);

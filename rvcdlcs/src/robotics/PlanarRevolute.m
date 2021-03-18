@@ -1,5 +1,5 @@
-% - Planar Revolute Robot 2D/3D Skeleton Model class (SE3, rpy, stdDH)
-% (last mod.: 01-04-2020, Author: Chu Wu)
+% Planar Revolute Robot 2D/3D Skeleton Model class (SE3, rpy, stdDH)
+% (last mod.: 15-Jan-2021, Author: Chu Wu)
 % Requires rvc & rte https://github.com/star2dust/Robotics-Toolbox
 % Properties:
 % - name: str (pr*)
@@ -66,9 +66,9 @@ classdef PlanarRevolute < handle
             opt.Aq = [];
             opt.bq = [];
             opt.q0 = [];
-            opt.height = 1;
-            opt.radius = 0.5;
-            opt.altitude = 0.5;
+            opt.height = 0;
+            opt.radius = 0.8;
+            opt.altitude = 0;
             % opt parse: only stated fields are chosen to opt, otherwise to arg
             [opt,arg] = tb_optparse(opt, varargin);
             % check validity
@@ -116,7 +116,7 @@ classdef PlanarRevolute < handle
             % MPR.plot  Plot m-dof MobileRevolute robot object
             
             % opt statement
-            opt.workspace = [-10 0 -5 5];
+            opt.workspace = [-10 10 -10 10];
             opt.dim = 2;
             opt.arm = true;
             opt.plat = true;
@@ -141,10 +141,19 @@ classdef PlanarRevolute < handle
             [opt,arg] = tb_optparse(opt, varargin);
             % argument parse
             if length(arg)==2
+                % get uiaxis
+                uia = [];
                 % get pose
                 qa = arg{1}(:)';
                 % get base
                 qb = arg{2}(:)';
+            elseif length(arg)==3
+                % get uiaxis
+                uia = arg{1};
+                % get pose
+                qa = arg{2}(:)';
+                % get base
+                qb = arg{3}(:)';
             else
                 error('unknown arguments');
             end
@@ -155,7 +164,7 @@ classdef PlanarRevolute < handle
                     % this robot doesnt exist here, create it or add it
                     if ishold
                         % hold is on, add the robot, don't change the floor
-                        h = createRobot(obj, qa, qb, opt);
+                        h = createRobot(obj, uia, qa, qb, opt);
                         % tag one of the graphical handles with the robot name and hang
                         % the handle structure off it
                         %                 set(handle.joint(1), 'Tag', robot.name);
@@ -163,13 +172,13 @@ classdef PlanarRevolute < handle
                     else
                         % create the robot
                         newplot();
-                        h = createRobot(obj, qa, qb, opt);
+                        h = createRobot(obj, uia, qa, qb, opt);
                         set(gca, 'Tag', 'RTB.plot');
                     end
                 end
             else
                 % this axis never had a robot drawn in it before, let's use it
-                h = createRobot(obj, qa, qb, opt);
+                h = createRobot(obj, uia, qa, qb, opt);
                 set(gca, 'Tag', 'RTB.plot');
                 set(gcf, 'Units', 'Normalized');
                 %         pf = get(gcf, 'Position');
@@ -194,19 +203,28 @@ classdef PlanarRevolute < handle
             qb = SE3.qrpy(qb).toqrpy;
             fk = obj.fkine(qa,qb); p_hg = fk.tv;
             for i=1:length(handles.Children) % draw frame first otherwise there will be delay
+                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-plat-floor'])
+                    p_fv0 = handles.Children(i).UserData{1};
+                    p_siz = handles.Children(i).UserData{2};
+                    p_fv = h2e(SE3.qrpy(qb).T*e2h(p_fv0'));
+                    x_fv = reshape(p_fv(1,:),p_siz);
+                    y_fv = reshape(p_fv(2,:),p_siz);
+                    z_fv = reshape(p_fv(3,:),p_siz);
+                    set(handles.Children(i), 'XData', x_fv,'YData', y_fv,'ZData', z_fv);
+                end
+                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-plat-wall'])
+                    p_fv0 = handles.Children(i).UserData;
+                    p_fv = h2e(SE3.qrpy(qb).T*e2h(p_fv0'));
+                    set(handles.Children(i), 'Vertices', p_fv');
+                end
+                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-link'])
+                    set(handles.Children(i), 'XData', p_hg(1,:),'YData', p_hg(2,:),'ZData', p_hg(3,:));
+                end
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-tool'])
                     set(handles.Children(i),'matrix',fk(end).T);
                 end
                 if strcmp(get(handles.Children(i),'Tag'), [obj.name '-base'])
                     set(handles.Children(i),'matrix',fk(i).T);
-                end
-                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-link'])
-                    set(handles.Children(i), 'XData', p_hg(1,:),'YData', p_hg(2,:),'ZData', p_hg(3,:));
-                end
-                if strcmp(get(handles.Children(i),'Tag'), [obj.name '-plat'])
-                    p_fv0 = handles.Children(i).UserData;
-                    p_fv = h2e(SE3.qrpy(qb).T*e2h(p_fv0));
-                    set(handles.Children(i), 'XData', p_fv(1,:),'YData', p_fv(2,:),'ZData', p_fv(3,:));
                 end
             end
         end
@@ -250,43 +268,6 @@ classdef PlanarRevolute < handle
             end
         end
         
-%         function qa = ikine(obj,gfk,qb,A,b)
-%             % PR.ikine Inverse kinematics for m-dof planar revolute manipulator
-%             % - gfk: SE3 config of forward kinematics (SE3/ 1x6 qrpy/ 1x3 q)
-%             % - qa: joint posture (1xm)
-%             % - qb: base frame pose (1x6 qrpy/ 1x3 q)
-%             import PlanarRevolute.*
-%             if ~isa(gfk,'SE3')
-%                 gfk = SE3.qrpy(gfk);
-%             end
-%             for i=1:length(obj)
-%                 rfk = obj(i).base^-1*SE3([0,0,obj(i).altitude])^-1*...
-%                     SE3.qrpy(qb(i,:))^-1*gfk(i)*obj(i).tool^-1;
-%                 qtool = rfk.toqrpy;
-%                 qtool = qtool([1:2,6]);
-%                 m = length(obj(i).link);
-%                 if m<=2
-%                     qa(i,:) = getIkine3(obj(i).link,qtool,obj(i).type);
-%                 else
-%                     negmup2 = @(th) -getMu(obj(i).link,th);
-%                     if nargin==3
-%                         qa(i,:) = fmincon(negmup2,obj(i).q0',obj(i).Aq,obj(i).bq,[],[],...
-%                             obj(i).qlim(1,:),obj(i).qlim(2,:),@(th) ...
-%                             fkcon(obj(i).link,th,qtool(1:2)));
-%                     else
-%                         % NOTE: A and b only works for column vector
-%                         if isa(A,'cell')&&isa(b,'cell')
-%                             qa(i,:) = fmincon(negmup2,obj(i).q0',A{i},b{i},[],[],...
-%                                 obj(i).qlim(1,:)',obj(i).qlim(2,:)',@(th) ...
-%                                 fkcon(obj(i).link,th,qtool(1:2)))';
-%                         else
-%                             error('unknown constraint');
-%                         end
-%                     end
-%                 end
-%             end
-%         end
-        
         function qb = bkine(obj,qa,gfk)
             % PR.fkine Forward kinematics for m-dof planar revolute manipulator
             % - qa: joint posture (1xm)
@@ -325,7 +306,7 @@ classdef PlanarRevolute < handle
     end
     
     methods (Access = protected)
-        function h = createRobot(obj, qa, qb, opt)
+        function h = createRobot(obj, uia, qa, qb, opt)
             % create an axis
             ish = ishold();
             if ~ishold
@@ -336,30 +317,34 @@ classdef PlanarRevolute < handle
                 hold on
             end
             
-            group = hggroup('Tag', obj.name);
+            if isempty(uia)
+                group = hggroup('Tag', obj.name);
+            else
+                group = hggroup('Tag', obj.name, 'Parent', uia);
+            end
             h.group = group;
             
             qb = SE3.qrpy(qb).toqrpy;
             fk = fkine(obj,qa,qb);
             p_hg = fk.tv;
             
+            if opt.plat
+                [X,Y,Z] = cylinder(obj.radius,12);          
+                Z = Z*obj.altitude; 
+                [TRI,V] = surf2patch(X,Y,Z);
+                h.floor = patch('xdata',X','ydata',Y','zdata',Z','FaceColor', 'y',...
+                    'EdgeColor', opt.plcolor, 'LineWidth', opt.plthick, 'parent', group );
+                h.wall = patch('vertices',V,'faces',TRI,'FaceColor', 'y',...
+                    'EdgeColor', opt.plcolor, 'LineWidth', 0.1, 'parent', group);
+                h.floor.UserData = {[vec(X'),vec(Y'),vec(Z')],size(X')};
+                h.wall.UserData = V;
+                set(h.floor,'Tag', [obj.name '-plat-floor']);
+                set(h.wall,'Tag', [obj.name '-plat-wall']);
+            end
+            
             if opt.arm
                 h.link = line(p_hg(1,:),p_hg(2,:),p_hg(3,:),'Color',opt.lkcolor,'LineStyle', opt.lkstyle, 'LineWidth', opt.lkthick, 'MarkerFaceColor', opt.hgcolor, 'Marker', opt.hgstyle, 'MarkerSize', opt.hgsize, 'parent', group);
                 set(h.link,'Tag', [obj.name '-link']);
-            end
-            
-            if opt.plat
-                [X,Y,Z] = cylinder(obj.radius,20);          
-                Z = Z*obj.altitude;
-                if opt.dim == 2
-                    p_fv0 = [X(2,:);Y(2,:);Z(2,:)];
-                else                    
-                    p_fv0 = [[X(1,:);Y(1,:);Z(1,:)],flip([X(:)';Y(:)';Z(:)'],2),[X(2,:);Y(2,:);Z(2,:)]];                 
-                end
-                p_fv = h2e(SE3.qrpy(qb).T*e2h(p_fv0));
-                h.plat = line(p_fv(1,:),p_fv(2,:),p_fv(3,:),'Color',opt.plcolor, 'LineWidth', opt.plthick, 'parent', group);
-                h.plat.UserData = p_fv0;
-                set(h.plat,'Tag', [obj.name '-plat']);
             end
             
             if opt.frame
@@ -443,8 +428,75 @@ classdef PlanarRevolute < handle
                     lc = link(j,i)*cos(sum(th(j,1:i)));
                     pfkj = pfkj+[lc;ls];
                 end
-                pfk(j,:) = pfkj(:)';
+                pfk(j,:) = pfkj;
             end
+        end
+        
+        function pfk = getHinge(link,th,ind,str)
+            % PR.getHinge  Hinge coordinate for m-dof planar revolute manipulator
+            % - link: link lengths (1xm)
+            % - th: joint angles (1xm)
+            % - pfk: position of end-effector (1x2)
+            
+            pfk = zeros(size(link,1),2);
+            for j=1:size(link,1)
+                if isvec(th)
+                    m = length(th);
+                    th = th(:)';
+                else
+                    m = size(th,2);
+                end
+                % select type
+                if str=='e'
+                    list = ind:m;
+                elseif str=='b'
+                    list = 1:ind;
+                else
+                    error("input should be 'e' or 'b'.")
+                end
+                % lsin and lcos
+                pfkj = [0;0];
+                for i=list
+                    ls = link(j,i)*sin(sum(th(j,1:i)));
+                    lc = link(j,i)*cos(sum(th(j,1:i)));
+                    pfkj = pfkj+[lc;ls];
+                end
+                pfk(j,:) = pfkj';
+            end
+        end
+        
+        function J = getNablaHinge(link,th,ind,str)
+            % PR.getNablaHinge  Nabla hinge for m-dof planar revolute manipulator
+            % - link: link lengths (1xm)
+            % - th: joint angles (1xm)
+            
+            m = length(th);
+            ls = zeros(m,1);
+            lc = ls; dx = ls; dy = ls;
+            % lsin and lcos
+            for i=1:m
+                ls(i) = link(i)*sin(sum(th(1:i)));
+                lc(i) = link(i)*cos(sum(th(1:i)));
+            end
+            % dxdth and dydth
+            for i=1:m % derivative of which joint
+                dx(i) = 0;
+                dy(i) = 0;
+                % select type
+                if str=='e'
+                    list = max(ind,i):m;
+                elseif str=='b'
+                    list = i:ind;
+                else
+                    error("input 4 should be 'e' or 'b'.")
+                end
+                for j=list % how many cos or sin should be added
+                    dx(i) = dx(i)-ls(j);
+                    dy(i) = dy(i)+lc(j);
+                end
+            end
+            % Jacobian
+            J = [dx,dy]';
         end
         
         function th = getIkine3(link,qfk,type)
@@ -542,6 +594,33 @@ classdef PlanarRevolute < handle
             J = [dx,dy]';
         end
         
+        function J = getJacobDot(link,th,dth)
+            % PR.getJacobDot  Jacobian dot for m-dof planar revolute manipulator
+            % - link: link lengths (1xm)
+            % - th: joint angles (1xm)
+            % - dth: joint rates (1xm)
+            
+            m = length(th);
+            ls = zeros(m,1);
+            lc = ls; dx = ls; dy = ls;
+            % lsin and lcos
+            for i=1:m
+                ls(i) = link(i)*sin(sum(th(1:i)))*dth(i);
+                lc(i) = link(i)*cos(sum(th(1:i)))*dth(i);
+            end
+            % dxdth and dydth
+            for i=1:m
+                dx(i) = 0;
+                dy(i) = 0;
+                for j=i:m
+                    dx(i) = dx(i)-lc(j);
+                    dy(i) = dy(i)-ls(j);
+                end
+            end
+            % Jacobian
+            J = [dx,dy]';
+        end
+        
         function [c,ceq] = fkcon(link,th,pfk)
             % PR.fkcon  Get the forward kinematic equation constraints
             % - link: link lengths (1xm)
@@ -550,6 +629,20 @@ classdef PlanarRevolute < handle
             import PlanarRevolute.*
             ceq = getFkine(link,th)-pfk(:)';
             c = [];
+        end
+        
+        function robout = copy(robin,num,name)
+            for i=1:num
+                if num>1
+                   rob_name = [name '_' num2str(i)];
+                else
+                    rob_name = name;
+                end
+                robout(i) = PlanarRevolute(robin.link,'name',...
+                    rob_name,'height',robin.height,'radius',...
+                    robin.radius,'altitude',robin.altitude,'qlim',...
+                    robin.qlim,'Aq',robin.Aq,'bq',robin.bq,'q0',robin.q0);
+            end
         end
     end
 end

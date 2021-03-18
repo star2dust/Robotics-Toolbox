@@ -12,5 +12,4 @@ dt = 0.01;
 dqrmax = [2,2,1];
 [qr, dqr, ~, tqr] = mstraj_(qqr,dqrmax,dt,2);
 
-
 showtraj(qr,dqr,tqr);
