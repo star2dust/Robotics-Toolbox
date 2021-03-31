@@ -1,5 +1,5 @@
 function [z,exit] = poly2nodez(polytope,rloc,config,envir,robotnum,dispbaseref,dispendref)
-% Find a feasible node z in a given polytope
+% Find a feasible node z in one or two polytopes
 
 % get the A and b from polytope
 Ap = []; bp = [];

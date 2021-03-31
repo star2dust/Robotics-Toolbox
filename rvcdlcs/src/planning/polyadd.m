@@ -29,6 +29,10 @@ for i=1:edgenum
 end
 %%%%%
 % hold on;
+% for k=1:polynum
+%     polyplot(nodepoly(k).A,nodepoly(k).b);hold on
+%     plot(nodez(:,1),nodez(:,2),'bo')
+% end
 % for kk=1:2:size(edgez,1)
 %     x1=[nodez(edgez(kk,1),1);nodez(edgez(kk,2),1)];
 %     y1=[nodez(edgez(kk,1),2);nodez(edgez(kk,2),2)];
