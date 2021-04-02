@@ -7,14 +7,18 @@ polynum = length(nodepoly);
 for i=polynum-randpolynum+1:polynum % random ploytope
     for j=1:polynum-randpolynum % exist ploytope
         [viaz,exit] = poly2nodez([nodepoly(i),nodepoly(j)],nodez(nodezinpoly{i}(1),1:2),config,envir,robotnum,dispbaseref,dispendref);
-        if exit==1
+        if exit==1  
             nodez = [nodez;viaz]; znum = size(nodez,1);
             for kj=1:length(nodezinpoly{j})
-                edgez = [edgez;nodezinpoly{j}(kj),znum;znum,nodezinpoly{j}(kj)];
+                if length(viaz)<4||(norm(nodez(nodezinpoly{j}(kj),4)-viaz(4))<pi/2||norm(nodez(nodezinpoly{j}(kj),4)-viaz(4))>3*pi/2)
+                    edgez = [edgez;nodezinpoly{j}(kj),znum;znum,nodezinpoly{j}(kj)];
+                end
             end
             nodezinpoly{j} = [nodezinpoly{j},znum];   
             for ki=1:length(nodezinpoly{i})
-                edgez = [edgez;nodezinpoly{i}(ki),znum;znum,nodezinpoly{i}(ki)];
+                if length(viaz)<4||(norm(nodez(nodezinpoly{j}(kj),4)-viaz(4))<pi/2||norm(nodez(nodezinpoly{j}(kj),4)-viaz(4))>3*pi/2)
+                    edgez = [edgez;nodezinpoly{i}(ki),znum;znum,nodezinpoly{i}(ki)];
+                end
             end
             nodezinpoly{i} = [nodezinpoly{i},znum];
         end
@@ -28,16 +32,17 @@ for i=1:edgenum
     nodegrid(edgez(i,2),edgez(i,1))=1;
 end
 %%%%%
-% hold on;
-% for k=1:polynum
-%     polyplot(nodepoly(k).A,nodepoly(k).b);hold on
-%     plot(nodez(:,1),nodez(:,2),'bo')
-% end
-% for kk=1:2:size(edgez,1)
-%     x1=[nodez(edgez(kk,1),1);nodez(edgez(kk,2),1)];
-%     y1=[nodez(edgez(kk,1),2);nodez(edgez(kk,2),2)];
-%     line(x1,y1);
-% end
-% hold off;
+hold on;
+for k=1:polynum
+    polyplot(nodepoly(k).A,nodepoly(k).b);hold on
+    plot(nodez(:,1),nodez(:,2),'bo')
+end
+for kk=1:2:size(edgez,1)
+    x1=[nodez(edgez(kk,1),1);nodez(edgez(kk,2),1)];
+    y1=[nodez(edgez(kk,1),2);nodez(edgez(kk,2),2)];
+    line(x1,y1);
+end
+hold off;
+pause(0.01)
 %%%%%
 end

@@ -12,6 +12,10 @@ b = b(ia);
 % If Mosek fails for you, you can use CVX with the free SDPT3 solver,
 % but it will be much (about 100X) slower. Just swap the above line for the
 % following:
+A(isnan(A)) = 0;
+A(isinf(A)) = 10^5;
+b(isnan(b)) = 0;
+b(isinf(b)) = 10^5;
 [C, d] = iris.inner_ellipsoid.cvx_ellipsoid(A, b);
 
 volume = det(C);

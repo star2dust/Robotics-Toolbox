@@ -44,8 +44,12 @@ function [A, b, infeas_start] = separating_hyperplanes(obstacle_pts, C, d)
         A(i,:) = nhat';
         b(i) = b0;
       else
-          [As,bs] = polycons(ys');
-          ystar = convproj(zeros(1,size(ys,1)),As,bs)';
+          % a simple version
+          ys(isnan(ys)) = 0;
+          ys(isinf(ys)) = 10^5;
+          [As,bs] = vert2lcon(ys');
+          ystar = lsqlin(eye(size(ys,1)),[0;0],As,bs);
+          
 %         if isempty(mosek_res)
 %           [~,mosek_res] = mosekopt('symbcon echo(0)');
 %         end

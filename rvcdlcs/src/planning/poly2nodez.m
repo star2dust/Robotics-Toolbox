@@ -10,13 +10,19 @@ end
 % nodez desired
 zd = [rloc,config.vec];
 % constraints lb and ub
-width = max(abs(envir.ub-envir.lb))/4;
-sliwin.lb = rloc-width;
-sliwin.ub = rloc+width;
-lb = [max(envir.lb,sliwin.lb),config.lb];
-ub = [min(envir.ub,sliwin.ub),config.ub];
+% width = max(abs(envir.ub-envir.lb))/4;
+% sliwin.lb = rloc-width;
+% sliwin.ub = rloc+width;
+% lb = [max(envir.lb,sliwin.lb),config.lb];
+% ub = [min(envir.ub,sliwin.ub),config.ub];
+lb = [envir.lb,config.lb];
+ub = [envir.ub,config.ub];
 % calculate z (row vec)
-W = diag([1,1,10]);
+if length(config.vec)<2
+    W = diag([1,1,10]);
+else
+   W = diag([1,1,10,1]); 
+end
 [z,~,exit] = fmincon(@(z) (z-zd)*W*(z-zd)',zd,[],[],[],[],lb,ub,@(z) safecon(z,Ap,bp,robotnum,dispbaseref,dispendref));
 end
 
@@ -28,8 +34,8 @@ if length(z)==3
     ang = 0;
     siz = z(3);
 else
-    ang = z(3);
-    siz = z(4);
+    ang = z(4);
+    siz = z(3);
 end
 % you may change ang according to rloc here
 % get displacement base
