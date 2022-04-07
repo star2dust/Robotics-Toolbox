@@ -1,7 +1,7 @@
 function sc=costcal(a,b)
 tp=b-a;
-
-sc=sqrt(tp(:,1).^2+tp(:,2).^2);
+sc = normby(tp,1);
+% sc=sqrt(tp(:,1).^2+tp(:,2).^2);
 
 
 % n=size(b,1);

@@ -6,7 +6,7 @@ if ~isdeployed
     addpath(srcpath); % add src folder to the matlab path
     addpath([srcpath '/common']); % add common
     addpath([srcpath '/robotics']); % add robotics
-    addpath([srcpath '/planning']); % add planning
+    addpath(genpath([srcpath '/planning'])); % add planning
     addpath([srcpath '/multiagent']); % add robotics
     
     % import third party toolboxes

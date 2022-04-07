@@ -1,4 +1,4 @@
-function [route] = astar2(exbigraph,exbiloc,startnode,endnode)
+function [route] = astar(exbigraph,exbiloc,startnode,endnode)
 
 graph=exbigraph;
 Loc=exbiloc;

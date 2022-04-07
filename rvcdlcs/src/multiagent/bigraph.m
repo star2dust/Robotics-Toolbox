@@ -69,6 +69,7 @@ if nargin>1&&robot_num>4
         edge_weight_sort = [graph.weight_set,graph.weight_set];
         graph.weight_sort = edge_weight_sort(sort_ind);
         graph.stress = mat_H'*diag(graph.weight_set)*mat_H;
+        graph.stressnull = mat_P;
         disp('M is positive definite.')
     else
         error('M is not positive definite.')

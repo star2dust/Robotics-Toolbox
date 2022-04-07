@@ -9,11 +9,12 @@ map=map_definition();
 % 
 % generate random nodes
 [map, nodelocation]= generate_node(map,ns);
-
+% nodelocation: node set
 
 % create undirected graph and its edges
 [undirectedGraph,unedges]=generate_undirected_graph(map,nodelocation);
-
+% undirectedGraph: adjacent matrix
+% unedges: edge set
 
 % define start and end point of simulation
 startp=[5, 29];

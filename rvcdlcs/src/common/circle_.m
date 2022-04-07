@@ -7,6 +7,7 @@ opt.d = [1,0];
 
 if nargout > 0
     % return now
+    cen = cen(:)';
     p = circle(zeros(1,2), rad, arglist{:});
     thd = cart2pol(opt.d(1),opt.d(2));
     out = (SE2([cen,thd])*p)';
