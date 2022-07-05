@@ -2,10 +2,10 @@ function n = normby(x,s,p)
 % Calculate vector norms for a matrix by row (1) or column (2)
 %
 %     This function returns the norm of matrix x.
-%     s = 1 means by row, s = 2 means by column
+%     s = 1 means by row, s = 2 means by column, p means norm type.
 %
 %     n = norm(x,s)
-%     n = norm(x,s,p)
+%     n = norm(x,s,p) 
 if isempty(x)
     n = [];
 else

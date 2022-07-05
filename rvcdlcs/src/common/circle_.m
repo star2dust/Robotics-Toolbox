@@ -1,6 +1,9 @@
 function out = circle_(cen, rad, varargin)
 % Compute points used to plot a circle 
-% An extension of circle function where the first point is in the direction of 'd'
+%
+%     An extension of circle function with direction 'd'
+% 
+%     out = circle_(cen, rad, 'd', vec, 'n', num)
 
 opt.d = [1,0];
 [opt,arglist] = tb_optparse(opt, varargin);

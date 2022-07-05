@@ -1,4 +1,4 @@
-function [I,V] = furthest(V)
+function [I,P] = furthest(V)
 % Find the furthest two vertices in a set of vertices 
 % - V = [X,Y] or V = [X,Y,Z], where X and Y are column vectors.
 % - I = [i,j] is the index of furthest two vertices in V
@@ -12,5 +12,5 @@ for i=1:size(V)-1
         end
     end
 end
-V = V(I,:);
+P = V(I,:);
 end
