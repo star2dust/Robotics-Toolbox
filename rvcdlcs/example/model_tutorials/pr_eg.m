@@ -2,7 +2,7 @@ close all
 clear
 
 m = 3; link = ones(m,1)*0.8; edge = [1,.8,.5]; mh = [0.2,0.2,1];
-r = PlanarRevolute(link,'name','rob1','height',1);
+r = PlanarRevolute(link,'name','rob1','height',1,'altitude',1);
 
 % qb = [edge,0,0,0.5]; qa1 = [.3,.5,.2];
 % figure

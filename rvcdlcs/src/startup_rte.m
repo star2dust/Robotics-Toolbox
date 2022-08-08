@@ -29,6 +29,8 @@ if ~isdeployed
     addpath([thirdpartypath '/iris-distro/src/matlab']);
     % add visual
     addpath(genpath([thirdpartypath '/coppelia/visual']));
+    % add hungarian
+    addpath(genpath([thirdpartypath '/hungarian']));
 end
 
 

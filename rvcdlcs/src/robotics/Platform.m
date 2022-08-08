@@ -7,7 +7,8 @@
 % - Lwh: 1x1
 % - lwh: 1x1
 % - tree: Link
-% - jacob: 4x3
+% - fwdkine: 3x4
+% - bwdkine: 4x3
 % Methods:
 % - Platform: construction
 % - plot
@@ -19,7 +20,8 @@ classdef Platform < SerialLink
         Lwh
         lwh
         tree
-        jacob
+        fwdkine
+        bwdkine
         real3d
     end
     
@@ -42,8 +44,10 @@ classdef Platform < SerialLink
             % platform body
             cub = Youbot(arg{:},'name','body');
             % platform wheel
-            namelist = ["fl" "fr" "bl" "br"];
-            typelist = ["45a" "45b" "45b" "45a"];
+            namelist = ["fl" "fr" "bl" "br"]; % order of wheel
+            typelist = ["45a" "45b" "45b" "45a"]; % abba install
+            % edge1: x, edge2: y
+            % Lwh in x axis, lwh in y axis
             rwh = cub.edge(1)*opt.r;
             hwh = cub.edge(2)*opt.h;
             Lwh = cub.edge(1)/2-rwh;
@@ -51,10 +55,13 @@ classdef Platform < SerialLink
             for i=1:4
                 wheel(i) = Omniwheel(rwh,hwh,'name',namelist(i),'type',typelist(i));
             end
-            jacob = [1,-1,-(lwh+Lwh);
+            bwdkine = [1,-1,-(lwh+Lwh);
                 1,1,(lwh+Lwh);
                 1,1,-(lwh+Lwh);
                 1,-1,(lwh+Lwh)]/rwh;
+            fwdkine = [1,1,1,1;
+                    -1,1,1,-1;
+                    [-1,1,-1,1]/(lwh+Lwh)]*rwh/4;
             % platform tree
             Hb = SE3([0,0,rwh+cub.edge(3)/2])*SE3(SO3.Ry(pi/2));
             Ht = SE3;
@@ -79,7 +86,8 @@ classdef Platform < SerialLink
             obj.lwh = lwh;
             obj.Lwh = Lwh;
             obj.tree = tree;
-            obj.jacob = jacob;
+            obj.bwdkine = bwdkine;
+            obj.fwdkine = fwdkine;
             obj.real3d = opt.real3d;
         end
         
