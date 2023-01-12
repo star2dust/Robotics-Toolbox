@@ -30,7 +30,7 @@ if ~isdeployed
     % add visual
     addpath(genpath([thirdpartypath '/coppelia/visual']));
     % add hungarian
-    addpath(genpath([thirdpartypath '/hungarian']));
+    addpath(genpath([thirdpartypath '/hungarian/lib']));
 end
 
 

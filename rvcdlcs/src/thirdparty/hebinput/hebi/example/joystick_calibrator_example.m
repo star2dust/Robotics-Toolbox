@@ -2,7 +2,7 @@
 close all
 clear
 
-joy = vrjoystick(2);% 1 for ST LIS3LV02DL Accelerometer; 2 for BETOP Controller
+joy = vrjoystick(1);% 1 for ST LIS3LV02DL Accelerometer; 2 for BETOP Controller
 for i=1:1000
     ax = axis(joy);
     btn = button(joy);
