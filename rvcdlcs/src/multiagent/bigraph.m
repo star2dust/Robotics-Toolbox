@@ -29,7 +29,7 @@ graph.edge_set(graph.edge_set==0) = robot_num;
 edge_set_sort = [graph.edge_set,[0,1;1,0]*graph.edge_set];
 [~,sort_ind] = sort(edge_set_sort(1,:));
 graph.edge_sort = edge_set_sort(:,sort_ind);
-if nargin>1&&robot_num>4
+if nargin>1&&robot_num>=4
     % vertex dimension
     vert_dim = size(vert_ref,2);
     % configuration matrix

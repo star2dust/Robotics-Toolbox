@@ -221,7 +221,7 @@ function [opt,others,ls] = tb_optparse(in, argv, cls)
                     val = opt.(option);
                     if islogical(val)
                         % a logical variable can only be set by an option
-                        opt.(option) = true;
+                        opt.(option) = opt.(option);
                     else
                         %** OPTION IS ASSIGNED VALUE FROM NEXT ARG
                         % otherwise grab its value from the next arg

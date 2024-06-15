@@ -31,6 +31,8 @@ if ~isdeployed
     addpath(genpath([thirdpartypath '/coppelia/visual']));
     % add hungarian
     addpath(genpath([thirdpartypath '/hungarian/lib']));
+    % add jsonlab
+    addpath([thirdpartypath '/jsonlab']);
 end
 
 

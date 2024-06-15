@@ -52,10 +52,12 @@ A = [1 3 Inf; Inf Inf 5; Inf Inf 0.5];
 assignment = zeros(1,size(costMat,1));
 cost = 0;
 
+% inf => big number
 validMat = costMat == costMat & costMat < Inf;
 bigM = 10^(ceil(log10(sum(costMat(validMat))))+1);
 costMat(~validMat) = bigM;
 
+% count not all zero row and col (valid)
 % costMat(costMat~=costMat)=Inf;
 % validMat = costMat<Inf;
 validCol = any(validMat,1);
@@ -70,6 +72,7 @@ end
 
 maxv=10*max(costMat(validMat));
 
+% remove all zero row and col
 dMat = zeros(n) + maxv;
 dMat(1:nRows,1:nCols) = costMat(validRow,validCol);
 
@@ -87,6 +90,7 @@ minC = min(bsxfun(@minus, dMat, minR));
 %   STEP 2: Find a zero of dMat. If there are no starred zeros in its
 %           column or row start the zero. Repeat for each zero
 %**************************************************************************
+% get minRow/zero position
 zP = dMat == bsxfun(@plus, minC, minR);
 
 starZ = zeros(n,1);
